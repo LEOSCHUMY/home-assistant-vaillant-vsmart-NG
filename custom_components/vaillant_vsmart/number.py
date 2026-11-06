@@ -10,11 +10,14 @@ from homeassistant.components.number import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTime
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import ApiException, VaillantCoordinator, VaillantDeviceEntity
+from vaillant_netatmo_api import ApiException, RequestUnauthorizedException
+
+from .entity import VaillantCoordinator, VaillantDeviceEntity
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -92,7 +95,12 @@ class VaillantDeviceNumber(VaillantDeviceEntity, NumberEntity):
                 self._device_id,
                 int(value),
             )
+        except RequestUnauthorizedException:
+            raise
         except ApiException as ex:
-            _LOGGER.exception(ex)
+            _LOGGER.exception("Unable to update default setpoint duration: %s", ex)
+            raise HomeAssistantError(
+                "Unable to update default setpoint duration"
+            ) from ex
 
         await self.coordinator.async_request_refresh()

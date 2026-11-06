@@ -6,9 +6,10 @@ import logging
 from homeassistant.components.switch import SwitchEntity, SwitchDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from vaillant_netatmo_api import ApiException
+from vaillant_netatmo_api import ApiException, RequestUnauthorizedException
 
 from .const import DOMAIN
 from .entity import VaillantCoordinator, VaillantDeviceEntity, VaillantProgramEntity
@@ -72,16 +73,19 @@ class VaillantScheduleSwitch(VaillantProgramEntity, SwitchEntity):
                 self._module_id,
                 self._program_id,
             )
+        except RequestUnauthorizedException:
+            raise
         except ApiException as ex:
-            _LOGGER.exception(ex)
+            _LOGGER.exception("Unable to activate schedule: %s", ex)
+            raise HomeAssistantError("Unable to activate schedule") from ex
 
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs):
         """Turn off the switch."""
 
-        _LOGGER.info(
-            "Active schedule can't be switched off. To change schedule, switch the one you want as active to on state."
+        raise HomeAssistantError(
+            "An active schedule cannot be switched off; activate another schedule instead."
         )
 
 
@@ -121,8 +125,11 @@ class VaillantHwbSwitch(VaillantDeviceEntity, SwitchEntity):
                 self._device_id,
                 True,
             )
+        except RequestUnauthorizedException:
+            raise
         except ApiException as ex:
-            _LOGGER.exception(ex)
+            _LOGGER.exception("Unable to enable hot water boost: %s", ex)
+            raise HomeAssistantError("Unable to enable hot water boost") from ex
 
         await self.coordinator.async_request_refresh()
 
@@ -135,5 +142,10 @@ class VaillantHwbSwitch(VaillantDeviceEntity, SwitchEntity):
                 self._device_id,
                 False,
             )
+        except RequestUnauthorizedException:
+            raise
         except ApiException as ex:
-            _LOGGER.exception(ex)
+            _LOGGER.exception("Unable to disable hot water boost: %s", ex)
+            raise HomeAssistantError("Unable to disable hot water boost") from ex
+
+        await self.coordinator.async_request_refresh()
