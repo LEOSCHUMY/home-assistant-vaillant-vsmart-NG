@@ -15,8 +15,16 @@ from homeassistant.components.climate.const import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from vaillant_netatmo_api import ApiException, SystemMode, ThermSetpointMode, TemperatureControlMode, ThermMode
+from vaillant_netatmo_api import (
+    ApiException,
+    RequestUnauthorizedException,
+    SystemMode,
+    ThermSetpointMode,
+    TemperatureControlMode,
+    ThermMode,
+)
 
 from .const import (
     DOMAIN,
@@ -148,8 +156,11 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
                     therm_setpoint_temperature=new_temperature,
                     therm_setpoint_end_time=endtime,
                 )
+            except RequestUnauthorizedException:
+                raise
             except ApiException as ex:
-                _LOGGER.exception(ex)
+                _LOGGER.exception("Unable to set HVAC mode: %s", ex)
+                raise HomeAssistantError("Unable to set HVAC mode") from ex
         elif hvac_mode == HVACMode.AUTO:
             try:
                 await self._client.async_set_state_for_room(
@@ -209,7 +220,10 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
                 therm_setpoint_temperature=new_temperature,
                 therm_setpoint_end_time=endtime,
             )
+        except RequestUnauthorizedException:
+            raise
         except ApiException as ex:
-            _LOGGER.exception(ex)
+            _LOGGER.exception("Unable to set target temperature: %s", ex)
+            raise HomeAssistantError("Unable to set target temperature") from ex
 
         await self.coordinator.async_request_refresh()
