@@ -203,8 +203,8 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
             except RequestUnauthorizedException:
                 raise
             except ApiException as ex:
-                _LOGGER.exception("Unable to set HVAC mode or preset: %s", ex)
-                raise HomeAssistantError("Unable to set HVAC mode or preset") from ex
+                _LOGGER.exception("Unable to set HVAC preset: %s", ex)
+                raise HomeAssistantError("Unable to set HVAC preset") from ex
 
         await self.coordinator.async_request_refresh()
 
