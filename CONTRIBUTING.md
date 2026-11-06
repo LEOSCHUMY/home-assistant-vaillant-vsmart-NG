@@ -1,117 +1,112 @@
-# Contribution guidelines
+# Contributing
 
-Contributing to this project should be as easy and transparent as possible, whether it's:
+Thank you for your interest in contributing to **Vaillant vSMART for Home Assistant**.
 
-- Reporting a bug
-- Discussing the current state of the code
-- Submitting a fix
-- Proposing new features
+This repository is an independently maintained continuation of the original
+[Vaillant vSMART integration](https://github.com/MislavMandaric/home-assistant-vaillant-vsmart).
+Bug reports, API research, documentation improvements, tests and code contributions
+are welcome.
 
-## Github is used for everything
+## Before opening a pull request
 
-Github is used to host code, to track issues and feature requests, as well as accept pull requests.
+1. Check the [existing issues](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/issues)
+   and pull requests to avoid duplicating work.
+2. For substantial changes or new features, open an issue first so the proposed
+   approach can be discussed.
+3. Fork this repository and create your working branch from `dev`.
+4. Keep changes focused and update documentation or tests when appropriate.
+5. Never include account credentials, client secrets, access tokens or other
+   personal information in code, issues, pull requests or logs.
 
-Pull requests are the best way to propose changes to the codebase.
+Pull requests should target the `dev` branch. Please describe the motivation,
+the behavior changed and any manual testing performed. Link related issues where
+applicable.
 
-1. Start by opening a new issue (if your PR doesn't reference an already existing one), where proposed changes can be discussed
-1. Fork the repo and create your branch from `master`.
-1. If you've changed something, update the documentation.
-1. Make sure your code lints (using black).
-1. Test you contribution.
-1. Issue that pull request!
+## Development setup
 
-## Any contributions you make will be under the MIT Software License
+The integration code lives in
+`custom_components/vaillant_vsmart`. The repository also includes a development
+configuration and helper scripts.
 
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
-
-## Report bugs using Github's [issues](../../issues)
-
-GitHub issues are used to track public bugs.
-Report a bug by [opening a new issue](../../issues/new/choose); it's that easy!
-
-## Write bug reports with detail, background, and sample code
-
-**Great Bug Reports** tend to have:
-
-- A quick summary and/or background
-- Steps to reproduce
-  - Be specific!
-  - Give sample code if you can.
-- What you expected would happen
-- What actually happens
-- Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
-
-People _love_ thorough bug reports. I'm not even kidding.
-
-## Request new features using Github's [issues](../../issues)
-
-Github issues are also used to track feature requests.
-Same as with bug repors, request new features by [opening a new issue](../../issues/new/choose).
-
-## Use a Consistent Coding Style
-
-Use [black](https://github.com/ambv/black) and [prettier](https://prettier.io/)
-to make sure the code follows the style.
-
-Or use the `pre-commit` settings implemented in this repository
-(see deicated section below).
-
-## Use Semantic Release commit and branch naming conventions
-
-This component uses [Semantic Release](https://github.com/semantic-release/semantic-release) to automate releases.
-
-Read and follow all the naming conventions outlined in their docs. Check out already existing commits and pull requests for guidance.
-
-## Test your code modification
-
-This custom component is based on [integration_blueprint template](https://github.com/custom-components/integration_blueprint).
-
-It comes with development environment in a container, easy to launch
-if you use Visual Studio Code. With this container you will have a stand alone
-Home Assistant instance running and already configured with the included
-[`.devcontainer/configuration.yaml`](./.devcontainer/configuration.yaml)
-file.
-
-You can use the `pre-commit` settings implemented in this repository to have
-linting tool checking your contributions (see deicated section below).
-
-You should also verify that existing [tests](./tests) are still working
-and you are encouraged to add new ones.
-You can run the tests using the following commands from the root folder:
+A typical local setup is:
 
 ```bash
-# Create a virtual environment
-python3 -m venv venv
-source venv/bin/activate
-# Install requirements
-pip install -r requirements_test.txt
-# Run tests and get a summary of successes/failures and code coverage
-pytest --durations=10 --cov-report term-missing --cov=custom_components.vaillant_vsmart tests
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
 ```
 
-If any of the tests fail, make the necessary changes to the tests as part of
-your changes to the integration.
+To start the development Home Assistant instance using the repository's
+configuration:
 
-## Pre-commit
-
-You can use the [pre-commit](https://pre-commit.com/) settings included in the
-repostory to have code style and linting checks.
-
-With `pre-commit` tool already installed,
-activate the settings of the repository:
-
-```console
-$ pre-commit install
+```bash
+./scripts/develop
 ```
 
-Now the pre-commit tests will be done every time you commit.
+The script starts Home Assistant with `config/` as its configuration directory
+and makes the repository's `custom_components/` directory available.
 
-You can run the tests on all repository file with the command:
+## Tests and code quality
 
-```console
-$ pre-commit run --all-files
+Run the test suite locally with:
+
+```bash
+python3 -m pytest -q tests
 ```
+
+The GitHub Actions test workflow currently runs the regression-resilience test
+module:
+
+```bash
+python3 -m pytest -q tests/test_regression_resilience.py
+```
+
+Run the repository's lint check with:
+
+```bash
+ruff check .
+```
+
+The repository also includes a pre-commit configuration. If you use
+[pre-commit](https://pre-commit.com/), you can install its hooks and run them
+across the repository:
+
+```bash
+pre-commit install
+pre-commit run --all-files
+```
+
+Please include or update automated tests for bug fixes and behavior changes
+where practical. Do not describe a change as tested unless you have actually
+run the relevant checks.
+
+## Reporting bugs
+
+Please use the
+[GitHub issue tracker](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/issues).
+A useful report includes:
+
+- Home Assistant version and installation type.
+- Integration version or the commit/branch being tested.
+- A concise description of the expected and actual behavior.
+- Reproduction steps and relevant sanitized logs.
+
+Remove usernames, passwords, client secrets, tokens, account identifiers and
+other sensitive information before sharing diagnostics.
+
+## Proposing changes
+
+Keep pull requests focused and explain any user-visible impact, compatibility
+considerations or migration steps. Changes affecting authentication, cloud API
+requests, entity behavior or supported Home Assistant versions should include
+tests where feasible.
+
+This project is maintained by **LEOSCHUMY**. The maintainer may use
+**ChatGPT (OpenAI) as an AI development assistant**; contributions and
+publication decisions are reviewed and remain the responsibility of the human
+maintainer.
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under its MIT License.
+By submitting a contribution, you agree that it is distributed under the
+project's [MIT License](LICENSE), consistent with the terms of that license.
