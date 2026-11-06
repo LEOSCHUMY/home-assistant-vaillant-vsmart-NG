@@ -11,8 +11,15 @@ from homeassistant.components.water_heater import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from vaillant_netatmo_api import ApiException, SystemMode, TemperatureControlMode, ThermMode
+from vaillant_netatmo_api import (
+    ApiException,
+    RequestUnauthorizedException,
+    SystemMode,
+    TemperatureControlMode,
+    ThermMode,
+)
 
 from .const import (
     DOMAIN,
@@ -142,8 +149,11 @@ class VaillantWaterHeater(VaillantDeviceEntity, WaterHeaterEntity):
                     TemperatureControlMode.HEATING,
                     ThermMode.SCHEDULE,
                 )
+        except RequestUnauthorizedException:
+            raise
         except ApiException as ex:
-            _LOGGER.exception(ex)
+            _LOGGER.exception("Unable to set water heater operation mode: %s", ex)
+            raise HomeAssistantError("Unable to set water heater operation mode") from ex
 
         await self.coordinator.async_request_refresh()
 
@@ -161,7 +171,10 @@ class VaillantWaterHeater(VaillantDeviceEntity, WaterHeaterEntity):
                 self._device_id,
                 int(math.ceil(new_temperature)),
             )
+        except RequestUnauthorizedException:
+            raise
         except ApiException as ex:
-            _LOGGER.exception(ex)
+            _LOGGER.exception("Unable to set water temperature: %s", ex)
+            raise HomeAssistantError("Unable to set water temperature") from ex
 
         await self.coordinator.async_request_refresh()
