@@ -99,6 +99,8 @@ class VaillantDeviceNumber(VaillantDeviceEntity, NumberEntity):
             raise
         except ApiException as ex:
             _LOGGER.exception("Unable to update default setpoint duration: %s", ex)
-            raise HomeAssistantError("Unable to update default setpoint duration") from ex
+            raise HomeAssistantError(
+                "Unable to update default setpoint duration"
+            ) from ex
 
         await self.coordinator.async_request_refresh()
