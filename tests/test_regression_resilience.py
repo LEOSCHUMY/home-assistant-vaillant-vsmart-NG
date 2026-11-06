@@ -1,4 +1,4 @@
-""""Regression tests for API and measurement failure handling."""
+""""Regression tests for API and measurement failure handling.""""
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
@@ -24,7 +24,7 @@ def api_error(message):
 
 async def test_measurement_api_error_does_not_abort_coordinator_refresh(hass):
     """A failure for one measurement type must not discard the other data."""
-    module = SimpleNamespace(id="module")
+    module = SimpleNamespace(id="module", therm_program_list=[])
     device = SimpleNamespace(id="device", modules=[module])
     client = MagicMock()
     client.async_get_homes_data = AsyncMock(return_value=[])
