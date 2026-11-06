@@ -1,106 +1,84 @@
-# Vaillant vSMART
+# Vaillant vSMART for Home Assistant
 
-[![GitHub Release][releases-shield]][releases]
-[![GitHub Activity][commits-shield]][commits]
-[![License][license-shield]][license]
+[![GitHub Release](https://img.shields.io/github/v/release/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases)
+[![GitHub Activity](https://img.shields.io/github/commit-activity/y/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/commits/dev)
+[![License](https://img.shields.io/github/license/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](LICENSE)
+[![HACS](https://img.shields.io/badge/HACS-custom-orange.svg?style=for-the-badge)](https://hacs.xyz)
 
-[![pre-commit][pre-commit-shield]][pre-commit]
-[![Black][black-shield]][black]
+**Vaillant vSMART** is a Home Assistant custom integration for monitoring and controlling compatible Vaillant vSMART heating systems through the Vaillant cloud service.
 
-[![hacs][hacs-shield]][hacs]
-[![Project Maintenance][maintainer-shield]][maintainer]
+This repository is an independently maintained continuation of the upstream project. It is not an official Vaillant or Home Assistant project.
 
-[![Community Forum][forum-shield]][forum]
+## Features
 
-**This component will set up the following platforms.**
+The integration provides the following Home Assistant platforms:
 
-| Platform        | Description                                                    |
-| --------------- | -------------------------------------------------------------- |
-| `climate`       | <li>Management of Vaillant thermostat                          |
-| `number`        | <li>Configuration of default setpoint duration                 |
-| `select`        | <li>Selector showing currently selected schedule               |
-| `sensor`        | <li>Battery sensor for the thermostat<li>Boiler energy sensors |
-| `switch`        | <li>On/off switch for schedules<li>On/off switch for HWB       |
-| `water_heater`  | <li>Management of Vaillant boiler                              |
+| Platform | Description |
+| --- | --- |
+| `climate` | Monitor and control the thermostat |
+| `number` | Configure the default setpoint duration |
+| `select` | View and select the active schedule |
+| `sensor` | Thermostat battery and boiler energy/duration measurements |
+| `switch` | Control schedules and hot water boost, where supported |
+| `water_heater` | Monitor and control domestic hot water |
+
+Available entities and controls depend on the equipment, account and data exposed by the Vaillant cloud service.
 
 ## Installation
 
 ### HACS (recommended)
 
-1. Open HACS
-1. Search for "Vaillant vSMART"
-    1. If it doesn't exist yet, you first need to add `https://github.com/MislavMandaric/home-assistant-vaillant-vsmart` as custom repository
-1. Click "Install this repository in HACS"
-1. Restart Home Assistant
-1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Vaillant vSMART"
+1. Open **HACS** in Home Assistant.
+2. Open the integrations section and select the three-dot menu.
+3. Choose **Custom repositories**.
+4. Add this repository URL: `https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG`.
+5. Select **Integration** as the category and add the repository.
+6. Find **Vaillant vSMART** in HACS and install it.
+7. Restart Home Assistant.
+8. Go to **Settings → Devices & services**, select **Add integration**, and search for **Vaillant vSMART**.
 
-### Manual
+### Manual installation
 
-1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`)
-1. If you do not have a `custom_components` directory (folder) there, you need to create it
-1. In the `custom_components` directory (folder) create a new folder called `vaillant_vsmart`
-1. Download _all_ the files from the `custom_components/vaillant_vsmart/` directory (folder) in this repository
-1. Place the files you downloaded in the new directory (folder) you created
-1. Restart Home Assistant
-1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Vaillant vSMART"
+1. Download or clone this repository.
+2. Copy the `custom_components/vaillant_vsmart` directory into the `custom_components` directory of your Home Assistant configuration.
+3. Restart Home Assistant.
+4. Go to **Settings → Devices & services**, select **Add integration**, and search for **Vaillant vSMART**.
 
-## Configuration is done in the UI
+## Configuration
 
-Check out the [community page](https://community.home-assistant.io/t/added-support-for-vaillant-thermostat-how-to-integrate-in-official-release/31858). You can find out how to extract client ID and client secret there.
+Configuration is performed through the Home Assistant user interface. Follow the integration's setup flow and provide the account and application details requested there.
 
-For Vaillant Vsmart
-- Client ID : na_client_android_vaillant
-- Client secret : XXXXXXXXXXXXXXXXXXXXXXX (see above)
-- Username : MY_VAILLANT_APP_USERNAME
-- Password : MY_VAILLANT_APP_PWD
-- User prefix : vaillant
-- App version : 1.0.4.0
+For background information about obtaining the required client credentials, see the [Home Assistant community discussion](https://community.home-assistant.io/t/added-support-for-vaillant-thermostat-how-to-integrate-in-official-release/31858).
 
-For MiGo
-- Client ID : na_client_android_sdbg
-- Client secret : XXXXXXXXXXXXXXXXXXXXXXX (see above)
-- Username : MY_MIGO_APP_USERNAME
-- Password : MY_MIGO_APP_PWD
-- User prefix : sdbg
-- App version : 1.3.0.4
+Keep your account credentials and client secrets private. Do not post them in issues, discussions or logs.
 
-<!---->
+## Compatibility and troubleshooting
 
-## Contributions are welcome!
+- The integration communicates with the Vaillant service over the cloud; an internet connection and a working Vaillant account are required.
+- Availability of individual measurements and controls depends on the connected system and the cloud API.
+- If setup or communication fails, check the Home Assistant logs and open an [issue](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/issues) with relevant diagnostics. Remove usernames, passwords, tokens and other personal information before sharing logs.
 
-If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
+## Maintenance
 
-## Credits
+This repository is maintained by **[LEOSCHUMY](https://github.com/LEOSCHUMY)**.
 
-This project was generated from [@oncleben31](https://github.com/oncleben31)'s [Home Assistant Custom Component Cookiecutter](https://github.com/oncleben31/cookiecutter-homeassistant-custom-component) template.
+The maintainer also makes use of **ChatGPT (OpenAI) as an AI assistant** for development support, code review, documentation, troubleshooting and test/CI work. The AI assistant is a support tool, not a project owner or maintainer: project direction, review and publication decisions remain with the human maintainer.
 
-Code template was mainly taken from [@Ludeeus](https://github.com/ludeeus)'s [integration_blueprint](https://github.com/custom-components/integration_blueprint) template
+## Contributing
 
-This integration is a complete rewrite of [@pjmaenh](https://github.com/pjmaenh)'s original [Vaillant integration](https://github.com/pjmaenh/home-assistant-vaillant).
+Bug reports, suggestions and pull requests are welcome. Please read the [contribution guidelines](CONTRIBUTING.md) before submitting changes.
 
-Thanks to [@philippelt](https://github.com/philippelt), [@jabesq](https://github.com/jabesq), [@samueldumont](https://github.com/samueldumont), [@jabesq](https://github.com/jabesq), [@pjmaenh](https://github.com/pjmaenh) and [@superbunika](https://github.com/superbunika) for providing many details of the underlying API, which this component uses.
+When reporting a problem, include the Home Assistant version, integration version and relevant sanitized logs. Never include credentials, tokens or other secrets.
 
+## Credits and acknowledgements
 
-[maintainer]: https://github.com/MislavMandaric
-[maintainer-shield]: https://img.shields.io/badge/maintainer-%40MislavMandaric-blue.svg?style=for-the-badge
+This project builds on the work of the original [Vaillant vSMART integration by MislavMandaric](https://github.com/MislavMandaric/home-assistant-vaillant-vsmart), whose work made this continuation possible.
 
-[releases]: https://github.com/MislavMandaric/home-assistant-vaillant-vsmart/releases
-[releases-shield]: https://img.shields.io/github/release/MislavMandaric/home-assistant-vaillant-vsmart.svg?style=for-the-badge
+The original project also acknowledged:
 
-[commits]: https://github.com/MislavMandaric/home-assistant-vaillant-vsmart/commits
-[commits-shield]: https://img.shields.io/github/commit-activity/y/MislavMandaric/home-assistant-vaillant-vsmart.svg?style=for-the-badge
+- [oncleben31's Home Assistant Custom Component Cookiecutter](https://github.com/oncleben31/cookiecutter-homeassistant-custom-component)
+- [Ludeeus's integration blueprint](https://github.com/custom-components/integration_blueprint)
+- [pjmaenh's original Vaillant integration](https://github.com/pjmaenh/home-assistant-vaillant)
+- [philippelt](https://github.com/philippelt), [jabesq](https://github.com/jabesq), [samueldumont](https://github.com/samueldumont) and [superbunika](https://github.com/superbunika) for their contributions and API research.
 
-[license]: https://github.com/MislavMandaric/home-assistant-vaillant-vsmart/blob/master/LICENSE
-[license-shield]: https://img.shields.io/github/license/MislavMandaric/home-assistant-vaillant-vsmart.svg?style=for-the-badge
-
-[hacs]: https://hacs.xyz
-[hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
-
-[forum]: https://community.home-assistant.io/
-[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
-
-[black]: https://github.com/psf/black
-[black-shield]: https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge
-
-[pre-commit]: https://github.com/pre-commit/pre-commit
-[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge
+Thanks to the original authors and all community members who have contributed knowledge, testing and feedback.
