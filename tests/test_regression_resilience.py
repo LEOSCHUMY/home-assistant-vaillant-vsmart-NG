@@ -43,13 +43,22 @@ async def test_measurement_api_error_does_not_abort_coordinator_refresh(hass):
 
 
 @pytest.mark.parametrize(
-    ("sensor_class", "measurement_type"),
+    ("sensor_class", "measurement_type", "measurements"),
     [
-        (VaillantEnergySensor, MeasurementType.SUM_ENERGY_GAS_HEATING),
-        (VaillantDurationSensor, MeasurementType.SUM_BOILER_ON),
+        (VaillantEnergySensor, MeasurementType.SUM_ENERGY_GAS_HEATING, {}),
+        (
+            VaillantEnergySensor,
+            MeasurementType.SUM_ENERGY_GAS_HEATING,
+            {("device", "module", MeasurementType.SUM_ENERGY_GAS_HEATING): []},
+        ),
+        (VaillantDurationSensor, MeasurementType.SUM_BOILER_ON, {}),
+        (
+            VaillantDurationSensor,
+            MeasurementType.SUM_BOILER_ON,
+            {("device", "module", MeasurementType.SUM_BOILER_ON): []},
+        ),
     ],
 )
-@pytest.mark.parametrize("measurements", [{}, {("device", "module", MeasurementType.SUM_ENERGY_GAS_HEATING): []}])
 def test_measurement_sensor_returns_none_for_missing_or_empty_data(
     sensor_class, measurement_type, measurements
 ):
