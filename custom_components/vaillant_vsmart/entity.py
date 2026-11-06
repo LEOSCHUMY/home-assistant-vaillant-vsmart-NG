@@ -84,12 +84,33 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
             devices = await self._client.async_get_thermostats_data()
 
             date_begin = datetime.now() - timedelta(days=1)
-            measurements = {
-                (device.id, module.id, measurement_type): await self._client.async_get_measure(device.id, module.id, measurement_type, MeasurementScale.DAY, date_begin)
-                for device in devices
-                for module in device.modules
-                for measurement_type in SUPPORTED_ENERGY_MEASUREMENT_TYPES+SUPPORTED_DURATION_MEASUREMENT_TYPES
-            }
+            measurements = {}
+            for device in devices:
+                for module in device.modules:
+                    for measurement_type in (
+                        SUPPORTED_ENERGY_MEASUREMENT_TYPES
+                        + SUPPORTED_DURATION_MEASUREMENT_TYPES
+                    ):
+                        try:
+                            measurements[(device.id, module.id, measurement_type)] = (
+                                await self._client.async_get_measure(
+                                    device.id,
+                                    module.id,
+                                    measurement_type,
+                                    MeasurementScale.DAY,
+                                    date_begin,
+                                )
+                            )
+                        except RequestUnauthorizedException:
+                            raise
+                        except ApiException as ex:
+                            _LOGGER.warning(
+                                "Unable to fetch %s measurements for module %s: %s",
+                                measurement_type,
+                                module.id,
+                                ex,
+                            )
+                            measurements[(device.id, module.id, measurement_type)] = []
 
             return VaillantData(self._client, homes, devices, measurements)
         except RequestUnauthorizedException as ex:
@@ -355,12 +376,13 @@ class VaillantMeasurementEntity(CoordinatorEntity[VaillantData]):
     def _measurement(self) -> MeasurementItem | None:
         """Return the measurement which this entity represents."""
 
-        m = self.coordinator.data.measurements[(
-            self._device_id, self._module_id, self._measurement_type)]
-        if len(m) > 0:
-            return m[-1]
+        measurements = self.coordinator.data.measurements.get(
+            (self._device_id, self._module_id, self._measurement_type), []
+        )
+        if not measurements:
+            return None
 
-        return None
+        return measurements[-1]
 
     @property
     def unique_id(self) -> str:
