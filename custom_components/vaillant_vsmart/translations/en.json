@@ -2,7 +2,7 @@
     "config": {
         "step": {
             "user": {
-                "description": "If you're setting the component for the first time and need some guidelines, check out the [community page](https://community.home-assistant.io/t/added-support-for-vaillant-thermostat-how-to-integrate-in-official-release/31858). You can find out how to extract client ID and client secret there.",
+                "description": "If you're setting the component for the first time and need some guidelines, check out the [community page]({community_url}). You can find out how to extract client ID and client secret there.",
                 "data": {
                     "client_id": "Client ID",
                     "client_secret": "Client secret",

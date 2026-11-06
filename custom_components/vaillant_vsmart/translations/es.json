@@ -2,7 +2,7 @@
     "config": {
         "step": {
             "user": {
-                "description": "Si estás configurando el componente por primera vez y necesitas algunas indicaciones, echa un vistazo a la [página de la comunidad](https://community.home-assistant.io/t/added-support-for-vaillant-thermostat-how-to-integrate-in-official-release/31858). Allí podrás averiguar cómo extraer el ID de cliente y la clave secreta de cliente.",
+                "description": "Si estás configurando el componente por primera vez y necesitas algunas indicaciones, echa un vistazo a la [página de la comunidad]({community_url}). Allí podrás averiguar cómo extraer el ID de cliente y la clave secreta de cliente.",
                 "data": {
                     "client_id": "ID de cliente",
                     "client_secret": "Clave secreta de cliente",

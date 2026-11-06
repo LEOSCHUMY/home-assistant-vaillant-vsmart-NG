@@ -118,6 +118,11 @@ class VaillantFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=errors,
+            description_placeholders=(
+                {"community_url": "https://community.home-assistant.io/t/added-support-for-vaillant-thermostat-how-to-integrate-in-official-release/31858"}
+                if step_id == "user"
+                else None
+            ),
         )
 
     def _init_user_input(self) -> dict[str, Any]:
