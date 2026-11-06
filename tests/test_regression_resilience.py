@@ -1,4 +1,4 @@
-""""Regression tests for API and measurement failure handling.""""
+"""Regression tests for API and measurement failure handling."""
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
