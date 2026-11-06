@@ -153,11 +153,11 @@ class VaillantEnergySensor(VaillantMeasurementEntity, SensorEntity):
         return SensorStateClass.TOTAL_INCREASING
 
     @property
-    def native_value(self) -> float:
+    def native_value(self) -> float | None:
         """Return current value of energy level."""
 
-        if self._measurement is None:
-            return 0
+        if self._measurement is None or not self._measurement.value:
+            return None
 
         return self._measurement.value[-1]
 
@@ -196,11 +196,11 @@ class VaillantDurationSensor(VaillantMeasurementEntity, SensorEntity):
         return SensorStateClass.TOTAL_INCREASING
 
     @property
-    def native_value(self) -> float:
+    def native_value(self) -> float | None:
         """Return current value of duration."""
 
-        if self._measurement is None:
-            return 0
+        if self._measurement is None or not self._measurement.value:
+            return None
 
         return self._measurement.value[-1]
 
