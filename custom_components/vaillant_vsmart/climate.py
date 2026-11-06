@@ -168,8 +168,11 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
                     self._room.id,
                     ThermSetpointMode.HOME,
                 )
+            except RequestUnauthorizedException:
+                raise
             except ApiException as ex:
-                _LOGGER.exception(ex)
+                _LOGGER.exception("Unable to set HVAC mode or preset: %s", ex)
+                raise HomeAssistantError("Unable to set HVAC mode or preset") from ex
 
         await self.coordinator.async_request_refresh()
 
@@ -185,8 +188,11 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
                     TemperatureControlMode.HEATING,
                     ThermMode.AWAY,
                 )
+            except RequestUnauthorizedException:
+                raise
             except ApiException as ex:
-                _LOGGER.exception(ex)
+                _LOGGER.exception("Unable to set HVAC mode or preset: %s", ex)
+                raise HomeAssistantError("Unable to set HVAC mode or preset") from ex
         elif preset_mode == PRESET_NONE:
             try:
                 await self._client.async_set_home_data(
@@ -194,8 +200,11 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
                     TemperatureControlMode.HEATING,
                     ThermMode.SCHEDULE,
                 )
+            except RequestUnauthorizedException:
+                raise
             except ApiException as ex:
-                _LOGGER.exception(ex)
+                _LOGGER.exception("Unable to set HVAC mode or preset: %s", ex)
+                raise HomeAssistantError("Unable to set HVAC mode or preset") from ex
 
         await self.coordinator.async_request_refresh()
 
