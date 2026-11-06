@@ -68,19 +68,23 @@ class VaillantWaterHeater(VaillantDeviceEntity, WaterHeaterEntity):
         return SUPPORTED_FEATURES
 
     @property
-    def temperature_unit(self) -> str:
+    def native_temperature_unit(self) -> str:
         """Return the measurement unit for all temperature values."""
 
         return UnitOfTemperature.CELSIUS
 
     @property
-    def current_temperature(self) -> float:
-        """Return the current water temperature."""
+    def native_current_temperature(self) -> float:
+        """Return the current water temperature.
+
+        The API currently exposes the DHW setpoint here. Keep it available
+        rather than returning None until a separate measured value is available.
+        """
 
         return self._device.dhw
 
     @property
-    def target_temperature(self) -> float:
+    def native_target_temperature(self) -> float:
         """Return the targeted water temperature."""
 
         return self._device.dhw
