@@ -153,7 +153,9 @@ class VaillantWaterHeater(VaillantDeviceEntity, WaterHeaterEntity):
             raise
         except ApiException as ex:
             _LOGGER.exception("Unable to set water heater operation mode: %s", ex)
-            raise HomeAssistantError("Unable to set water heater operation mode") from ex
+            raise HomeAssistantError(
+                "Unable to set water heater operation mode"
+            ) from ex
 
         await self.coordinator.async_request_refresh()
 
