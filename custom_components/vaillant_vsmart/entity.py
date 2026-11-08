@@ -1,6 +1,7 @@
 """Vaillant vSMART entity classes."""
 from datetime import timedelta, datetime
 import logging
+from time import monotonic
 from typing import Any
 
 from homeassistant.core import HomeAssistant
@@ -79,9 +80,35 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
         so entities can quickly look up their data.
         """
 
+        update_started = monotonic()
+        _LOGGER.debug("Starting Vaillant data refresh at %s", datetime.now().astimezone().isoformat())
+
         try:
+            request_started = monotonic()
             homes = await self._client.async_get_homes_data()
+            _LOGGER.debug(
+                "Vaillant homes response received in %.2f seconds (%d homes)",
+                monotonic() - request_started,
+                len(homes),
+            )
+
+            request_started = monotonic()
             devices = await self._client.async_get_thermostats_data()
+            _LOGGER.debug(
+                "Vaillant thermostats response received in %.2f seconds (%d devices)",
+                monotonic() - request_started,
+                len(devices),
+            )
+
+            # Log parsed module data, not raw HTTP traffic: this includes the
+            # temperature and related fields returned by the Vaillant API.
+            for device in devices:
+                for module in device.modules:
+                    _LOGGER.debug(
+                        "Vaillant module response: module=%s measured=%r",
+                        module.module_name,
+                        module.measured,
+                    )
 
             date_begin = datetime.now() - timedelta(days=1)
             measurements = {}
@@ -112,11 +139,19 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                             )
                             measurements[(device.id, module.id, measurement_type)] = []
 
+            _LOGGER.debug(
+                "Vaillant data refresh completed in %.2f seconds",
+                monotonic() - update_started,
+            )
             return VaillantData(self._client, homes, devices, measurements)
         except RequestUnauthorizedException as ex:
             raise ConfigEntryAuthFailed from ex
         except ApiException as ex:
-            _LOGGER.exception(ex)
+            _LOGGER.exception(
+                "Vaillant API refresh failed after %.2f seconds: %s",
+                monotonic() - update_started,
+                ex,
+            )
             raise UpdateFailed(f"Error communicating with API: {ex}") from ex
 
 
