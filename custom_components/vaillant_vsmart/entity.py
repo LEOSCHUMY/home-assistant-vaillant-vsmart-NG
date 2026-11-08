@@ -81,7 +81,10 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
         """
 
         update_started = monotonic()
-        _LOGGER.debug("Starting Vaillant data refresh at %s", datetime.now().astimezone().isoformat())
+        _LOGGER.debug(
+            "Starting Vaillant data refresh at %s",
+            datetime.now().astimezone().isoformat(),
+        )
 
         try:
             request_started = monotonic()
