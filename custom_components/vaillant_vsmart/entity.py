@@ -109,8 +109,8 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                 for module in device.modules:
                     _LOGGER.debug(
                         "Vaillant module response: module=%s measured=%r",
-                        module.module_name,
-                        module.measured,
+                        getattr(module, "module_name", getattr(module, "id", "unknown")),
+                        getattr(module, "measured", None),
                     )
 
             date_begin = datetime.now() - timedelta(days=1)
