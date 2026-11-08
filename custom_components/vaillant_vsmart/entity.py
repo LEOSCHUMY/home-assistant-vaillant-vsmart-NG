@@ -103,14 +103,19 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                 len(devices),
             )
 
-            # Log parsed module data, not raw HTTP traffic: this includes the
-            # temperature and related fields returned by the Vaillant API.
+            # Log the parsed measurement fields, not the object repr or raw
+            # HTTP traffic. These are the fields exposed by Measured in
+            # vaillant-netatmo-api 0.13.1.
             for device in devices:
                 for module in device.modules:
+                    measured = getattr(module, "measured", None)
                     _LOGGER.debug(
-                        "Vaillant module response: module=%s measured=%r",
+                        "Vaillant module measurements: module=%s "
+                        "temperature=%r setpoint_temp=%r est_setpoint_temp=%r",
                         getattr(module, "module_name", getattr(module, "id", "unknown")),
-                        getattr(module, "measured", None),
+                        getattr(measured, "temperature", None),
+                        getattr(measured, "setpoint_temp", None),
+                        getattr(measured, "est_setpoint_temp", None),
                     )
 
             date_begin = datetime.now() - timedelta(days=1)
