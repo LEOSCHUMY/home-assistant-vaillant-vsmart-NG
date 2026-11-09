@@ -111,13 +111,23 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                     measured_time = getattr(measured, "time", None)
                     measured_at = None
                     measured_age = None
-                    if isinstance(measured_time, int | float):
-                        measured_at = datetime.fromtimestamp(measured_time).astimezone()
-                        measured_age = (
-                            datetime.now().astimezone() - measured_at
-                        ).total_seconds()
-                    elif isinstance(measured_time, datetime):
+                    if isinstance(measured_time, datetime):
                         measured_at = measured_time.astimezone()
+                    elif isinstance(measured_time, int | float | str) and not isinstance(
+                        measured_time, bool
+                    ):
+                        try:
+                            timestamp = float(measured_time)
+                            measured_at = datetime.fromtimestamp(timestamp).astimezone()
+                        except (ValueError, OverflowError, OSError):
+                            _LOGGER.debug(
+                                "Unable to parse Vaillant measurement timestamp "
+                                "(type=%s, value=%r)",
+                                type(measured_time).__name__,
+                                measured_time,
+                            )
+
+                    if measured_at is not None:
                         measured_age = (
                             datetime.now().astimezone() - measured_at
                         ).total_seconds()
@@ -125,12 +135,14 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                     _LOGGER.debug(
                         "Vaillant module measurements: "
                         "temperature=%r setpoint_temp=%r est_setpoint_temp=%r "
-                        "measured_at=%s measured_age_seconds=%s",
+                        "measured_at=%s measured_age_seconds=%s "
+                        "timestamp_type=%s",
                         getattr(measured, "temperature", None),
                         getattr(measured, "setpoint_temp", None),
                         getattr(measured, "est_setpoint_temp", None),
-                        measured_at.isoformat() if measured_at else measured_time,
+                        measured_at.isoformat() if measured_at else None,
                         round(measured_age, 1) if measured_age is not None else None,
+                        type(measured_time).__name__,
                     )
 
             date_begin = datetime.now() - timedelta(days=1)
