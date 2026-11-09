@@ -109,9 +109,8 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                 for module in device.modules:
                     measured = getattr(module, "measured", None)
                     _LOGGER.debug(
-                        "Vaillant module measurements: module=%s "
+                        "Vaillant module measurements: "
                         "temperature=%r setpoint_temp=%r est_setpoint_temp=%r",
-                        getattr(module, "module_name", getattr(module, "id", "unknown")),
                         getattr(measured, "temperature", None),
                         getattr(measured, "setpoint_temp", None),
                         getattr(measured, "est_setpoint_temp", None),
