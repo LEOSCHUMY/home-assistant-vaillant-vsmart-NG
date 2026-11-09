@@ -108,12 +108,29 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
             for device in devices:
                 for module in device.modules:
                     measured = getattr(module, "measured", None)
+                    measured_time = getattr(measured, "time", None)
+                    measured_at = None
+                    measured_age = None
+                    if isinstance(measured_time, (int, float)):
+                        measured_at = datetime.fromtimestamp(measured_time).astimezone()
+                        measured_age = (
+                            datetime.now().astimezone() - measured_at
+                        ).total_seconds()
+                    elif isinstance(measured_time, datetime):
+                        measured_at = measured_time.astimezone()
+                        measured_age = (
+                            datetime.now().astimezone() - measured_at
+                        ).total_seconds()
+
                     _LOGGER.debug(
                         "Vaillant module measurements: "
-                        "temperature=%r setpoint_temp=%r est_setpoint_temp=%r",
+                        "temperature=%r setpoint_temp=%r est_setpoint_temp=%r "
+                        "measured_at=%s measured_age_seconds=%s",
                         getattr(measured, "temperature", None),
                         getattr(measured, "setpoint_temp", None),
                         getattr(measured, "est_setpoint_temp", None),
+                        measured_at.isoformat() if measured_at else measured_time,
+                        round(measured_age, 1) if measured_age is not None else None,
                     )
 
             date_begin = datetime.now() - timedelta(days=1)
@@ -124,6 +141,7 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                         SUPPORTED_ENERGY_MEASUREMENT_TYPES
                         + SUPPORTED_DURATION_MEASUREMENT_TYPES
                     ):
+                        request_started = monotonic()
                         try:
                             measurements[(device.id, module.id, measurement_type)] = (
                                 await self._client.async_get_measure(
@@ -144,6 +162,12 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                                 ex,
                             )
                             measurements[(device.id, module.id, measurement_type)] = []
+                        finally:
+                            _LOGGER.debug(
+                                "Vaillant measurement API call (%s) completed in %.2f seconds",
+                                measurement_type,
+                                monotonic() - request_started,
+                            )
 
             _LOGGER.debug(
                 "Vaillant data refresh completed in %.2f seconds",
