@@ -111,7 +111,7 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                     measured_time = getattr(measured, "time", None)
                     measured_at = None
                     measured_age = None
-                    if isinstance(measured_time, (int, float)):
+                    if isinstance(measured_time, int | float):
                         measured_at = datetime.fromtimestamp(measured_time).astimezone()
                         measured_age = (
                             datetime.now().astimezone() - measured_at
