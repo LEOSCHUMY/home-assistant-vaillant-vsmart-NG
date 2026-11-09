@@ -13,7 +13,7 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/MislavMandaric/home-assistant-vaillant-vsmart/issues",
   "requirements": [
-    "vaillant-netatmo-api@git+https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG.git@a2ba11ae22577d94559027b09030ebc9686c6ec3"
+    "vaillant-netatmo-api@git+https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG.git@87e01ec02b20583bcb4626aa999321d228da6a00"
   ],
   "version": "0.11.2-dev.1"
 }
