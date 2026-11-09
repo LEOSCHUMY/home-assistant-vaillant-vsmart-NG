@@ -103,9 +103,9 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                 len(devices),
             )
 
-            # Log the parsed measurement fields, not the object repr or raw
-            # HTTP traffic. These are the fields exposed by Measured in
-            # vaillant-netatmo-api 0.13.1.
+            # Log parsed measurement fields and selected temporal metadata,
+            # not the object repr or raw HTTP traffic. The fork preserves
+            # unknown fields in Module.extra_fields and Measured.extra_fields.
             for device in devices:
                 for module in device.modules:
                     measured = getattr(module, "measured", None)
