@@ -4,5 +4,5 @@ pip>=21.0,<23.2
 pytest==8.2.0
 pytest-homeassistant-custom-component==0.13.136
 josepy<2.0
-vaillant-netatmo-api@git+https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG.git@adfd41678687c93c56cb3d4b271d471ab142e062
+vaillant-netatmo-api@git+https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG.git@a2ba11ae22577d94559027b09030ebc9686c6ec3
 ruff==0.5.0
