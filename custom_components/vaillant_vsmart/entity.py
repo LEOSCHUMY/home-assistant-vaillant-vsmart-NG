@@ -109,13 +109,31 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
             for device in devices:
                 for module in device.modules:
                     measured = getattr(module, "measured", None)
+                    # Only log extra values whose field names suggest temporal
+                    # metadata. Do not dump arbitrary API fields or identifiers.
+                    temporal_names = ("time", "date", "timestamp", "updated", "modified")
+                    module_time_fields = {
+                        key: value
+                        for key, value in getattr(module, "extra_fields", {}).items()
+                        if any(name in key.lower() for name in temporal_names)
+                        and isinstance(value, (str, int, float))
+                    }
+                    measured_time_fields = {
+                        key: value
+                        for key, value in getattr(measured, "extra_fields", {}).items()
+                        if any(name in key.lower() for name in temporal_names)
+                        and isinstance(value, (str, int, float))
+                    }
                     _LOGGER.debug(
                         "Vaillant module measurements: module=%s "
-                        "temperature=%r setpoint_temp=%r est_setpoint_temp=%r",
+                        "temperature=%r setpoint_temp=%r est_setpoint_temp=%r "
+                        "module_time_fields=%r measured_time_fields=%r",
                         getattr(module, "module_name", getattr(module, "id", "unknown")),
                         getattr(measured, "temperature", None),
                         getattr(measured, "setpoint_temp", None),
                         getattr(measured, "est_setpoint_temp", None),
+                        module_time_fields,
+                        measured_time_fields,
                     )
 
             date_begin = datetime.now() - timedelta(days=1)
