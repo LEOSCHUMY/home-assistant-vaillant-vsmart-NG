@@ -82,7 +82,9 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
     def native_current_temperature(self) -> float:
         """Return the current room temperature."""
 
-        return self._module.measured.temperature
+        return self.coordinator.data.room_temperatures.get(
+            self._module_id, self._module.measured.temperature
+        )
 
     @property
     def native_target_temperature(self) -> float:
