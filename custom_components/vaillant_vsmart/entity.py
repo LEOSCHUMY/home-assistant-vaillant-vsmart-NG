@@ -107,6 +107,41 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                 homes, devices, statuses_by_home
             )
 
+            # Diagnostic only: the climate entity uses precisely this lookup.
+            # Log numeric temperatures and positional indices, never IDs,
+            # account metadata, credentials, or complete API payloads.
+            if _LOGGER.isEnabledFor(logging.DEBUG):
+                thermostat_index = 0
+                for device in devices:
+                    for module in device.modules:
+                        if getattr(module, "type", None) != "NAThermVaillant":
+                            continue
+                        legacy_temperature = getattr(
+                            getattr(module, "measured", None), "temperature", None
+                        )
+                        status_temperature = room_temperatures.get(module.id)
+                        source = (
+                            "homestatus"
+                            if status_temperature is not None
+                            else "getthermostatsdata_fallback"
+                        )
+                        chosen_temperature = (
+                            status_temperature
+                            if status_temperature is not None
+                            else legacy_temperature
+                        )
+                        _LOGGER.debug(
+                            "Vaillant room temperature source: thermostat_index=%d "
+                            "source=%s homestatus_temperature=%s "
+                            "legacy_temperature=%s selected_temperature=%s",
+                            thermostat_index,
+                            source,
+                            status_temperature,
+                            legacy_temperature,
+                            chosen_temperature,
+                        )
+                        thermostat_index += 1
+
             date_begin = datetime.now() - timedelta(days=1)
             measurements = {}
             for device in devices:
