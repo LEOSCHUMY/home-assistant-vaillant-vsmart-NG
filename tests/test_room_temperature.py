@@ -1,10 +1,15 @@
 """Tests for the homestatus-to-thermostat mapping without HA dependencies."""
 
 from types import SimpleNamespace as Obj
+from pathlib import Path
+import importlib.util
 
-from custom_components.vaillant_vsmart.room_temperature import (
-    resolve_room_temperatures,
-)
+# Load the pure helper without importing HA's custom component __init__.py.
+source = Path(__file__).resolve().parents[1] / "custom_components" / "vaillant_vsmart" / "room_temperature.py"
+spec = importlib.util.spec_from_file_location("vaillant_room_temperature", source)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+resolve_room_temperatures = module.resolve_room_temperatures
 
 
 def home(home_id, *rooms):
