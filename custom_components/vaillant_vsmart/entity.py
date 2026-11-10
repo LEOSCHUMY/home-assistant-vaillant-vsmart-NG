@@ -90,6 +90,7 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
             # Resolve each room using the module_ids relationship from homesdata,
             # not the order of returned records or an assumed single room.
             room_temperatures: dict[str, float] = {}
+            ambiguous_modules: set[str] = set()
             for home in homes:
                 if not home.id:
                     continue
@@ -133,6 +134,8 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                         )
                         if module is None:
                             continue
+                        if module_id in ambiguous_modules:
+                            continue
                         if (
                             module_id in room_temperatures
                             and room_temperatures[module_id] != temperature
@@ -140,6 +143,7 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                             _LOGGER.warning(
                                 "Conflicting room-to-thermostat mapping; using legacy temperature"
                             )
+                            ambiguous_modules.add(module_id)
                             room_temperatures.pop(module_id, None)
                             continue
                         room_temperatures[module_id] = temperature
