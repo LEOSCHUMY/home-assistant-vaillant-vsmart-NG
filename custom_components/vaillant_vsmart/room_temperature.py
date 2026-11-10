@@ -17,7 +17,7 @@ def resolve_room_temperatures(homes, devices, statuses_by_home) -> dict[str, flo
         module.id
         for device in devices
         for module in device.modules
-        if module.type == "NAThermVaillant" and module.id
+        if getattr(module, "type", None) == "NAThermVaillant" and module.id
     }
     temperatures: dict[str, float] = {}
     ambiguous: set[str] = set()
