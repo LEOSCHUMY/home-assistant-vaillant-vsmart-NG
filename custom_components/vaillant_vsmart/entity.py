@@ -35,7 +35,8 @@ class VaillantData:
     """Class holding data which coordinator provides to the entity."""
 
     def __init__(self, client: ThermostatClient, homes: list[Home], devices: list[Device],
-                 measurements: dict[(str, str, MeasurementType), MeasurementItem]) -> None:
+                 measurements: dict[(str, str, MeasurementType), MeasurementItem],
+                 room_temperatures: dict[str, float] | None = None) -> None:
         """Initialize."""
 
         self.client = client
@@ -54,6 +55,8 @@ class VaillantData:
             for program in module.therm_program_list
         }
         self.measurements = measurements
+        # Keyed by thermostat module ID; no dependency on rooms[0] ordering.
+        self.room_temperatures = room_temperatures if room_temperatures is not None else {}
 
 
 class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
@@ -82,6 +85,64 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
         try:
             homes = await self._client.async_get_homes_data()
             devices = await self._client.async_get_thermostats_data()
+
+            # homestatus may contain newer temperatures than getthermostatsdata.
+            # Resolve each room using the module_ids relationship from homesdata,
+            # not the order of returned records or an assumed single room.
+            room_temperatures: dict[str, float] = {}
+            for home in homes:
+                if not home.id:
+                    continue
+                mapping = {
+                    room.id: tuple(room.module_ids)
+                    for room in home.rooms
+                    if room.id and room.module_ids
+                }
+                if not mapping:
+                    continue
+
+                try:
+                    statuses = await self._client.async_get_home_status(home.id)
+                except (ApiException, ValueError) as ex:
+                    # Optional source: keep using getthermostatsdata on failure.
+                    # Avoid logging exception payloads, which may contain IDs.
+                    _LOGGER.warning(
+                        "Vaillant homestatus unavailable (%s); using legacy temperatures",
+                        type(ex).__name__,
+                    )
+                    continue
+
+                for room_id, module_ids in mapping.items():
+                    status = statuses.get(room_id)
+                    if status is None or status.reachable is False:
+                        continue
+                    temperature = status.measured_temperature
+                    if temperature is None:
+                        continue
+                    for module_id in module_ids:
+                        # Only assign to known thermostat modules; a room may
+                        # also contain non-thermostat module IDs.
+                        module = next(
+                            (
+                                module
+                                for device in devices
+                                for module in device.modules
+                                if module.id == module_id and module.type == "NAThermVaillant"
+                            ),
+                            None,
+                        )
+                        if module is None:
+                            continue
+                        if (
+                            module_id in room_temperatures
+                            and room_temperatures[module_id] != temperature
+                        ):
+                            _LOGGER.warning(
+                                "Conflicting room-to-thermostat mapping; using legacy temperature"
+                            )
+                            room_temperatures.pop(module_id, None)
+                            continue
+                        room_temperatures[module_id] = temperature
 
             date_begin = datetime.now() - timedelta(days=1)
             measurements = {}
@@ -112,7 +173,9 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                             )
                             measurements[(device.id, module.id, measurement_type)] = []
 
-            return VaillantData(self._client, homes, devices, measurements)
+            return VaillantData(
+                self._client, homes, devices, measurements, room_temperatures
+            )
         except RequestUnauthorizedException as ex:
             raise ConfigEntryAuthFailed from ex
         except ApiException as ex:
