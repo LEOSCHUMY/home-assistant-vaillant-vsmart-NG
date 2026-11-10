@@ -25,6 +25,7 @@ from vaillant_netatmo_api import (
 )
 
 from .const import DOMAIN, SUPPORTED_ENERGY_MEASUREMENT_TYPES, SUPPORTED_DURATION_MEASUREMENT_TYPES
+from .room_temperature import resolve_room_temperatures
 
 UPDATE_INTERVAL = timedelta(minutes=5)
 
@@ -86,67 +87,25 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
             homes = await self._client.async_get_homes_data()
             devices = await self._client.async_get_thermostats_data()
 
-            # homestatus may contain newer temperatures than getthermostatsdata.
-            # Resolve each room using the module_ids relationship from homesdata,
-            # not the order of returned records or an assumed single room.
-            room_temperatures: dict[str, float] = {}
-            ambiguous_modules: set[str] = set()
+            # Homestatus is optional: failure must not affect boiler controls
+            # or other entities. Legacy measured.temperature remains fallback.
+            statuses_by_home = {}
             for home in homes:
-                if not home.id:
+                if not home.id or not any(room.module_ids for room in home.rooms):
                     continue
-                mapping = {
-                    room.id: tuple(room.module_ids)
-                    for room in home.rooms
-                    if room.id and room.module_ids
-                }
-                if not mapping:
-                    continue
-
                 try:
-                    statuses = await self._client.async_get_home_status(home.id)
+                    statuses_by_home[home.id] = (
+                        await self._client.async_get_home_status(home.id)
+                    )
                 except (ApiException, ValueError) as ex:
-                    # Optional source: keep using getthermostatsdata on failure.
-                    # Avoid logging exception payloads, which may contain IDs.
+                    # Do not log exception bodies; they may include account IDs.
                     _LOGGER.warning(
                         "Vaillant homestatus unavailable (%s); using legacy temperatures",
                         type(ex).__name__,
                     )
-                    continue
-
-                for room_id, module_ids in mapping.items():
-                    status = statuses.get(room_id)
-                    if status is None or status.reachable is False:
-                        continue
-                    temperature = status.measured_temperature
-                    if temperature is None:
-                        continue
-                    for module_id in module_ids:
-                        # Only assign to known thermostat modules; a room may
-                        # also contain non-thermostat module IDs.
-                        module = next(
-                            (
-                                module
-                                for device in devices
-                                for module in device.modules
-                                if module.id == module_id and module.type == "NAThermVaillant"
-                            ),
-                            None,
-                        )
-                        if module is None:
-                            continue
-                        if module_id in ambiguous_modules:
-                            continue
-                        if (
-                            module_id in room_temperatures
-                            and room_temperatures[module_id] != temperature
-                        ):
-                            _LOGGER.warning(
-                                "Conflicting room-to-thermostat mapping; using legacy temperature"
-                            )
-                            ambiguous_modules.add(module_id)
-                            room_temperatures.pop(module_id, None)
-                            continue
-                        room_temperatures[module_id] = temperature
+            room_temperatures = resolve_room_temperatures(
+                homes, devices, statuses_by_home
+            )
 
             date_begin = datetime.now() - timedelta(days=1)
             measurements = {}
