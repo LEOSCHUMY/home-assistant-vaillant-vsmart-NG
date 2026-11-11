@@ -30,19 +30,16 @@ jobs:
       - name: "Install requirements"
         run: python3 -m pip install -r requirements.txt
 
-      - name: "Verify snapshot API dependency"
+      - name: "Verify published snapshot API dependency"
         run: |
           python3 - <<'PY'
-          import json
-          from importlib.metadata import distribution, version
+          from importlib.metadata import version
           from vaillant_netatmo_api.thermostat import ThermostatClient
 
-          assert version("vaillant-netatmo-api-ng") == "0.1.0"
+          assert version("vaillant-netatmo-api-ng") == "0.1.1"
           assert hasattr(ThermostatClient, "async_get_home_status")
           assert hasattr(ThermostatClient, "async_get_home_status_snapshot")
-          direct_url = json.loads(distribution("vaillant-netatmo-api-ng").read_text("direct_url.json"))
-          assert direct_url["vcs_info"]["commit_id"] == "022a983e94dc34afa481ddd03ec44ee8ec0098e2"
-          print("NG snapshot API commit verified")
+          print("Published NG 0.1.1 snapshot API verified")
           PY
 
       - name: "Run regression tests"
