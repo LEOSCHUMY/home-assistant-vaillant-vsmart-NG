@@ -1,4 +1,12 @@
-## [Unreleased] — NG room temperature from homestatus (2026-11-11)
+# Changelog — Home Assistant Vaillant vSMART NG
+
+## [Unreleased]
+
+No changes recorded after the first NG release candidate.
+
+## 0.1.0 — First NG release (planned; not yet published)
+
+This fork starts its own version numbering at `0.1.0`, separate from the upstream integration. The first NG release will depend on the published `vaillant-netatmo-api-ng==0.1.0` Python library.
 
 ### Fixed
 
@@ -9,17 +17,29 @@
 
 - Fall back to the existing `module.measured.temperature` when `homestatus` fails, is unavailable, contains no usable temperature, reports an unreachable room, or gives an ambiguous mapping.
 - Keep the coordinator's five-minute polling interval, boiler commands, target temperatures, schedules, HVAC modes and energy/duration measurements unchanged.
-- Use library support from [vaillant-netatmo-api-NG PR #5](https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG/pull/5), pinned to the tested implementation commit `6e393b89fe8c418f24ba3c6138bb3b6feafcd341`.
+- Use the published [`vaillant-netatmo-api-ng==0.1.0`](https://pypi.org/project/vaillant-netatmo-api-ng/0.1.0/) package; the temporary Git commit pin is no longer needed.
 
 ### Diagnostics
 
 - Retain opt-in DEBUG logging of the temperature source (`homestatus` or legacy fallback) and numeric values, without device IDs or credentials. Normal operation can use `custom_components.vaillant_vsmart: info` and `vaillant_netatmo_api.thermostat: warning` in Home Assistant's `logger` configuration.
 - Log a warning when `homestatus` is unavailable without exposing the exception body.
 
+### Release process
+
+- Integration version is declared in `custom_components/vaillant_vsmart/manifest.json` and starts at `0.1.0`.
+- Replace inherited automatic semantic-release (pushes to `dev` / `master`) with a manual release-preparation workflow that validates the manifest version but does not create tags or publish releases.
+- The first GitHub Release `v0.1.0` will be created separately, after review and integration testing.
+
 ### Validation
 
-- Automated matching tests and GitHub Actions checks passed before changelog update.
+- Automated regression tests and GitHub Actions Pytest, Ruff, Hassfest and HACS validations passed with the published NG 0.1.0 dependency.
 - Tested on a live Vaillant eRELAX/vSMART device with Home Assistant 2026.11.0, including an overnight run on 2026-11-10/11: 169 successful coordinator updates observed, all selecting `homestatus`, no fallback and no update errors in the supplied log. User checks confirmed alignment with the official Vaillant app after scheduled polling.
+
+---
+
+## Original upstream release history (Mislav Mandarić)
+
+The entries below are retained for attribution and historical reference. They are **not** NG integration releases.
 
 ## [0.11.2-dev.1](https://github.com/MislavMandaric/home-assistant-vaillant-vsmart/compare/v0.11.1...v0.11.2-dev.1) (2025-10-25)
 
