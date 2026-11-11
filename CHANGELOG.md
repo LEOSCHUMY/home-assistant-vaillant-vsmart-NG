@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.1.1 — Firmware metadata compatibility
+
 ### Fixed
 
 - Convert firmware `sw_version` values to strings for Home Assistant device metadata, preserving unavailable values as `None`. Applies to device, module, program and measurement entities without changing identifiers or control behavior. Intended for the next NG patch release after validation.
