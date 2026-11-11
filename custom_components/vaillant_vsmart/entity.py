@@ -32,6 +32,12 @@ UPDATE_INTERVAL = timedelta(minutes=5)
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
+def _firmware_version(value: Any) -> str | None:
+    """Return firmware metadata as a string, preserving unknown values."""
+
+    return str(value) if value is not None else None
+
+
 class VaillantData:
     """Class holding data which coordinator provides to the entity."""
 
@@ -246,7 +252,7 @@ class VaillantDeviceEntity(CoordinatorEntity[VaillantData]):
         return {
             "identifiers": {(DOMAIN, self._device.id)},
             "name": self._device.station_name,
-            "sw_version": self._device.firmware,
+            "sw_version": _firmware_version(self._device.firmware),
             "manufacturer": self._device.type,
         }
 
@@ -324,7 +330,7 @@ class VaillantModuleEntity(CoordinatorEntity[VaillantData]):
         return {
             "identifiers": {(DOMAIN, self._module.id)},
             "name": self._module.module_name,
-            "sw_version": self._module.firmware,
+            "sw_version": _firmware_version(self._module.firmware),
             "manufacturer": self._device.type,
             "via_device": (DOMAIN, self._device.id),
         }
@@ -391,7 +397,7 @@ class VaillantProgramEntity(CoordinatorEntity[VaillantData]):
         return {
             "identifiers": {(DOMAIN, self._module.id)},
             "name": self._module.module_name,
-            "sw_version": self._module.firmware,
+            "sw_version": _firmware_version(self._module.firmware),
             "manufacturer": self._device.type,
             "via_device": (DOMAIN, self._device.id),
         }
@@ -464,7 +470,7 @@ class VaillantMeasurementEntity(CoordinatorEntity[VaillantData]):
         return {
             "identifiers": {(DOMAIN, self._module.id)},
             "name": self._module.module_name,
-            "sw_version": self._module.firmware,
+            "sw_version": _firmware_version(self._module.firmware),
             "manufacturer": self._device.type,
             "via_device": (DOMAIN, self._device.id),
         }
