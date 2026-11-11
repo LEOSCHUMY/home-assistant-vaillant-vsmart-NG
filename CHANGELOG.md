@@ -2,8 +2,13 @@
 
 ## [Unreleased]
 
-- Fix Home Assistant device metadata warnings by converting firmware `sw_version` values to strings while preserving unavailable values as `None`. Covers device, module, program and measurement entities; identifiers and behavior are unchanged. Intended for the next NG patch release after integration testing.
-- Documentation follow-up after the published NG `v0.1.0` release: document a successful **experimental** original-to-NG Marketplace migration on a Home Assistant 2026.11.1 secondary installation (with 2 devices and 19 entities preserved) and a primary TrueNAS installation (normal operation reported), including the internal-storage ownership workaround, backup requirements, and limitations. No runtime changes.
+### Fixed
+
+- Convert firmware `sw_version` values to strings for Home Assistant device metadata, preserving unavailable values as `None`. Applies to device, module, program and measurement entities without changing identifiers or control behavior. Intended for the next NG patch release after validation.
+
+### Documentation
+
+- Following the published `v0.1.0` release, document the **experimental** original-to-NG Marketplace migrations tested on Home Assistant 2026.11.1: a secondary installation (2 devices and 19 entities preserved) and a primary TrueNAS installation (configuration and entity identifiers preserved, `homestatus` working). Include the internal-storage workaround, backup requirements and limitations. No runtime changes.
 
 ## 0.1.0 — First NG release (published 2026-11-11)
 
