@@ -28,9 +28,14 @@ The integration provides the following Home Assistant platforms:
 
 Available entities and controls depend on the equipment, account and data exposed by the Vaillant cloud service.
 
-## Installation
+## Installation and migration
 
-### HACS (recommended)
+> [!WARNING]
+> **Already using the original Vaillant vSMART integration?** Do **not** install Vaillant vSMART NG alongside it, remove the existing integration from Home Assistant, or uninstall the original from HACS without following a validated migration procedure. Both use the `vaillant_vsmart` domain and installation directory.
+>
+> See **[Migration from the original integration](MIGRATION.md)** before changing anything. In particular, the HACS-to-HACS migration remains **pending hands-on validation**.
+
+### HACS custom repository (new installations only)
 
 1. Open **HACS** in Home Assistant.
 2. Open the integrations section and select the three-dot menu.
