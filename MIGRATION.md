@@ -8,11 +8,11 @@
 
 ## Migration status
 
-**The first NG integration release `v0.1.0` has not yet been published.** These instructions are being prepared **before** that release.
+**Before installing, verify that the [v0.1.0 GitHub Release](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases/tag/v0.1.0) exists.** Until it is published, Marketplace may show the current development commit instead. This guide does not treat such a commit as a published release.
 
 - **Existing manually installed integrations:** a controlled file replacement is described below, but should be tested with the final release archive before being recommended as generally proven.
-- **Existing HACS-managed installations of the original integration:** the HACS-to-HACS ownership transfer is **not yet validated**. **Do not follow an untested sequence of HACS Remove / Uninstall and NG Install.** HACS manages files in the same directory for both repositories, and removing a repository can remove its installed files. We will document an exact, tested switching procedure here before recommending an in-place migration.
-- **Fresh installations:** once NG has a GitHub Release, it can be added as a [HACS custom repository](https://hacs.dev/docs/faq/custom_repositories/). It is **not** currently listed in HACS's default catalog.
+- **Existing Marketplace/HACS-managed installations of the original integration:** the HACS-to-HACS ownership transfer is **not yet validated**. **Do not follow an untested sequence of Marketplace/HACS Remove / Uninstall and NG Install.** Both repositories manage the same directory, and removing an integration may delete files or require removal of its Home Assistant configuration. We will document an exact, tested switching procedure here before recommending an in-place migration.
+- **Fresh installations:** once NG has a GitHub Release, it can be added as a custom repository using **Settings → Marketplace → Add from link** on Home Assistant 2026.11+, or as a [HACS custom repository](https://hacs.dev/docs/faq/custom_repositories/) on older versions. It is **not** listed in the default catalog.
 
 ## Before touching an existing installation
 
@@ -35,25 +35,25 @@ Use this route only if the original integration was **not being managed by HACS*
 
 **Important:** Preserving the domain and identifiers is intended to preserve existing configuration and entities, but this must be verified on the target installation; it is not a guarantee for every upstream version or custom configuration.
 
-## Existing original integration managed by HACS — migration pending validation
+## Existing original integration managed by Marketplace/HACS — migration pending validation
 
 Do **not** install both original and NG simultaneously. Adding NG as a custom repository while the original is still installed **does not mean the migration is complete**.
 
 Until an end-to-end HACS-to-HACS migration is tested and documented:
 
 - Do **not** remove the original integration from **Settings → Devices & services**.
-- Do **not** use HACS **Remove/Uninstall** as a first step without a verified backup and a tested procedure. HACS can delete the shared installation directory.
-- Do **not** overwrite the HACS-managed original integration manually and assume that future HACS updates will keep managing the NG fork: HACS may still track the original repository.
-- Keep the existing installation as-is, or seek individualized migration instructions with the installed HACS version, Home Assistant version, and original repository identification. Never share credentials or tokens.
+- Do **not** use Marketplace/HACS **Remove/Uninstall** as a first step without a verified backup and a tested procedure. The shared installation directory can be removed.
+- Do **not** overwrite the Marketplace/HACS-managed original integration manually and assume that future updates will keep managing the NG fork: Marketplace/HACS may still track the original repository.
+- Keep the existing installation as-is, or seek individualized migration instructions with the Home Assistant version, repository-management method (Marketplace/HACS), and original repository identification. Never share credentials or tokens.
 
 **Release gate:** Before advertising a seamless HACS migration, test it on a nonproduction Home Assistant instance, record the exact UI sequence and verify that both HACS's update source and Home Assistant's existing config entry are correct after restart. This section will then be updated.
 
-## New installation with HACS (after the first NG release)
+## New installation with Marketplace/HACS (after the first NG release)
 
-1. Open HACS → menu → **Custom repositories**.
-2. Add `https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG` with category **Integration**.
-3. Find **Vaillant vSMART NG** and download the released version.
-4. Restart Home Assistant.
+1. Confirm that the NG `v0.1.0` GitHub Release exists; do not accidentally install a commit-hash development snapshot.
+2. On Home Assistant 2026.11+, open **Settings → Marketplace → Add from link**. On older HACS-based installations, use **HACS → Custom repositories**, category **Integration**.
+3. Add `https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG`.
+4. Find **Vaillant vSMART NG** and install the released version; restart Home Assistant.
 5. Open **Settings → Devices & services → Add integration** and search for **Vaillant vSMART NG**; complete setup.
 
 These steps are intended for users who **do not have an existing `vaillant_vsmart` installation or config entry**.
@@ -62,7 +62,7 @@ These steps are intended for users who **do not have an existing `vaillant_vsmar
 
 1. If Home Assistant does not load the integration, or existing entities disappear, **do not delete the config entry, reset devices or create duplicate entries**.
 2. Preserve a copy of the logs with sensitive information removed; do not share usernames, passwords, tokens, serial numbers or complete API payloads.
-3. Stop Home Assistant, restore the previously saved `custom_components/vaillant_vsmart/` directory and its original `manifest.json`, then restart. If HACS managed the previous version, verify that HACS tracking and installed files match before using its update controls.
+3. Stop Home Assistant, restore the previously saved `custom_components/vaillant_vsmart/` directory and its original `manifest.json`, then restart. If Marketplace/HACS managed the previous version, verify that repository tracking and installed files match before using its update controls.
 4. If the configuration or entity registry was changed or the rollback fails, restore the **full Home Assistant backup**.
 
 ## Known compatibility note
