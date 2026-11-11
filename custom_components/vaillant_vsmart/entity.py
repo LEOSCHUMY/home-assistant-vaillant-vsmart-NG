@@ -26,6 +26,7 @@ from vaillant_netatmo_api import (
 
 from .const import DOMAIN, SUPPORTED_ENERGY_MEASUREMENT_TYPES, SUPPORTED_DURATION_MEASUREMENT_TYPES
 from .room_temperature import resolve_room_temperatures
+from .boiler_status import resolve_boiler_statuses
 
 UPDATE_INTERVAL = timedelta(minutes=5)
 
@@ -43,7 +44,8 @@ class VaillantData:
 
     def __init__(self, client: ThermostatClient, homes: list[Home], devices: list[Device],
                  measurements: dict[(str, str, MeasurementType), MeasurementItem],
-                 room_temperatures: dict[str, float] | None = None) -> None:
+                 room_temperatures: dict[str, float] | None = None,
+                 boiler_statuses: dict[str, bool] | None = None) -> None:
         """Initialize."""
 
         self.client = client
@@ -64,6 +66,7 @@ class VaillantData:
         self.measurements = measurements
         # Keyed by thermostat module ID; no dependency on rooms[0] ordering.
         self.room_temperatures = room_temperatures if room_temperatures is not None else {}
+        self.boiler_statuses = boiler_statuses if boiler_statuses is not None else {}
 
 
 class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
@@ -94,23 +97,27 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
             devices = await self._client.async_get_thermostats_data()
 
             # Homestatus is optional: failure must not affect boiler controls
-            # or other entities. Legacy measured.temperature remains fallback.
+            # or other entities. Legacy temperatures and boiler states remain fallback.
             statuses_by_home = {}
+            boiler_statuses_by_home = {}
             for home in homes:
                 if not home.id or not any(room.module_ids for room in home.rooms):
                     continue
                 try:
-                    statuses_by_home[home.id] = (
-                        await self._client.async_get_home_status(home.id)
-                    )
+                    snapshot = await self._client.async_get_home_status_snapshot(home.id)
+                    statuses_by_home[home.id] = snapshot.rooms
+                    boiler_statuses_by_home[home.id] = snapshot.boiler_statuses
                 except (ApiException, ValueError) as ex:
                     # Do not log exception bodies; they may include account IDs.
                     _LOGGER.warning(
-                        "Vaillant homestatus unavailable (%s); using legacy temperatures",
+                        "Vaillant homestatus unavailable (%s); using legacy temperatures and boiler states",
                         type(ex).__name__,
                     )
             room_temperatures = resolve_room_temperatures(
                 homes, devices, statuses_by_home
+            )
+            boiler_statuses = resolve_boiler_statuses(
+                homes, devices, statuses_by_home, boiler_statuses_by_home
             )
 
             # Diagnostic only: the climate entity uses precisely this lookup.
@@ -178,7 +185,8 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                             measurements[(device.id, module.id, measurement_type)] = []
 
             return VaillantData(
-                self._client, homes, devices, measurements, room_temperatures
+                self._client, homes, devices, measurements, room_temperatures,
+                boiler_statuses
             )
         except RequestUnauthorizedException as ex:
             raise ConfigEntryAuthFailed from ex
