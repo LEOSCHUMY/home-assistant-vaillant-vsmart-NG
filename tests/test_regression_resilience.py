@@ -6,7 +6,13 @@ from homeassistant.exceptions import HomeAssistantError
 import pytest
 from vaillant_netatmo_api import ApiException, MeasurementType
 
-from custom_components.vaillant_vsmart.entity import VaillantCoordinator
+from custom_components.vaillant_vsmart.entity import (
+    VaillantCoordinator,
+    VaillantDeviceEntity,
+    VaillantModuleEntity,
+    VaillantProgramEntity,
+    VaillantMeasurementEntity,
+)
 from custom_components.vaillant_vsmart.sensor import (
     VaillantDurationSensor,
     VaillantEnergySensor,
@@ -94,3 +100,57 @@ async def test_schedule_switch_cannot_be_turned_off():
     switch = VaillantScheduleSwitch(MagicMock(), "device", "module", "program")
     with pytest.raises(HomeAssistantError, match="cannot be switched off"):
         await switch.async_turn_off()
+
+
+@pytest.mark.parametrize(
+    "entity_class",
+    [
+        VaillantDeviceEntity,
+        VaillantModuleEntity,
+        VaillantProgramEntity,
+        VaillantMeasurementEntity,
+    ],
+)
+@pytest.mark.parametrize(
+    ("firmware", "expected"),
+    [(123, "123"), ("12.34", "12.34"), (None, None)],
+)
+def test_device_info_firmware_version_is_string_or_none(
+    entity_class, firmware, expected
+):
+    """Home Assistant device registry requires sw_version to be str or None."""
+    device = SimpleNamespace(
+        id="device", station_name="Boiler", type="NAPlug", firmware=firmware
+    )
+    module = SimpleNamespace(
+        id="module", module_name="Thermostat", firmware=firmware
+    )
+    coordinator = MagicMock()
+    coordinator.data = SimpleNamespace(
+        devices={"device": device},
+        modules={"module": module},
+    )
+
+    if entity_class is VaillantDeviceEntity:
+        entity = entity_class(coordinator, "device")
+        expected_identifiers = {("vaillant_vsmart", "device")}
+    elif entity_class is VaillantModuleEntity:
+        entity = entity_class(coordinator, "device", "module")
+        expected_identifiers = {("vaillant_vsmart", "module")}
+    elif entity_class is VaillantProgramEntity:
+        entity = entity_class(coordinator, "device", "module", "program")
+        expected_identifiers = {("vaillant_vsmart", "module")}
+    else:
+        entity = entity_class(
+            coordinator, "device", "module", MeasurementType.SUM_BOILER_ON
+        )
+        expected_identifiers = {("vaillant_vsmart", "module")}
+
+    info = entity.device_info
+    assert info["sw_version"] == expected
+    assert info["sw_version"] is None or isinstance(info["sw_version"], str)
+    assert info["identifiers"] == expected_identifiers
+    assert entity.unique_id == ("device" if entity_class is VaillantDeviceEntity else
+                                "module" if entity_class is VaillantModuleEntity else
+                                "program" if entity_class is VaillantProgramEntity else
+                                f"module_{MeasurementType.SUM_BOILER_ON}")
