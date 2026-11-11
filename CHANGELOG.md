@@ -6,7 +6,7 @@ No changes recorded after the first NG release candidate.
 
 ## 0.1.0 — First NG release (planned; not yet published)
 
-This fork starts its own version numbering at `0.1.0`, separate from the upstream integration. The first NG release will depend on the published `vaillant-netatmo-api-ng==0.1.0` Python library.
+This fork starts its own version numbering at `0.1.0`, separate from the upstream integration, with the public name **Vaillant vSMART NG** in Home Assistant and HACS. The technical domain remains `vaillant_vsmart` to retain existing configurations. The first NG release will depend on the published `vaillant-netatmo-api-ng==0.1.0` Python library.
 
 ### Fixed
 
