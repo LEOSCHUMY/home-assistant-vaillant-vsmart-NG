@@ -28,22 +28,26 @@ The integration provides the following Home Assistant platforms:
 
 Available entities and controls depend on the equipment, account and data exposed by the Vaillant cloud service.
 
-## Installation
+## Installation and migration
 
-### HACS (recommended)
+> [!WARNING]
+> **Already using the original Vaillant vSMART integration?** Do **not** install Vaillant vSMART NG alongside it, remove the existing integration from Home Assistant, or uninstall the original from HACS without following a validated migration procedure. Both use the `vaillant_vsmart` domain and installation directory.
+>
+> See **[Migration from the original integration](MIGRATION.md)** before changing anything. In particular, the HACS-to-HACS migration remains **pending hands-on validation**.
 
-1. Open **HACS** in Home Assistant.
-2. Open the integrations section and select the three-dot menu.
-3. Choose **Custom repositories**.
-4. Add this repository URL: `https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG`.
-5. Select **Integration** as the category and add the repository.
-6. Find **Vaillant vSMART NG** in your HACS custom repositories and install it. The fork is **not yet listed in the default HACS catalog**.
-7. Restart Home Assistant.
-8. Go to **Settings → Devices & services**, select **Add integration**, and search for **Vaillant vSMART NG**.
+### Marketplace / HACS custom repository (new installations only)
+
+1. First check the [GitHub Releases](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases) page for a published **v0.1.0** release. Until the release exists, the Marketplace may offer a development-branch commit instead; **do not mistake a commit hash for the stable release**.
+2. In Home Assistant 2026.11 or newer, open **Settings → Marketplace → Add from link**, and enter `https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG`. On older Home Assistant installations with HACS, use **HACS → Custom repositories**, adding it as an **Integration**.
+3. Locate **Vaillant vSMART NG** and check the version/source before installing. This fork is not listed in the default catalog.
+4. Install the **released version** and restart Home Assistant.
+5. Go to **Settings → Devices & services → Add integration**, search for **Vaillant vSMART NG**, and complete setup.
+
+**Already configured the original Vaillant vSMART?** Stop here: this new-installation procedure is **not** a migration. Follow [MIGRATION.md](MIGRATION.md) instead.
 
 ### Manual installation
 
-1. Download or clone this repository.
+1. Download the specific [published release](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases) rather than a moving development branch.
 2. Copy the `custom_components/vaillant_vsmart` directory into the `custom_components` directory of your Home Assistant configuration.
 3. Restart Home Assistant.
 4. Go to **Settings → Devices & services**, select **Add integration**, and search for **Vaillant vSMART NG**.
