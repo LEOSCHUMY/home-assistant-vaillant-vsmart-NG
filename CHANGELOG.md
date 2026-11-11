@@ -1,3 +1,26 @@
+## [Unreleased] — NG room temperature from homestatus (2026-11-11)
+
+### Fixed
+
+- Prefer the room's measured temperature from Vaillant `homestatus` for the climate entity; previously, the legacy `getthermostatsdata` temperature could lag behind the Vaillant app.
+- Match rooms to `NAThermVaillant` thermostat modules via `homesdata` room `module_ids`, without assuming room order or a single-room installation.
+
+### Reliability
+
+- Fall back to the existing `module.measured.temperature` when `homestatus` fails, is unavailable, contains no usable temperature, reports an unreachable room, or gives an ambiguous mapping.
+- Keep the coordinator's five-minute polling interval, boiler commands, target temperatures, schedules, HVAC modes and energy/duration measurements unchanged.
+- Use library support from [vaillant-netatmo-api-NG PR #5](https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG/pull/5), pinned to the tested implementation commit `6e393b89fe8c418f24ba3c6138bb3b6feafcd341`.
+
+### Diagnostics
+
+- Retain opt-in DEBUG logging of the temperature source (`homestatus` or legacy fallback) and numeric values, without device IDs or credentials. Normal operation can use `custom_components.vaillant_vsmart: info` and `vaillant_netatmo_api.thermostat: warning` in Home Assistant's `logger` configuration.
+- Log a warning when `homestatus` is unavailable without exposing the exception body.
+
+### Validation
+
+- Automated matching tests and GitHub Actions checks passed before changelog update.
+- Tested on a live Vaillant eRELAX/vSMART device with Home Assistant 2026.11.0, including an overnight run on 2026-11-10/11: 169 successful coordinator updates observed, all selecting `homestatus`, no fallback and no update errors in the supplied log. User checks confirmed alignment with the official Vaillant app after scheduled polling.
+
 ## [0.11.2-dev.1](https://github.com/MislavMandaric/home-assistant-vaillant-vsmart/compare/v0.11.1...v0.11.2-dev.1) (2025-10-25)
 
 
