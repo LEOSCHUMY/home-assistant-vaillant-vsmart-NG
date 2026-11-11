@@ -129,6 +129,7 @@ def test_device_info_firmware_version_is_string_or_none(
     coordinator.data = SimpleNamespace(
         devices={"device": device},
         modules={"module": module},
+        programs={"program": SimpleNamespace(id="program")},
     )
 
     if entity_class is VaillantDeviceEntity:
