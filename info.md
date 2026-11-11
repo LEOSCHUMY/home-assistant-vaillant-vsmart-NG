@@ -1,3 +1,7 @@
+# Vaillant vSMART NG
+
+> **Independent, unofficial community integration — not affiliated with, sponsored or endorsed by Vaillant or Netatmo.**
+
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]][license]
@@ -53,7 +57,7 @@ These changes align the integration better with the newly redesigned releases of
 
 1. Click "Install this repository in HACS"
 1. Restart Home Assistant
-1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Vaillant vSMART".
+1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Vaillant vSMART NG".
 
 {% endif %}
 
@@ -90,10 +94,10 @@ This integration is a complete rewrite of [@pjmaenh](https://github.com/pjmaenh)
 Thanks to [@philippelt](https://github.com/philippelt), [@jabesq](https://github.com/jabesq), [@samueldumont](https://github.com/samueldumont), [@jabesq](https://github.com/jabesq), [@pjmaenh](https://github.com/pjmaenh) and [@superbunika](https://github.com/superbunika) for providing many details of the underlying API, which this component uses.
 
 
-[maintainer]: https://github.com/MislavMandaric
-[maintainer-shield]: https://img.shields.io/badge/maintainer-%40MislavMandaric-blue.svg?style=for-the-badge
+[maintainer]: https://github.com/LEOSCHUMY
+[maintainer-shield]: https://img.shields.io/badge/maintainer-%40LEOSCHUMY-blue.svg?style=for-the-badge
 
-[releases]: https://github.com/MislavMandaric/home-assistant-vaillant-vsmart/releases
+[releases]: https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases
 [releases-shield]: https://img.shields.io/github/release/MislavMandaric/home-assistant-vaillant-vsmart.svg?style=for-the-badge
 
 [commits]: https://github.com/MislavMandaric/home-assistant-vaillant-vsmart/commits
@@ -103,7 +107,7 @@ Thanks to [@philippelt](https://github.com/philippelt), [@jabesq](https://github
 [license-shield]: https://img.shields.io/github/license/MislavMandaric/home-assistant-vaillant-vsmart.svg?style=for-the-badge
 
 [hacs]: https://hacs.xyz
-[hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
+[hacs-shield]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
 
 [forum]: https://community.home-assistant.io/
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge

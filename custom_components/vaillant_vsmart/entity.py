@@ -25,6 +25,7 @@ from vaillant_netatmo_api import (
 )
 
 from .const import DOMAIN, SUPPORTED_ENERGY_MEASUREMENT_TYPES, SUPPORTED_DURATION_MEASUREMENT_TYPES
+from .room_temperature import resolve_room_temperatures
 
 UPDATE_INTERVAL = timedelta(minutes=5)
 
@@ -35,7 +36,8 @@ class VaillantData:
     """Class holding data which coordinator provides to the entity."""
 
     def __init__(self, client: ThermostatClient, homes: list[Home], devices: list[Device],
-                 measurements: dict[(str, str, MeasurementType), MeasurementItem]) -> None:
+                 measurements: dict[(str, str, MeasurementType), MeasurementItem],
+                 room_temperatures: dict[str, float] | None = None) -> None:
         """Initialize."""
 
         self.client = client
@@ -54,6 +56,8 @@ class VaillantData:
             for program in module.therm_program_list
         }
         self.measurements = measurements
+        # Keyed by thermostat module ID; no dependency on rooms[0] ordering.
+        self.room_temperatures = room_temperatures if room_temperatures is not None else {}
 
 
 class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
@@ -82,6 +86,61 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
         try:
             homes = await self._client.async_get_homes_data()
             devices = await self._client.async_get_thermostats_data()
+
+            # Homestatus is optional: failure must not affect boiler controls
+            # or other entities. Legacy measured.temperature remains fallback.
+            statuses_by_home = {}
+            for home in homes:
+                if not home.id or not any(room.module_ids for room in home.rooms):
+                    continue
+                try:
+                    statuses_by_home[home.id] = (
+                        await self._client.async_get_home_status(home.id)
+                    )
+                except (ApiException, ValueError) as ex:
+                    # Do not log exception bodies; they may include account IDs.
+                    _LOGGER.warning(
+                        "Vaillant homestatus unavailable (%s); using legacy temperatures",
+                        type(ex).__name__,
+                    )
+            room_temperatures = resolve_room_temperatures(
+                homes, devices, statuses_by_home
+            )
+
+            # Diagnostic only: the climate entity uses precisely this lookup.
+            # Log numeric temperatures and positional indices, never IDs,
+            # account metadata, credentials, or complete API payloads.
+            if _LOGGER.isEnabledFor(logging.DEBUG):
+                thermostat_index = 0
+                for device in devices:
+                    for module in device.modules:
+                        if getattr(module, "type", None) != "NAThermVaillant":
+                            continue
+                        legacy_temperature = getattr(
+                            getattr(module, "measured", None), "temperature", None
+                        )
+                        status_temperature = room_temperatures.get(module.id)
+                        source = (
+                            "homestatus"
+                            if status_temperature is not None
+                            else "getthermostatsdata_fallback"
+                        )
+                        chosen_temperature = (
+                            status_temperature
+                            if status_temperature is not None
+                            else legacy_temperature
+                        )
+                        _LOGGER.debug(
+                            "Vaillant room temperature source: thermostat_index=%d "
+                            "source=%s homestatus_temperature=%s "
+                            "legacy_temperature=%s selected_temperature=%s",
+                            thermostat_index,
+                            source,
+                            status_temperature,
+                            legacy_temperature,
+                            chosen_temperature,
+                        )
+                        thermostat_index += 1
 
             date_begin = datetime.now() - timedelta(days=1)
             measurements = {}
@@ -112,7 +171,9 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                             )
                             measurements[(device.id, module.id, measurement_type)] = []
 
-            return VaillantData(self._client, homes, devices, measurements)
+            return VaillantData(
+                self._client, homes, devices, measurements, room_temperatures
+            )
         except RequestUnauthorizedException as ex:
             raise ConfigEntryAuthFailed from ex
         except ApiException as ex:
