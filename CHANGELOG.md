@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-- Documentation follow-up after the published NG `v0.1.0` release: document a successful **experimental** original-to-NG Marketplace migration on one Home Assistant 2026.11.1 secondary installation, including the internal-storage ownership workaround, backup requirements, and limitations. No runtime changes.
+- Documentation follow-up after the published NG `v0.1.0` release: document a successful **experimental** original-to-NG Marketplace migration on a Home Assistant 2026.11.1 secondary installation (with 2 devices and 19 entities preserved) and a primary TrueNAS installation (normal operation reported), including the internal-storage ownership workaround, backup requirements, and limitations. No runtime changes.
 
 ## 0.1.0 — First NG release (published 2026-11-11)
 
