@@ -1,27 +1,42 @@
-name: "Release"
+name: "Prepare release"
 
+# Integration releases are created explicitly on GitHub after a reviewed merge.
+# No automatic tags, changelog rewrites or releases on pushes to dev/master.
 on:
-  push:
-    branches:
-      - "master"
-      - "dev"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Expected integration version in manifest.json"
+        required: true
+        default: "0.1.0"
+        type: string
+
+permissions:
+  contents: read
 
 jobs:
-  release:
-    name: "Release"
-    runs-on: "ubuntu-latest"
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
+  verify-release:
+    name: "Verify integration version"
+    runs-on: ubuntu-24.04
     steps:
-      - name: "Checkout the repository"
-        uses: "actions/checkout@v4"
-
-      - name: "Install dependencies"
-        run: npm install -g semantic-release@22 @semantic-release/changelog@6 @semantic-release/git@10 @semantic-release/exec@6
-
-      - name: "Semantic Release"
-        run: npx semantic-release
+      - name: "Checkout the selected ref"
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: "Verify manifest version"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPECTED_VERSION: ${{ inputs.version }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          manifest = json.loads(
+              Path("custom_components/vaillant_vsmart/manifest.json").read_text()
+          )
+          actual = manifest["version"]
+          expected = os.environ["EXPECTED_VERSION"]
+          assert actual == expected, f"Expected version {expected}, got {actual}"
+          print(f"Integration manifest version verified: {actual}")
+          PY
