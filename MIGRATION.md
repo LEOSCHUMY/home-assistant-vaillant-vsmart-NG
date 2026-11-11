@@ -62,7 +62,7 @@ A second migration was carried out on a primary Home Assistant installation, ini
 - A targeted script removed only the original repository's `"installed": true` property from `/config/.storage/marketplace.repositories`, retaining the NG record and all other fields. A read-only JSON check afterward confirmed both repository records were present and neither was marked installed.
 - After starting Home Assistant, the pre-existing Vaillant integration remained functional. Marketplace showed both repositories as not installed.
 - The official NG `v0.1.0` release was then installed successfully through Marketplace. Marketplace showed NG installed and the original not installed, with no installation errors.
-- The user restarted Home Assistant and **reported normal operation**. This is a positive functional report, but the exact primary-system device/entity counts, long-term polling and future NG-to-NG updates were not independently rechecked in this report.
+- The user restarted Home Assistant and **reported normal operation**. In a subsequent check, the user also confirmed that the **device/entity counts and entity IDs remained unchanged** and that **temperature updates via `homestatus` continued correctly**. Future NG-to-NG Marketplace updates have not yet been tested.
 
 **This test used the alternative of stopping Home Assistant completely**, instead of disabling the Marketplace integration. Modify its internal storage only while Home Assistant is fully stopped, and only with complete backups and a recovery plan.
 
