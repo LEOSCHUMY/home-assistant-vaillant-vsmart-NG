@@ -2,9 +2,9 @@
 
 ## [Unreleased]
 
-No changes recorded after the first NG release candidate.
+- Documentation follow-up after the published NG `v0.1.0` release: document a successful **experimental** original-to-NG Marketplace migration on one Home Assistant 2026.11.1 secondary installation, including the internal-storage ownership workaround, backup requirements, and limitations. No runtime changes.
 
-## 0.1.0 — First NG release (prepared for publication)
+## 0.1.0 — First NG release (published 2026-11-11)
 
 This fork starts its own version numbering at `0.1.0`, separate from the upstream integration, with the public name **Vaillant vSMART NG** in Home Assistant and HACS. The technical domain remains `vaillant_vsmart` to retain existing configurations. The first NG release will depend on the published `vaillant-netatmo-api-ng==0.1.0` Python library.
 
