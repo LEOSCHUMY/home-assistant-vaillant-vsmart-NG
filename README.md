@@ -33,7 +33,7 @@ Available entities and controls depend on the equipment, account and data expose
 > [!WARNING]
 > **Already using the original Vaillant vSMART integration?** Do **not** install Vaillant vSMART NG alongside it, remove the existing integration from Home Assistant, or uninstall the original from HACS without following a validated migration procedure. Both use the `vaillant_vsmart` domain and installation directory.
 >
-> See **[Migration from the original integration](MIGRATION.md)** before changing anything. In particular, the HACS-to-HACS migration remains **pending hands-on validation**.
+> See **[Migration from the original integration](MIGRATION.md)** before changing anything. An **experimental Marketplace migration succeeded on one Home Assistant 2026.11.1 secondary installation** without losing its 2 devices or 19 entities, but requires an unsupported internal-storage workaround. It is **not a general or risk-free migration method**, and older standalone HACS remains untested.
 
 ### Marketplace / HACS custom repository (new installations only)
 
