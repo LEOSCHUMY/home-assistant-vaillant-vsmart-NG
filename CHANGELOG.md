@@ -4,7 +4,7 @@
 
 No changes recorded after the first NG release candidate.
 
-## 0.1.0 — First NG release (planned; not yet published)
+## 0.1.0 — First NG release (prepared for publication)
 
 This fork starts its own version numbering at `0.1.0`, separate from the upstream integration, with the public name **Vaillant vSMART NG** in Home Assistant and HACS. The technical domain remains `vaillant_vsmart` to retain existing configurations. The first NG release will depend on the published `vaillant-netatmo-api-ng==0.1.0` Python library.
 
@@ -24,11 +24,19 @@ This fork starts its own version numbering at `0.1.0`, separate from the upstrea
 - Retain opt-in DEBUG logging of the temperature source (`homestatus` or legacy fallback) and numeric values, without device IDs or credentials. Normal operation can use `custom_components.vaillant_vsmart: info` and `vaillant_netatmo_api.thermostat: warning` in Home Assistant's `logger` configuration.
 - Log a warning when `homestatus` is unavailable without exposing the exception body.
 
+### Installation and migration
+
+- The original integration and NG share the `vaillant_vsmart` domain and installation directory: they **must not be installed side-by-side**.
+- Document backup, existing entity-ID checks, controlled manual replacement, and rollback in [MIGRATION.md](MIGRATION.md).
+- Home Assistant 2026.11+ uses the integrated Marketplace for custom repositories; older installations may use HACS. Adding the NG repository does **not** complete migration or guarantee that the Marketplace can transfer the installation from the upstream repository.
+- The original-to-NG Marketplace/HACS migration remains **unvalidated**, so no uninstall/install sequence is recommended for existing installations until it has been tested on a secondary instance.
+- A GitHub commit hash offered by Marketplace **before a tagged NG release** is a development snapshot, not the `v0.1.0` release.
+
 ### Release process
 
 - Integration version is declared in `custom_components/vaillant_vsmart/manifest.json` and starts at `0.1.0`.
 - Replace inherited automatic semantic-release (pushes to `dev` / `master`) with a manual release-preparation workflow that validates the manifest version but does not create tags or publish releases.
-- The first GitHub Release `v0.1.0` will be created separately, after review and integration testing.
+- GitHub Release `v0.1.0` is published separately through an explicit manual action. The release should point to the reviewed integration commit and include the migration limitations above; a successful workflow alone does not publish it.
 
 ### Validation
 
