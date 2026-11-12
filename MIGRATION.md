@@ -8,7 +8,7 @@
 
 ## Migration status
 
-**Before installing, verify that the [v0.1.0 GitHub Release](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases/tag/v0.1.0) exists.** Until it is published, Marketplace may show the current development commit instead. This guide does not treat such a commit as a published release.
+**Before installing, select a specific published [NG GitHub Release](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases).** Do not treat a development-branch commit as a released version. The historical Marketplace migration reports below used NG `v0.1.0`; they do not validate Marketplace upgrades from `0.1.0` to `0.1.1`.
 
 - **Existing manually installed integrations:** a controlled file replacement is described below, but should be tested with the final release archive before being recommended as generally proven.
 - **Existing Marketplace-managed installations of the original integration:** two **experimental** migrations succeeded on Home Assistant **2026.11.1**, retaining its configuration and entity IDs. The steps below involve editing an internal Marketplace storage file, are not officially supported, and have not been validated across installations. Standard direct installation of NG over the original was blocked by directory ownership. **Do not use Delete and uninstall on the original** if you need to preserve the configuration.
@@ -25,12 +25,12 @@
 
 ## Existing installation made manually — controlled replacement (to validate)
 
-Use this route only if the original integration was **not being managed by HACS**, and only once the `v0.1.0` release is available.
+Use this route only if the original integration was **not being managed by HACS**, using a specific published NG release.
 
-1. Download the **specific NG release tag `v0.1.0`** from [the NG repository](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases). Do not use a changing development branch as the source.
+1. Download a **specific published NG release tag** from [the NG repository](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases). Record the selected version; do not use a changing development branch as the source.
 2. Stop Home Assistant cleanly. Preserve the entire backup copy of `custom_components/vaillant_vsmart/` outside the active `custom_components` directory.
 3. Replace the contents of **the existing** `/config/custom_components/vaillant_vsmart/` directory with the files from that release's `custom_components/vaillant_vsmart/` directory. **Do not create a second directory** such as `vaillant_vsmart_ng`.
-4. Check that the installed `manifest.json` identifies `Vaillant vSMART NG`, has `"domain": "vaillant_vsmart"`, version `0.1.0`, and requires `vaillant-netatmo-api-ng==0.1.0`.
+4. Check that the installed `manifest.json` identifies `Vaillant vSMART NG`, has `"domain": "vaillant_vsmart"` and matches the selected release version and its published library requirement. For integration `0.1.1`, these are `"version": "0.1.1"` and `vaillant-netatmo-api-ng==0.1.1`.
 5. Start Home Assistant and verify that the pre-existing integration entry loads. **Do not run Add integration again** if the existing entry is already configured.
 6. Compare the device list and recorded `entity_id` values against the backup. Check heating controls, schedules, hot-water entities and automations as applicable. Confirm that room temperature updates using `homestatus` and that the Home Assistant logs show no dependency-installation or setup errors.
 
@@ -68,7 +68,7 @@ A second migration was carried out on a primary Home Assistant installation, ini
 
 This demonstrates a successful migration **for the secondary test environment**, plus a successful primary-system switch with normal operation reported. It does **not** establish that the workaround is generally safe, that all older HACS versions behave the same, or that future Marketplace updates and rollback work correctly. Do not treat the previous registry-edit action as an officially endorsed migration.
 
-### Experimental sequence reproduced
+### Experimental sequence reproduced with NG v0.1.0
 
 1. Record the Home Assistant version, original integration version, and the existing entity IDs/device count. Back up Home Assistant completely and retain an off-host copy of `/config/custom_components/vaillant_vsmart/`.
 2. Copy `/config/.storage/marketplace.repositories` to a separate off-host backup. Keep the original integration configured in **Settings → Devices & services**.
@@ -89,7 +89,7 @@ The workaround above was tested only with the **integrated Home Assistant Market
 
 ## New installation with Marketplace/HACS (after the first NG release)
 
-1. Confirm that the NG `v0.1.0` GitHub Release exists; do not accidentally install a commit-hash development snapshot.
+1. Select a specific published [NG GitHub Release](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases); do not accidentally install a commit-hash development snapshot.
 2. On Home Assistant 2026.11+, open **Settings → Marketplace → Add from link**. On older HACS-based installations, use **HACS → Custom repositories**, category **Integration**.
 3. Add `https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG`.
 4. Find **Vaillant vSMART NG** and install the released version; restart Home Assistant.
@@ -106,7 +106,7 @@ These steps are intended for users who **do not have an existing `vaillant_vsmar
 
 ## Known compatibility note
 
-Home Assistant 2026.11 may warn about firmware `sw_version` being passed as an integer by the upstream-derived integration. Compatibility with Home Assistant 2026.12 requires a separate fix; this warning is unrelated to PyPI installation or the `homestatus` temperature data path.
+Upstream-derived versions and NG `0.1.0` may warn about firmware `sw_version` being passed as an integer. NG `0.1.1` normalizes firmware metadata to strings and preserves unavailable values as `None`. This metadata fix is separate from the `homestatus` heating-state change and does not change device or entity identifiers.
 
 ## Feedback
 

@@ -28,6 +28,8 @@ The integration provides the following Home Assistant platforms:
 
 Available entities and controls depend on the equipment, account and data exposed by the Vaillant cloud service.
 
+From `0.1.1`, room temperatures and heating activity use the same `homestatus` response when valid readings are available, with a fallback to the legacy endpoint. The integration polls approximately every five minutes; it does not provide instant state changes or a guarantee on cloud update latency.
+
 ## Installation and migration
 
 > [!WARNING]

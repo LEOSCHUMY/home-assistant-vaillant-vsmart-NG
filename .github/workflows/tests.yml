@@ -30,16 +30,19 @@ jobs:
       - name: "Install requirements"
         run: python3 -m pip install -r requirements.txt
 
-      - name: "Verify published NG dependency"
+      - name: "Verify published snapshot API dependency"
         run: |
           python3 - <<'PY'
           from importlib.metadata import version
           from vaillant_netatmo_api.thermostat import ThermostatClient
 
-          assert version("vaillant-netatmo-api-ng") == "0.1.0"
+          assert version("vaillant-netatmo-api-ng") == "0.1.1"
           assert hasattr(ThermostatClient, "async_get_home_status")
-          print("Published NG 0.1.0 dependency verified")
+          assert hasattr(ThermostatClient, "async_get_home_status_snapshot")
+          print("Published NG 0.1.1 snapshot API verified")
           PY
 
       - name: "Run regression tests"
-        run: python3 -m pytest -q tests/test_regression_resilience.py
+        run: >-
+          python3 -m pytest -q tests/test_regression_resilience.py
+          tests/test_room_temperature.py tests/test_boiler_status.py
