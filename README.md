@@ -56,9 +56,24 @@ From `0.1.1`, room temperatures and heating activity use the same `homestatus` r
 
 ## Configuration
 
-Configuration is performed through the Home Assistant user interface. Follow the integration's setup flow and provide the account and application details requested there.
+Configuration is performed through **Settings → Devices & services → Add integration → Vaillant vSMART NG** for a new installation. If you are migrating an existing configured integration, follow [MIGRATION.md](MIGRATION.md) instead of adding another entry.
 
-For background information about obtaining the required client credentials, see the [Home Assistant community discussion](https://community.home-assistant.io/t/added-support-for-vaillant-thermostat-how-to-integrate-in-official-release/31858).
+The setup form still requires all six fields below. The integration uses them to request an access token; none of these fields is obsolete.
+
+| Setup field | Vaillant vSMART example | MiGo example |
+| --- | --- | --- |
+| Client ID | `na_client_android_vaillant` | `na_client_android_sdbg` |
+| Client secret | The application client secret matching the vSMART Client ID | The application client secret matching the MiGo Client ID |
+| Username | Your vSMART app account username | Your MiGo app account username |
+| Password | Your vSMART app account password | Your MiGo app account password |
+| User prefix | `vaillant` | `sdbg` |
+| App version | `1.0.4.0` | `1.3.0.4` |
+
+These public application identifiers and version strings are the examples documented by the [original integration](https://github.com/MislavMandaric/home-assistant-vaillant-vsmart#configuration-is-done-in-the-ui). They are provided as setup guidance, not as a claim that a fresh login with each combination was tested for this NG release. MiGo has not been field-tested with NG.
+
+**Client secret is not your account password.** It belongs to the application identified by Client ID, while Username and Password belong to your app account. For background on obtaining the matching application credentials, see the [Home Assistant community discussion](https://community.home-assistant.io/t/added-support-for-vaillant-thermostat-how-to-integrate-in-official-release/31858).
+
+**App version is sent to the cloud authentication API.** It is not the Home Assistant version or the NG integration version. Keep the Client ID, Client secret, User prefix and App version appropriate to the same application.
 
 Keep your account credentials and client secrets private. Do not post them in issues, discussions or logs.
 

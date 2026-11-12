@@ -4,6 +4,7 @@
 
 ### Documentation
 
+- Restore the upstream vSMART and MiGo setup examples, explain the six authentication fields still required by the setup flow, and distinguish application credentials from account credentials and NG field validation.
 - Document the existing Home Assistant 2024.5 minimum with isolated 2024.5.0 regression checks, distinguish CI tests from 2026.11.1 field observations, and explain the applicable Marketplace metadata.
 - Correct the contributor test command to the three maintained regression modules; identify the remaining legacy blueprint tests.
 
