@@ -13,15 +13,28 @@ jobs:
     steps:
       - name: "Checkout the repository"
         uses: "actions/checkout@v4"
+        with:
+          fetch-depth: 0
+
+      - name: "Detect changes requiring code checks"
+        id: changes
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 .github/scripts/code_checks.py
 
       - name: "Set up Python"
+        if: steps.changes.outputs.run == 'true'
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
           cache: "pip"
 
       - name: "Install requirements"
+        if: steps.changes.outputs.run == 'true'
         run: python3 -m pip install -r requirements.txt
 
       - name: "Run"
+        if: steps.changes.outputs.run == 'true'
         run: python3 -m ruff check .
