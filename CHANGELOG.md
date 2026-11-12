@@ -2,7 +2,10 @@
 
 ## [Unreleased]
 
-No changes yet.
+### Documentation
+
+- Document the existing Home Assistant 2024.5 minimum with isolated 2024.5.0 regression checks, distinguish CI tests from 2026.11.1 field observations, and explain the applicable Marketplace metadata.
+- Correct the contributor test command to the three maintained regression modules; identify the remaining legacy blueprint tests.
 
 ## 0.1.1 — Heating status and firmware compatibility
 

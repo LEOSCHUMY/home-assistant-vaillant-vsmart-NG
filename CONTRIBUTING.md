@@ -48,18 +48,15 @@ and makes the repository's `custom_components/` directory available.
 
 ## Tests and code quality
 
-Run the test suite locally with:
+Run the maintained regression suite locally with:
 
 ```bash
-python3 -m pytest -q tests
+python3 -m pytest -q tests/test_regression_resilience.py tests/test_room_temperature.py tests/test_boiler_status.py
 ```
 
-The GitHub Actions test workflow currently runs the regression-resilience test
-module:
+GitHub Actions runs these three modules using the Home Assistant and test-plugin versions pinned in `requirements.txt`. Older blueprint test modules still reference APIs that this integration does not expose; running the entire `tests/` directory is not the supported regression command.
 
-```bash
-python3 -m pytest -q tests/test_regression_resilience.py
-```
+The minimum version in `hacs.json` is an installation requirement. Before raising it, check the APIs and dependencies actually used. Before claiming compatibility, distinguish automated tests from real-installation observations; the current evidence is documented in the README.
 
 Run the repository's lint check with:
 

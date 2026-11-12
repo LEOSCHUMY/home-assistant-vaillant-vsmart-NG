@@ -64,6 +64,20 @@ Keep your account credentials and client secrets private. Do not post them in is
 
 ## Compatibility and troubleshooting
 
+The minimum Home Assistant version declared in `hacs.json` is **2024.5** (2024.5.0). It is a minimum installation requirement, not the latest version tested.
+
+For the integration code released as `0.1.1`, with the published `vaillant-netatmo-api-ng==0.1.1` dependency:
+
+| Home Assistant | Verification |
+| --- | --- |
+| 2024.5.0 | All integration platforms import; the 37 regression tests pass in an isolated Python 3.12 environment |
+| 2024.6.4 | The 37 regression tests pass; this is the pinned GitHub Actions test environment |
+| 2026.11.1 | Real installation: heating and idle transitions observed after polling, including cases where the legacy boiler state lagged behind homestatus |
+
+Automated tests mock cloud responses and do not exercise a real boiler. These results do not establish that every intermediate Home Assistant release, every control, or every installation has been tested. Older standalone HACS migration remains unvalidated; see [MIGRATION.md](MIGRATION.md).
+
+`hacs.json` uses the standard integration layout and GitHub release source. No ZIP asset, custom filename, or persistent directory is required. No country restriction is declared: a working compatible Vaillant account and cloud service are required, and the single-installation field test does not establish availability in every country.
+
 - The integration communicates with the Vaillant service over the cloud; an internet connection and a working Vaillant account are required.
 - Availability of individual measurements and controls depends on the connected system and the cloud API.
 - If setup or communication fails, check the Home Assistant logs and open an [issue](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/issues) with relevant diagnostics. Remove usernames, passwords, tokens and other personal information before sharing logs.
