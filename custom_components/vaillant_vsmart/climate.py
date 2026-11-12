@@ -103,7 +103,11 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
         if self._device.system_mode in [SystemMode.FROSTGUARD, SystemMode.SUMMER]:
             return HVACAction.OFF
 
-        if self._module.boiler_status is True:
+        boiler_status = self.coordinator.data.boiler_statuses.get(self._module_id)
+        if boiler_status is None:
+            boiler_status = self._module.boiler_status
+
+        if boiler_status is True:
             return HVACAction.HEATING
 
         return HVACAction.IDLE

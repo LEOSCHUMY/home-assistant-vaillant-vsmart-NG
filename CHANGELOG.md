@@ -4,6 +4,10 @@
 
 ### Fixed
 
+- Prefer the home-scoped module `boiler_status` from the same `homestatus` response as room temperatures for `hvac_action`. Match stable module IDs, preserve explicit `False`, reject ambiguous mappings, and fall back to the legacy endpoint when the current status is unavailable. Do not retain readings from a previous polling cycle. Polling intervals and heating commands are unchanged.
+
+### Fixed
+
 - Convert firmware `sw_version` values to strings for Home Assistant device metadata, preserving unavailable values as `None`. Applies to device, module, program and measurement entities without changing identifiers or control behavior. Intended for the next NG patch release after validation.
 
 ### Documentation
