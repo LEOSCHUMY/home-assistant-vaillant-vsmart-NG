@@ -2,21 +2,32 @@
 
 ## [Unreleased]
 
+No changes yet.
+
+## 0.1.1 — Heating status and firmware compatibility
+
 ### Fixed
 
-- Prefer the home-scoped module `boiler_status` from the same `homestatus` response as room temperatures for `hvac_action`. Match stable module IDs, preserve explicit `False`, reject ambiguous mappings, and fall back to the legacy endpoint when the current status is unavailable. Do not retain readings from a previous polling cycle. Polling intervals and heating commands are unchanged.
+- Prefer the home-scoped module `boiler_status` from the same `homestatus` response as room temperatures for `hvac_action`. Match stable module IDs, preserve explicit `False`, reject ambiguous mappings, and fall back to the legacy endpoint when the current state is unavailable. Build fresh readings on every poll.
+- Convert firmware `sw_version` values to strings for Home Assistant device metadata, preserving unavailable values as `None`. Applies to device, module, program and measurement entities without changing identifiers or control behavior.
 
-### Fixed
+### Dependencies
 
-- Convert firmware `sw_version` values to strings for Home Assistant device metadata, preserving unavailable values as `None`. Applies to device, module, program and measurement entities without changing identifiers or control behavior. Intended for the next NG patch release after validation.
+- Use the published [`vaillant-netatmo-api-ng==0.1.1`](https://pypi.org/project/vaillant-netatmo-api-ng/0.1.1/) package, which exposes room readings and module boiler states in one uncached snapshot. No development Git pin is required.
+
+### Validation
+
+- Verify the definitive integration files and library `0.1.1` on a vSMART installation, including a natural ON/OFF cycle on 2026-11-12. Heating activity matched the physical boiler at the first polling cycle after each transition while the legacy endpoint still reported the previous state. This covers one installation and does not establish a general cloud-latency guarantee.
+- Keep the five-minute polling interval, boiler commands, schedules, target temperatures, system-mode precedence and entity identifiers unchanged. Regression tests cover explicit `False`, absent states, home/module mapping and failed polling cycles.
 
 ### Documentation
 
-- Following the published `v0.1.0` release, document the **experimental** original-to-NG Marketplace migrations tested on Home Assistant 2026.11.1: a secondary installation (2 devices and 19 entities preserved) and a primary TrueNAS installation (configuration and entity identifiers preserved, `homestatus` working). Include the internal-storage workaround, backup requirements and limitations. No runtime changes.
+- Document the **experimental** original-to-NG Marketplace migrations tested with NG `0.1.0` on Home Assistant 2026.11.1. Preserve their scope and limitations; the `0.1.1` heating-state validation is separate from Marketplace migration and update testing.
+- Align README, Marketplace information and migration guidance with NG release versioning, published dependencies and the tested behavior.
 
 ## 0.1.0 — First NG release (published 2026-11-11)
 
-This fork starts its own version numbering at `0.1.0`, separate from the upstream integration, with the public name **Vaillant vSMART NG** in Home Assistant and HACS. The technical domain remains `vaillant_vsmart` to retain existing configurations. The first NG release will depend on the published `vaillant-netatmo-api-ng==0.1.0` Python library.
+This fork starts its own version numbering at `0.1.0`, separate from the upstream integration, with the public name **Vaillant vSMART NG** in Home Assistant and HACS. The technical domain remains `vaillant_vsmart` to retain existing configurations. The first NG release depends on the published `vaillant-netatmo-api-ng==0.1.0` Python library.
 
 ### Fixed
 

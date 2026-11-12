@@ -28,6 +28,8 @@ The integration provides the following Home Assistant platforms:
 
 Available entities and controls depend on the equipment, account and data exposed by the Vaillant cloud service.
 
+From `0.1.1`, room temperatures and heating activity use the same `homestatus` response when valid readings are available, with a fallback to the legacy endpoint. The integration polls approximately every five minutes; it does not provide instant state changes or a guarantee on cloud update latency.
+
 ## Installation and migration
 
 > [!WARNING]
@@ -37,7 +39,7 @@ Available entities and controls depend on the equipment, account and data expose
 
 ### Marketplace / HACS custom repository (new installations only)
 
-1. First check the [GitHub Releases](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases) page for a published **v0.1.0** release. Until the release exists, the Marketplace may offer a development-branch commit instead; **do not mistake a commit hash for the stable release**.
+1. First check the [GitHub Releases](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases) page for a published release (starting with **v0.1.0**). Until the release exists, the Marketplace may offer a development-branch commit instead; **do not mistake a commit hash for the stable release**.
 2. In Home Assistant 2026.11 or newer, open **Settings → Marketplace → Add from link**, and enter `https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG`. On older Home Assistant installations with HACS, use **HACS → Custom repositories**, adding it as an **Integration**.
 3. Locate **Vaillant vSMART NG** and check the version/source before installing. This fork is not listed in the default catalog.
 4. Install the **released version** and restart Home Assistant.
