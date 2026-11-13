@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Development and security
+
+- Replace the 2021-era tooling baseline with a current HA 2026.11.1 / Python 3.14 regression environment and a separate, frozen HA 2024.5.0 / Python 3.12 compatibility job. Use a minimal real-HA fixture instead of the version-coupled blueprint test harness.
+- Add a failing pip-audit check for the current resolved environment, run on PRs, pushes, a weekly schedule and manual dispatch. Keep its tooling isolated and document that historical compatibility is not a security baseline.
+- Group Dependabot version updates weekly, preserve manual review/publication, and explain the separate fork-enablement setting. No installed integration version or published library requirement changes.
+
 ### Documentation
 
 - Restore the upstream vSMART and MiGo setup examples, explain the six authentication fields still required by the setup flow, and distinguish application credentials from account credentials and NG field validation.

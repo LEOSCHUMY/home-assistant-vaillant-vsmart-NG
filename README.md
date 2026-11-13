@@ -85,9 +85,11 @@ For the integration code released as `0.1.1`, with the published `vaillant-netat
 
 | Home Assistant | Verification |
 | --- | --- |
-| 2024.5.0 | All integration platforms import; the 37 regression tests pass in an isolated Python 3.12 environment |
-| 2024.6.4 | The 37 regression tests pass; this is the pinned GitHub Actions test environment |
-| 2026.11.1 | Real installation: heating and idle transitions observed after polling, including cases where the legacy boiler state lagged behind homestatus |
+| 2024.5.0 | All integration platforms import; 37 regression tests pass in the isolated Python 3.12 compatibility environment |
+| 2024.6.4 | Previous baseline: 37 regression tests passed; CI now checks the declared minimum and current HA |
+| 2026.11.1 | 37 regression tests pass on Python 3.14; real installation also confirmed heating and idle transitions after polling |
+
+The current CI environment and the frozen minimum-version compatibility environment have different purposes. Historic HA compatibility is not a security recommendation. See [dependency maintenance and security](SECURITY.md) for audit scope and update procedures.
 
 Automated tests mock cloud responses and do not exercise a real boiler. These results do not establish that every intermediate Home Assistant release, every control, or every installation has been tested. Older standalone HACS migration remains unvalidated; see [MIGRATION.md](MIGRATION.md).
 
