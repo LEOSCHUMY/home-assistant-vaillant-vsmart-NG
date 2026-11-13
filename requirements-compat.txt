@@ -1,0 +1,7 @@
+# Isolated compatibility tests only; do not deploy this historic HA environment.
+homeassistant==2024.5.0
+pytest==8.3.5
+pytest-asyncio==0.24.0
+josepy<2.0
+vaillant-netatmo-api-ng==0.1.1
+tzdata==2026.6

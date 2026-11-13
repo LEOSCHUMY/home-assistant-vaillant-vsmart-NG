@@ -4,13 +4,21 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    # Keep the historic compatibility environment fixed; it is not a deployment target.
+    exclude-paths: ["requirements-compat.txt"]
+    groups:
+      python-dependencies:
+        patterns: ["*"]
     commit-message:
-      prefix: "fix"
+      prefix: "chore(deps)"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns: ["*"]
     commit-message:
-      prefix: "fix"
+      prefix: "chore(deps)"

@@ -31,7 +31,7 @@ configuration and helper scripts.
 A typical local setup is:
 
 ```bash
-python3 -m venv .venv
+python3.14 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
@@ -54,7 +54,7 @@ Run the maintained regression suite locally with:
 python3 -m pytest -q tests/test_regression_resilience.py tests/test_room_temperature.py tests/test_boiler_status.py
 ```
 
-GitHub Actions runs these three modules using the Home Assistant and test-plugin versions pinned in `requirements.txt`. Older blueprint test modules still reference APIs that this integration does not expose; running the entire `tests/` directory is not the supported regression command.
+GitHub Actions runs these three modules on current HA/Python using `requirements.txt`, and separately on the historic HA minimum using `requirements-compat.txt`. The maintained suite uses a minimal real-HA fixture with a mocked cloud client; no external HA test harness is required. Older blueprint test modules still reference APIs that this integration does not expose; running the entire `tests/` directory is not the supported regression command.
 
 The minimum version in `hacs.json` is an installation requirement. Before raising it, check the APIs and dependencies actually used. Before claiming compatibility, distinguish automated tests from real-installation observations; the current evidence is documented in the README.
 
