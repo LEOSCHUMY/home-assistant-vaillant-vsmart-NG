@@ -20,6 +20,8 @@ NG starts its own release series at `0.1.0`; its version numbers do not track up
 
 From `0.1.1`, room temperatures and heating activity use valid `homestatus` readings with a legacy fallback. Polling remains approximately every five minutes; cloud update latency is not guaranteed. Availability depends on the equipment and API responses.
 
+Version `0.1.2` uses published `vaillant-netatmo-api-ng==0.2.0` and bundles the vSMART brand icons. The Home Assistant minimum remains 2024.5; default-catalog inclusion is still pending review.
+
 ## Existing original Vaillant installation
 
 **Read [MIGRATION.md](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/blob/dev/MIGRATION.md) before installing NG.** Original and NG use the same domain and directory. Do not install them alongside each other, delete the existing Home Assistant config entry, or assume uninstalling the original preserves it.

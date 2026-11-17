@@ -81,15 +81,16 @@ Keep your account credentials and client secrets private. Do not post them in is
 
 The minimum Home Assistant version declared in `hacs.json` is **2024.5** (2024.5.0). It is a minimum installation requirement, not the latest version tested.
 
-For the integration code released as `0.1.1`, with the published `vaillant-netatmo-api-ng==0.1.1` dependency:
+Version `0.1.2` pins published `vaillant-netatmo-api-ng==0.2.0` in the integration manifest and both regression environments. The library requires Python 3.11+, which does not raise the Home Assistant 2024.5 minimum. Integration thermostat-control Python source is unchanged from `0.1.1`; the library's thermostat-control Python source is also unchanged from its own `0.1.1` release.
 
-| Home Assistant | Verification |
+| Home Assistant | Verification with library 0.2.0 |
 | --- | --- |
-| 2024.5.0 | All integration platforms import; 37 regression tests pass in the isolated Python 3.12 compatibility environment |
-| 2024.6.4 | Previous baseline: 37 regression tests passed; CI now checks the declared minimum and current HA |
-| 2026.11.1 | 37 regression tests pass on Python 3.14; real installation also confirmed heating and idle transitions after polling |
+| 2024.5.0 | 37 regression tests pass in the isolated Python 3.12 compatibility environment |
+| 2026.11.1 | 37 regression tests pass in the Python 3.14 environment; a library candidate built from the release source was also field-tested on Python 3.14.10 |
 
-The development branch now pins published `vaillant-netatmo-api-ng==0.2.0` in the integration manifest and both regression environments. This library requires Python 3.11+, which does not raise the Home Assistant 2024.5 minimum. Its thermostat-control Python source is unchanged from 0.1.1. Before adoption, a candidate built from the release source was field-tested on Home Assistant 2026.11.1 / Python 3.14.10: both boiler ON and OFF transitions on 2026-11-17 were reflected in selected homestatus readings at the first subsequent poll. This observation covers one installation; it is separate from the historical 0.1.1 test table above.
+During the field test on 2026-11-17, physical boiler ON at 01:45 and OFF at 02:15 were reflected in selected homestatus readings at the first subsequent polls (01:47:47 and 02:17:53, Europe/Rome). Other installed dependency versions were unchanged. This observation covers one installation and boiler-status selection, not every control or a general cloud-latency guarantee. Earlier regression checks on HA 2024.6.4 and field observations with library 0.1.1 remain historical evidence.
+
+Version `0.1.2` also bundles the vSMART brand icons requested during default-catalog review. The repository remains a custom repository until that review is accepted.
 
 The current CI environment and the frozen minimum-version compatibility environment have different purposes. Historic HA compatibility is not a security recommendation. See [dependency maintenance and security](SECURITY.md) for audit scope and update procedures.
 
