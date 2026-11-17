@@ -89,6 +89,8 @@ For the integration code released as `0.1.1`, with the published `vaillant-netat
 | 2024.6.4 | Previous baseline: 37 regression tests passed; CI now checks the declared minimum and current HA |
 | 2026.11.1 | 37 regression tests pass on Python 3.14; real installation also confirmed heating and idle transitions after polling |
 
+The development branch now pins published `vaillant-netatmo-api-ng==0.2.0` in the integration manifest and both regression environments. This library requires Python 3.11+, which does not raise the Home Assistant 2024.5 minimum. Its thermostat-control Python source is unchanged from 0.1.1. Before adoption, a candidate built from the release source was field-tested on Home Assistant 2026.11.1 / Python 3.14.10: both boiler ON and OFF transitions on 2026-11-17 were reflected in selected homestatus readings at the first subsequent poll. This observation covers one installation; it is separate from the historical 0.1.1 test table above.
+
 The current CI environment and the frozen minimum-version compatibility environment have different purposes. Historic HA compatibility is not a security recommendation. See [dependency maintenance and security](SECURITY.md) for audit scope and update procedures.
 
 Automated tests mock cloud responses and do not exercise a real boiler. These results do not establish that every intermediate Home Assistant release, every control, or every installation has been tested. Older standalone HACS migration remains unvalidated; see [MIGRATION.md](MIGRATION.md).

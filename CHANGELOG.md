@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Library dependency
+
+- Adopt published `vaillant-netatmo-api-ng==0.2.0` in the integration manifest and both regression environments. The library raises the supported Python baseline to 3.11+ and updates dependency constraints; its thermostat-control Python source is unchanged from 0.1.1. The integration minimum remains Home Assistant 2024.5.
+- Field-tested the library candidate on Home Assistant 2026.11.1 / Python 3.14.10 without changing other dependency versions. On 2026-11-17, physical boiler ON at 01:45 and OFF at 02:15 were reflected in selected homestatus readings at the first following polls (01:47:47 and 02:17:53, Europe/Rome), while legacy readings lagged one poll. This covers one installation and does not guarantee general cloud latency.
+
 ### Marketplace branding
 
 - Bundle the existing Vaillant vSMART brand icons in the integration's `brand/` directory, including 256×256 and 512×512 PNG variants, as requested during HACS default-catalog review. A new published integration release is required before requesting review again.
