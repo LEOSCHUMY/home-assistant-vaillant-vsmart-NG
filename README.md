@@ -35,7 +35,7 @@ From `0.1.1`, room temperatures and heating activity use the same `homestatus` r
 > [!WARNING]
 > **Already using the original Vaillant vSMART integration?** Do **not** install Vaillant vSMART NG alongside it, remove the existing integration from Home Assistant, or uninstall the original from HACS without following a validated migration procedure. Both use the `vaillant_vsmart` domain and installation directory.
 >
-> See **[Migration from the original integration](MIGRATION.md)** before changing anything. **Two experimental Marketplace migrations succeeded on Home Assistant 2026.11.1**: the secondary system retained its 2 devices and 19 entities, and the primary TrueNAS system resumed normal operation after transfer, but requires an unsupported internal-storage workaround. It is **not a general or risk-free migration method**, and older standalone HACS remains untested.
+> See **[Migration from the original integration](MIGRATION.md)** before changing anything. **Two experimental Marketplace migrations succeeded on Home Assistant 2026.11.1**: the secondary system retained its 2 devices and 19 entities, and the primary TrueNAS system resumed normal operation after transfer, but requires an unsupported internal-storage workaround. It is **not a general or risk-free migration method**, and older standalone HACS remains untested. A later NG-to-NG Marketplace update to 0.1.2 succeeded on the primary installation after a temporary library field test; its limited evidence is recorded separately in MIGRATION.md.
 
 ### Marketplace / HACS custom repository (new installations only)
 

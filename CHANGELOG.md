@@ -2,7 +2,10 @@
 
 ## [Unreleased]
 
-No changes yet.
+### Migration documentation
+
+- Record the observed NG-to-NG Marketplace update to 0.1.2 on HA 2026.11.1, explicitly identifying the temporary library field-test starting state and the post-restart checks. Keep this separate from the experimental original-to-NG transfer and earlier ON/OFF observations.
+- Document the Marketplace ownership/uninstall constraints reviewed in HA 2026.11.1 and add a proposed isolated migration/preflight/rollback validation plan. No automatic transfer or private-storage editing tool is introduced.
 
 ## 0.1.2 — Dependency maintenance and bundled brand icons (2026-11-17)
 

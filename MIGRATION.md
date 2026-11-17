@@ -8,7 +8,7 @@
 
 ## Migration status
 
-**Before installing, select a specific published [NG GitHub Release](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases).** Do not treat a development-branch commit as a released version. The historical Marketplace migration reports below used NG `v0.1.0`; they do not validate Marketplace upgrades from `0.1.0` to `0.1.1`.
+**Before installing, select a specific published [NG GitHub Release](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases).** Do not treat a development-branch commit as a released version. The historical original-to-NG migration reports below used NG `v0.1.0`. A later NG-to-NG Marketplace update to `v0.1.2` was observed separately; see [Observed NG-to-NG update](#observed-ng-to-ng-update-to-v012-2026-11-17). Neither observation establishes a generally supported transfer from the original repository.
 
 - **Existing manually installed integrations:** a controlled file replacement is described below, but should be tested with the final release archive before being recommended as generally proven.
 - **Existing Marketplace-managed installations of the original integration:** two **experimental** migrations succeeded on Home Assistant **2026.11.1**, retaining its configuration and entity IDs. The steps below involve editing an internal Marketplace storage file, are not officially supported, and have not been validated across installations. Standard direct installation of NG over the original was blocked by directory ownership. **Do not use Delete and uninstall on the original** if you need to preserve the configuration.
@@ -30,7 +30,7 @@ Use this route only if the original integration was **not being managed by HACS*
 1. Download a **specific published NG release tag** from [the NG repository](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases). Record the selected version; do not use a changing development branch as the source.
 2. Stop Home Assistant cleanly. Preserve the entire backup copy of `custom_components/vaillant_vsmart/` outside the active `custom_components` directory.
 3. Replace the contents of **the existing** `/config/custom_components/vaillant_vsmart/` directory with the files from that release's `custom_components/vaillant_vsmart/` directory. **Do not create a second directory** such as `vaillant_vsmart_ng`.
-4. Check that the installed `manifest.json` identifies `Vaillant vSMART NG`, has `"domain": "vaillant_vsmart"` and matches the selected release version and its published library requirement. For integration `0.1.1`, these are `"version": "0.1.1"` and `vaillant-netatmo-api-ng==0.1.1`.
+4. Check that the installed `manifest.json` identifies `Vaillant vSMART NG`, has `"domain": "vaillant_vsmart"` and matches the selected release version and its published library requirement. For integration `0.1.2`, these are `"version": "0.1.2"` and `vaillant-netatmo-api-ng==0.2.0`. These are current release examples, not a claim that manual original-to-NG replacement with 0.1.2 has been field-tested.
 5. Start Home Assistant and verify that the pre-existing integration entry loads. **Do not run Add integration again** if the existing entry is already configured.
 6. Compare the device list and recorded `entity_id` values against the backup. Check heating controls, schedules, hot-water entities and automations as applicable. Confirm that room temperature updates using `homestatus` and that the Home Assistant logs show no dependency-installation or setup errors.
 
@@ -62,11 +62,11 @@ A second migration was carried out on a primary Home Assistant installation, ini
 - A targeted script removed only the original repository's `"installed": true` property from `/config/.storage/marketplace.repositories`, retaining the NG record and all other fields. A read-only JSON check afterward confirmed both repository records were present and neither was marked installed.
 - After starting Home Assistant, the pre-existing Vaillant integration remained functional. Marketplace showed both repositories as not installed.
 - The official NG `v0.1.0` release was then installed successfully through Marketplace. Marketplace showed NG installed and the original not installed, with no installation errors.
-- The user restarted Home Assistant and **reported normal operation**. In a subsequent check, the user also confirmed that the **device/entity counts and entity IDs remained unchanged** and that **temperature updates via `homestatus` continued correctly**. Future NG-to-NG Marketplace updates have not yet been tested.
+- The user restarted Home Assistant and **reported normal operation**. In a subsequent check, the user also confirmed that the **device/entity counts and entity IDs remained unchanged** and that **temperature updates via `homestatus` continued correctly**. A later NG-to-NG Marketplace update to `v0.1.2` was observed on this installation, as documented separately below; the original-to-NG ownership transfer still relied on the experimental workaround.
 
 **This test used the alternative of stopping Home Assistant completely**, instead of disabling the Marketplace integration. Modify its internal storage only while Home Assistant is fully stopped, and only with complete backups and a recovery plan.
 
-This demonstrates a successful migration **for the secondary test environment**, plus a successful primary-system switch with normal operation reported. It does **not** establish that the workaround is generally safe, that all older HACS versions behave the same, or that future Marketplace updates and rollback work correctly. Do not treat the previous registry-edit action as an officially endorsed migration.
+This demonstrates a successful migration **for the secondary test environment**, plus a successful primary-system switch with normal operation reported. It does **not** establish that the workaround is generally safe, that older HACS versions behave the same, or that rollback works correctly. The later NG-to-NG update documents one observed path, not every future Marketplace update. Do not treat the previous registry-edit action as an officially endorsed migration.
 
 ### Experimental sequence reproduced with NG v0.1.0
 
@@ -82,6 +82,28 @@ This demonstrates a successful migration **for the secondary test environment**,
 10. Confirm that the pre-existing devices and entity IDs remain (the test retained **2 devices and 19 entities**), temperature readings refresh on the existing polling schedule, controls behave as expected, and no new dependency/setup errors occur. Also verify future update tracking points to NG before trusting Marketplace upgrades.
 
 **For other users:** this is a reproducible **experimental** report, not a guarantee. Restore the full backup if configuration or registry state becomes inconsistent. Home Assistant Marketplace may change its storage format and behavior in future versions.
+
+## Observed NG-to-NG update to v0.1.2 (2026-11-17)
+
+This is an update of an installation already managed as NG, not a new test of the original-to-NG repository transfer.
+
+- Environment: primary TrueNAS Home Assistant installation, HA **2026.11.1** / Python **3.14.10**.
+- Before the update: integration **0.1.1**, with library **0.2.0** installed for a controlled field test. The temporary manifest requirement pointed to a local wheel in `/config`; this was not an untouched standard 0.1.1 installation.
+- The user updated the existing NG repository through Marketplace/HACS to published **v0.1.2** and restarted Home Assistant.
+- A read-only check after restart confirmed integration **0.1.2**, manifest requirement `vaillant-netatmo-api-ng==0.2.0`, installed library **0.2.0**, and both `brand/icon.png` and `brand/icon@2x.png` present. The temporary wheel requirement was no longer in the manifest.
+- At **05:22:32 Europe/Rome**, the subsequent boiler-status log selected `source=homestatus homestatus=False legacy=False selected=False`, consistent with the user's report that the boiler was off.
+
+The earlier ON/OFF cycle validated the library candidate before this official integration update. It must not be presented as a new ON/OFF test of the updated release. Device/entity counts, all controls, an ordinary unmodified 0.1.1-to-0.1.2 upgrade, rollback, and older standalone HACS were not separately revalidated in this update observation.
+
+## Migration improvement work
+
+The goal is a repeatable transfer that preserves configuration and identifiers without depending on edits to private storage. No new automatic migration tool or supported transfer procedure is provided by this documentation update.
+
+The [official Marketplace integration guide](https://contributors.home-assistant.io/marketplace/guides/integrations/#pick-a-domain-that-is-yours) documents that two repositories cannot install the same integration domain. Source review of HA **2026.11.1** confirms the ownership guard in [IntegrationRepository.async_pre_installation](https://github.com/home-assistant/core/blob/2026.11.1/homeassistant/components/marketplace/repositories/integration.py) and the refusal to uninstall a repository while its domain has configured entries in [marketplace_repository_uninstall](https://github.com/home-assistant/core/blob/2026.11.1/homeassistant/components/marketplace/websocket/repository.py). No repository-transfer command was found in the reviewed [repository commands](https://github.com/home-assistant/core/blob/2026.11.1/homeassistant/components/marketplace/websocket/repository.py) or [repository-list commands](https://github.com/home-assistant/core/blob/2026.11.1/homeassistant/components/marketplace/websocket/repositories.py). This is a bounded source review, not a guarantee about every release or future API.
+
+GitHub repository renaming/transfers and the automatic takeover of old HACS by Marketplace are different operations; they do not establish original-to-NG fork transfer support. Catalog acceptance also does not prove that an installed original integration can switch to NG automatically.
+
+See [the migration validation plan](docs/MIGRATION_VALIDATION.md) for the proposed read-only preflight and isolated test matrix. New repository-transfer or rollback experiments should use a disposable secondary installation, not the working primary system.
 
 ## Original installation managed by older HACS — not validated
 
