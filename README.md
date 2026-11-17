@@ -4,6 +4,7 @@
 [![GitHub Activity](https://img.shields.io/github/commit-activity/y/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/commits/dev)
 [![License](https://img.shields.io/github/license/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](LICENSE)
 [![HACS](https://img.shields.io/badge/HACS-custom-orange.svg?style=for-the-badge)](https://hacs.xyz)
+[![Support development on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20development-FF5E5B?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/LEOSCHUMY)
 
 **Vaillant vSMART NG** is a Home Assistant custom integration for monitoring and controlling compatible Vaillant vSMART heating systems through the Vaillant cloud service.
 
@@ -107,6 +108,12 @@ Automated tests mock cloud responses and do not exercise a real boiler. These re
 This repository is maintained by **[LEOSCHUMY](https://github.com/LEOSCHUMY)**.
 
 The maintainer also makes use of **ChatGPT (OpenAI) as an AI assistant** for development support, code review, documentation, troubleshooting and test/CI work. The AI assistant is a support tool, not a project owner or maintainer: project direction, review and publication decisions remain with the human maintainer.
+
+## Support development
+
+If this project is useful to you, you can optionally support maintenance of the NG fork with a tip on [Ko-fi](https://ko-fi.com/LEOSCHUMY).
+
+Contributions, testing and bug reports are equally welcome.
 
 ## Contributing
 

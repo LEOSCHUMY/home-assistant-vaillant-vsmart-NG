@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Project support
+
+- Add an optional Ko-fi support link and badge to the README while keeping contributions, testing and bug reports welcome.
+
 ### Migration documentation
 
 - Record the observed NG-to-NG Marketplace update to 0.1.2 on HA 2026.11.1, explicitly identifying the temporary library field-test starting state and the post-restart checks. Keep this separate from the experimental original-to-NG transfer and earlier ON/OFF observations.
