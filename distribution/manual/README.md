@@ -37,6 +37,8 @@ These steps describe the intended released package. They are not an instruction 
 5. Compare the existing config entry, devices, entity IDs and representative automations with the recorded baseline. Check a successful update and the applicable controls before treating the update as complete.
 6. Repeat this manual process for later releases. There is no automatic HACS update channel for this distribution.
 
+The component files and library requirement must be updated together. Existing NG 0.1.2 or earlier imports the older namespace: upgrading its NG library alone, including indirectly by installing the new-domain variant, would leave that old component unable to import its dependency. Both new variants must agree on the same new NG library version before they are used together.
+
 The new import namespace is `vaillant_netatmo_api_ng`; the old import namespace is not provided as an alias. Do not install development requirements, force library versions or copy packages into HA's Python directory as part of this manual procedure.
 
 ## Recovery

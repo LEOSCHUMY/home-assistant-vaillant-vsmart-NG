@@ -36,3 +36,5 @@ The user chose to skip prolonged polling and a natural ON/OFF cycle. They remain
 The compatible-domain package uses the same implementation, and both variants pass the automated regression suite. The previously published NG 0.1.2/library 0.2.0 installation was field-tested separately. Updating that installation to the new library namespace while preserving its identifiers, and recovering back to the previous version, have not been field-tested. That is a separate scope from the successful new-domain setup above.
 
 The production installation was not changed during this secondary-system experiment. No new stable library or integration release has been published for this candidate.
+
+The observation does not establish coexistence with unchanged NG 0.1.2 or earlier. Those older NG components import the old namespace while requiring an older version of the same NG distribution. Upgrading that distribution alone would break their imports. Component and requirement must move together to the compatible new-namespace build before such a combination is considered.

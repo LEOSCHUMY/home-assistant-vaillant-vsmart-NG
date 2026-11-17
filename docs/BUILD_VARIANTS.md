@@ -47,6 +47,10 @@ The manifest and test requirements now target **unpublished `vaillant-netatmo-ap
 
 The library candidate is checked alongside upstream 0.13.1 for disjoint installed files and separate classes in both import orders. The integration package runner also imports both libraries after HA initializes its HTTP aliases. These checks establish package isolation, not a full original/NG config-entry setup, registry migration, real-account login, controls or rollback. Those remain release gates.
 
+## Existing NG library compatibility
+
+The successful side-by-side field test used the official original integration/library, which has a different distribution name. NG 0.1.2 and earlier instead depends on the same NG distribution name as the new candidate but imports the old namespace. Installing the new library without updating that old component would break its imports. Do not recommend new-domain installation alongside an unchanged older NG component. For continuity, update the old-domain component and library requirement together through the compatible variant, then keep both variants on the same new NG library version. That compatible upgrade remains unverified on the field.
+
 ## Final documentation and distribution
 
 The final public README should recommend the HACS/Marketplace variant first, with its icon and install button. It should link to a separate manual distribution repository for users who want to keep the existing integration domain and entity identifiers. That repository should hold the manual installation, update and rollback instructions and receive generated output from the same reviewed source; it must not become a second hand-maintained implementation.

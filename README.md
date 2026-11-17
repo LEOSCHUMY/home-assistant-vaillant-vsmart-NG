@@ -30,6 +30,8 @@ If the repository is not yet shown in your catalog, the button can add it as a c
 
 The new-domain version is a separate Home Assistant integration. Initial coexistence with original `0.11.2` was verified on a secondary HA 2026.11.1 system, but it does not automatically move existing entries, device/entity IDs or automation references. The [test report](docs/COEXISTENCE_TEST.md) records the exact scope and unverified parts.
 
+**Older NG releases need special care:** NG 0.1.2 and earlier import the older NG library namespace. Installing the new library alongside that unchanged component would break those imports because both versions use the same NG distribution name. Update the existing component and its requirement together through the compatible route before considering a new-domain NG installation beside it. The successful coexistence test used the official original integration, not an unchanged older NG component.
+
 If you want to retain an existing `vaillant_vsmart` entry, read the **[manual compatibility distribution guide](distribution/manual/README.md)** instead. The dedicated manual distribution repository is being prepared; this link currently opens its source instructions. It receives generated output from this same implementation and uses the same NG library. It is intended for manual updates and is not a second catalog entry.
 
 The compatible update to the new library namespace and its rollback have not been field-tested. Repository-manager ownership is a separate issue from replacing files; do not assume manual replacement transfers HACS/Marketplace tracking. Historical shared-domain experiments are documented in [MIGRATION.md](MIGRATION.md), not presented as a general migration procedure.
