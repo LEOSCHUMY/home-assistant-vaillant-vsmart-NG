@@ -48,3 +48,12 @@ jobs:
           name: vsmart-domain-variants
           path: ${{ runner.temp }}/vsmart-artifacts/
           if-no-files-found: error
+      - name: Export manual repository without publishing
+        run: python3 scripts/export_manual_repository.py --output "$RUNNER_TEMP/vsmart-manual-repository"
+      - name: Upload manual repository review snapshot
+        uses: actions/upload-artifact@v7
+        with:
+          name: manual-repository-review
+          path: ${{ runner.temp }}/vsmart-manual-repository/
+          include-hidden-files: true
+          if-no-files-found: error

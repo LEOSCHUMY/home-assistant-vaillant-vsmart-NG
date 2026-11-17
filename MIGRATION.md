@@ -1,7 +1,10 @@
-# Migrating to Vaillant vSMART NG
+# Historical shared-domain migration reports
 
 > [!IMPORTANT]
-> **Vaillant vSMART NG replaces the original integration; it is not a second integration to install alongside it.**
+> This document records the older NG releases that used domain `vaillant_vsmart`, including experimental private-storage workarounds. It is not the installation guide for the new-domain HACS version. Use the [main README](README.md) for the recommended `vaillant_vsmart_ng` version, the [manual compatibility guide](distribution/manual/README.md) for the planned old-domain distribution, and the [coexistence report](docs/COEXISTENCE_TEST.md) for the latest secondary-system evidence.
+
+> [!IMPORTANT]
+> **The historical shared-domain NG releases described here replace the original integration; they are not a second integration to install alongside it.**
 > Both use the Home Assistant domain `vaillant_vsmart` and the same installation directory, `/config/custom_components/vaillant_vsmart`. Do **not** add a second integration entry in **Settings → Devices & services**.
 >
 > This is an independent community fork, not affiliated with or endorsed by Vaillant or Netatmo.

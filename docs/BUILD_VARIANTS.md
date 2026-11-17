@@ -51,7 +51,15 @@ The library candidate is checked alongside upstream 0.13.1 for disjoint installe
 
 The final public README should recommend the HACS/Marketplace variant first, with its icon and install button. It should link to a separate manual distribution repository for users who want to keep the existing integration domain and entity identifiers. That repository should hold the manual installation, update and rollback instructions and receive generated output from the same reviewed source; it must not become a second hand-maintained implementation.
 
-The manual repository has not been created or selected, so no destination link or automated upload is configured. Creating/publishing that repository and changing release workflows remain explicit later steps. A catalog repository should expose one integration domain; two generated archives are not a promise that HACS offers a variant selector or automatically routes existing installations to the compatible artifact.
+The selected manual distribution name is `LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual`; the repository has not been created yet. Until it exists, the main README links to the source manual guide instead of a broken repository URL. No automated push is configured. The source [manual README template](../distribution/manual/README.md) contains the manual installation/update/rollback instructions and clearly labels current exports as development snapshots. The exporter creates the old-domain component, README, license, common changelog, Ko-fi funding file, generated-file verification workflow and provenance report. It deliberately omits `hacs.json`: the manual repository is not another catalog/custom-repository install route.
+
+```bash
+python scripts/export_manual_repository.py --output artifacts/manual-repository-preview
+```
+
+Use a new output directory: the exporter refuses to overwrite an existing one. It reads Git HEAD and records whether the source tree was modified, so a dirty local preview cannot be mistaken for an exact source-commit export. It never creates a GitHub repository, pushes commits, changes a Home Assistant installation or publishes a release. CI/manual preparation workflows upload a review artifact, including hidden funding/workflow files.
+
+A catalog repository should expose one integration domain; two generated archives are not a promise that HACS offers a variant selector or automatically routes existing installations to the compatible artifact.
 
 Keeping the old domain and current unique-ID logic is intended to preserve identities for the compatible variant. Verify config entries, devices, entity IDs, update ownership and rollback on a secondary installation before claiming that outcome generally. A new-domain installation is a separate setup, not an automatic migration of existing config entries.
 
@@ -59,9 +67,9 @@ Keeping the old domain and current unique-ID logic is intended to preserve ident
 
 1. Review the isolated NG library candidate and its coexistence checks, select a stable version, and publish it through the normal approval process.
 2. Point **both** integration variants at that one published library and run the isolated matrix again.
-3. Test installation/configuration coexistence, config-entry identities, websocket registrations and available controls on a secondary HA instance; source/import checks alone are insufficient.
-4. Create the manual distribution repository and its instructions; verify the compatible upgrade and restore path without rewriting private registry storage.
-5. Finish the HACS-first README, icon/button and manual-repository link, validate packaging with HACS, then select a new release version.
+3. Initial new-domain/original configuration coexistence was verified on the secondary instance; see [the report](COEXISTENCE_TEST.md). Prolonged polling and new transitions were skipped. Every-control and identity/rollback coverage must not be inferred from that observation.
+4. Create and populate the manual distribution repository from the prepared exporter/template. Compatible upgrade/restore remain unverified; retain that limitation in the instructions.
+5. The HACS-first README now includes the icon/install button. Replace its temporary manual-guide link with the real manual repository after creation, replace development dependency pins with a published library, validate packaging with HACS, and select a new release version.
 6. Publish only after review and update the HACS submission with the released new-domain integration.
 
 No production upgrade, private-storage edit, source-branch merge or release publication is authorized by running the local builder.
