@@ -32,7 +32,7 @@ The new-domain version is a separate Home Assistant integration. Initial coexist
 
 **Older NG releases need special care:** NG 0.1.2 and earlier import the older NG library namespace. Installing the new library alongside that unchanged component would break those imports because both versions use the same NG distribution name. Update the existing component and its requirement together through the compatible route before considering a new-domain NG installation beside it. The successful coexistence test used the official original integration, not an unchanged older NG component.
 
-If you want to retain an existing `vaillant_vsmart` entry, read the **[manual compatibility distribution guide](distribution/manual/README.md)** instead. The dedicated manual distribution repository is being prepared; this link currently opens its source instructions. It receives generated output from this same implementation and uses the same NG library. It is intended for manual updates and is not a second catalog entry.
+If you want to retain an existing `vaillant_vsmart` entry, read the **[manual compatibility repository](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual)** instead. That dedicated repository contains the manual instructions and receives generated output from this same implementation, using the same NG library. It is intended for manual updates and is not a second catalog entry. Its current contents are a development review snapshot; install only a published compatible release once available.
 
 The compatible update to the new library namespace and its rollback have not been field-tested. Repository-manager ownership is a separate issue from replacing files; do not assume manual replacement transfers HACS/Marketplace tracking. Historical shared-domain experiments are documented in [MIGRATION.md](MIGRATION.md), not presented as a general migration procedure.
 
@@ -51,7 +51,7 @@ Polling remains approximately every five minutes; this is not instant status or 
 
 ## Configuration
 
-Configure the new-domain version through **Settings → Devices & services → Add integration → Vaillant vSMART NG**. An existing original/shared-domain entry remains separate; adding this integration does not migrate its entity IDs or automations. For an update of the compatible manual variant, retain the existing entry and follow the [manual distribution instructions](distribution/manual/README.md).
+Configure the new-domain version through **Settings → Devices & services → Add integration → Vaillant vSMART NG**. An existing original/shared-domain entry remains separate; adding this integration does not migrate its entity IDs or automations. For an update of the compatible manual variant, retain the existing entry and follow the [manual distribution instructions](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual).
 
 The setup form still requires all six fields below. The integration uses them to request an access token; none of these fields is obsolete.
 

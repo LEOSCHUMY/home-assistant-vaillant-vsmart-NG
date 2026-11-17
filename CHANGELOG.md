@@ -4,6 +4,8 @@
 
 ### Distribution repositories and field evidence
 
+- Connect the HACS-first README and Marketplace information to the dedicated generated manual repository, preserving explicit review-only status until publication.
+
 - Present the distinct-domain HACS/Marketplace version as recommended, with the product icon and install button, and prepare dedicated manual compatibility instructions.
 - Export a manual repository snapshot from the same source, with preserved license, common changelog, funding link, provenance and generated-file verification. Exporting does not create a repository, push commits or publish releases.
 - Record initial original/NG coexistence on the secondary system: separate libraries, unchanged original files, and 19 entities/2 distinct devices for each. Prolonged polling and new transitions were skipped; compatible upgrade/rollback remain unverified.

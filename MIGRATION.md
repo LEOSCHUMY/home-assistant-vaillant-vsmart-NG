@@ -1,7 +1,7 @@
 # Historical shared-domain migration reports
 
 > [!IMPORTANT]
-> This document records the older NG releases that used domain `vaillant_vsmart`, including experimental private-storage workarounds. It is not the installation guide for the new-domain HACS version. Use the [main README](README.md) for the recommended `vaillant_vsmart_ng` version, the [manual compatibility guide](distribution/manual/README.md) for the planned old-domain distribution, and the [coexistence report](docs/COEXISTENCE_TEST.md) for the latest secondary-system evidence.
+> This document records the older NG releases that used domain `vaillant_vsmart`, including experimental private-storage workarounds. It is not the installation guide for the new-domain HACS version. Use the [main README](README.md) for the recommended `vaillant_vsmart_ng` version, the [manual compatibility repository](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual) for the planned old-domain distribution, and the [coexistence report](docs/COEXISTENCE_TEST.md) for the latest secondary-system evidence.
 
 > [!IMPORTANT]
 > **The historical shared-domain NG releases described here replace the original integration; they are not a second integration to install alongside it.**

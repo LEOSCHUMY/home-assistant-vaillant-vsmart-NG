@@ -12,7 +12,7 @@ The integration provides thermostat controls, schedules, battery and energy/dura
 
 ## Existing shared-domain installation
 
-For continuity of an existing `vaillant_vsmart` configuration, see the [manual compatibility distribution instructions](distribution/manual/README.md). Its repository is being prepared from the same source. A new-domain setup does not automatically migrate entity IDs or automations, and manual file replacement does not transfer Marketplace/HACS ownership.
+For continuity of an existing `vaillant_vsmart` configuration, see the [manual compatibility distribution repository](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual). It receives generated output and dedicated instructions from the same source; current snapshots remain unreleased. A new-domain setup does not automatically migrate entity IDs or automations, and manual file replacement does not transfer Marketplace/HACS ownership.
 
 ## Verification
 
