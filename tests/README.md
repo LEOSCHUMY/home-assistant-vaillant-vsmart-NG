@@ -2,10 +2,15 @@
 
 Use Python 3.14 for the current Home Assistant environment:
 
+This unreleased branch depends on a candidate that is not on PyPI. Install the exact reviewed candidate first; do not use these development requirements in a running HA installation.
+
 ```bash
 python3.14 -m venv .venv
 . .venv/bin/activate
+python -m pip install --no-deps 'vaillant-netatmo-api-ng @ https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG/archive/eab91cbe180f86bc6b34355e4f30a08e26566fbf.zip'
 python -m pip install -r requirements.txt
+python -m pip install --no-deps vaillant-netatmo-api==0.13.1
+python -m pip check
 python -m pytest -q tests/test_build_variants.py
 python scripts/build_variants.py --output artifacts/variants
 python scripts/test_variant.py --variant hacs --artifacts artifacts/variants
@@ -18,4 +23,4 @@ conftest.py creates a real HomeAssistant instance with cleanup. The cloud API is
 
 Other old blueprint test modules still reference nonexistent integration APIs and are not part of the maintained suite. Running the entire tests directory is not the supported command.
 
-The `hacs` branch builds one canonical source tree into two archives. The runner extracts each archive to a temporary `custom_components/<domain>` directory and uses a fresh interpreter for each package. The same maintained regression tests run against both packages, with only their import/path references adapted. Configuration-flow registration and platform imports are also checked; no account or real boiler is contacted. This does not establish coexistence with the upstream integration, which remains blocked by the shared Python library import namespace.
+The `hacs` branch builds one canonical source tree into two archives. The runner extracts each archive to a temporary `custom_components/<domain>` directory and uses a fresh interpreter for each package. The same maintained regression tests run against both packages, with only their import/path references adapted. Configuration-flow registration, platform imports and separate original/NG library classes after HA initializes are also checked; no account or real boiler is contacted. These checks do not establish full config-entry setup or registry/controls coexistence with the original integration.

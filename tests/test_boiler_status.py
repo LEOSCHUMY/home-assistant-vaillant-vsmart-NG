@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from homeassistant.components.climate.const import HVACAction
 import pytest
-from vaillant_netatmo_api import ApiException, HomeStatus, RoomStatus, SystemMode
+from vaillant_netatmo_api_ng import ApiException, HomeStatus, RoomStatus, SystemMode
 
 from custom_components.vaillant_vsmart_ng.boiler_status import resolve_boiler_statuses
 from custom_components.vaillant_vsmart_ng.climate import VaillantClimate

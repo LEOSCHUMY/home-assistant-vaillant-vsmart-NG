@@ -1,7 +1,7 @@
-# Vaillant vSMART NG for Home Assistant
+# Vaillant vSMART NG (Next-Gen) for Home Assistant
 
 > [!WARNING]
-> **Unreleased work on the `hacs` branch.** The source now uses the proposed `vaillant_vsmart_ng` domain. Do not install this branch over an existing installation. The published `v0.1.2` release remains unchanged. See [the two-variant build design](docs/BUILD_VARIANTS.md) for scope and remaining blockers; the installation and migration sections below describe the existing published releases.
+> **Unreleased work on the `hacs` branch.** The source now uses the proposed `vaillant_vsmart_ng` domain and the unreleased `vaillant_netatmo_api_ng` library namespace. CI installs an exact reviewed library candidate commit; this development dependency is not available on PyPI. Do not install this branch over an existing installation. The published `v0.1.2` release remains unchanged. See [the two-variant build design](docs/BUILD_VARIANTS.md) for scope and remaining blockers; the installation and migration sections below describe the existing published releases.
 
 [![GitHub Release](https://img.shields.io/github/v/release/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases)
 [![GitHub Activity](https://img.shields.io/github/commit-activity/y/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/commits/dev)
@@ -9,7 +9,7 @@
 [![HACS](https://img.shields.io/badge/HACS-custom-orange.svg?style=for-the-badge)](https://hacs.xyz)
 [![Support development on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20development-FF5E5B?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/LEOSCHUMY)
 
-**Vaillant vSMART NG** is a Home Assistant custom integration for monitoring and controlling compatible Vaillant vSMART heating systems through the Vaillant cloud service.
+**Vaillant vSMART NG (Next-Gen)** is a Home Assistant custom integration for monitoring and controlling compatible Vaillant vSMART heating systems through the Vaillant cloud service.
 
 > [!IMPORTANT]
 > **Unofficial, independent community fork — NOT affiliated with, authorized, sponsored or endorsed by Vaillant or Netatmo.**

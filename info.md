@@ -1,4 +1,6 @@
-# Vaillant vSMART NG
+# Vaillant vSMART NG (Next-Gen)
+
+> **Unreleased `hacs` branch:** proposed new-domain packaging and a pinned library candidate; the installation details below describe published releases.
 
 > **Independent, unofficial community integration — not affiliated with, sponsored or endorsed by Vaillant or Netatmo.**
 

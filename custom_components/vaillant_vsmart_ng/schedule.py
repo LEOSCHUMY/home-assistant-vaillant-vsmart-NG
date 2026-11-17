@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from vaillant_netatmo_api.thermostat import Program, TimeSlot, Zone
+from vaillant_netatmo_api_ng.thermostat import Program, TimeSlot, Zone
 
 
 def map_program_to_schedule(

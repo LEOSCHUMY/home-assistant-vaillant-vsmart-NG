@@ -14,7 +14,7 @@ from homeassistant.const import (
 )
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.httpx_client import get_async_client
-from vaillant_netatmo_api import (
+from vaillant_netatmo_api_ng import (
     ApiException,
     AuthClient,
     RequestClientException,

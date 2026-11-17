@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from homeassistant.exceptions import HomeAssistantError
 import pytest
-from vaillant_netatmo_api import ApiException, MeasurementType
+from vaillant_netatmo_api_ng import ApiException, MeasurementType
 
 from custom_components.vaillant_vsmart_ng.const import DOMAIN
 from custom_components.vaillant_vsmart_ng.entity import (

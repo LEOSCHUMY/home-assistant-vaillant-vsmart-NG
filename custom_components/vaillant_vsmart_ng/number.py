@@ -15,7 +15,7 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from vaillant_netatmo_api import ApiException, RequestUnauthorizedException
+from vaillant_netatmo_api_ng import ApiException, RequestUnauthorizedException
 
 from .entity import VaillantCoordinator, VaillantDeviceEntity
 

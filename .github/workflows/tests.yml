@@ -6,6 +6,9 @@ on:
     branches: [dev, master, hacs]
 permissions:
   contents: read
+env:
+  # Temporary development source; replace with a published version before release.
+  VSMART_LIBRARY_CANDIDATE: "vaillant-netatmo-api-ng @ https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG/archive/eab91cbe180f86bc6b34355e4f30a08e26566fbf.zip"
 jobs:
   pytest:
     name: "Pytest (${{ matrix.environment }})"
@@ -33,14 +36,17 @@ jobs:
         run: |
           python -m venv "$RUNNER_TEMP/vsmart-test"
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --upgrade pip
+          "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --no-deps "$VSMART_LIBRARY_CANDIDATE"
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install -r "$REQUIREMENTS_FILE"
-      - name: Verify published snapshot API dependency
+          "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --no-deps vaillant-netatmo-api==0.13.1
+          "$RUNNER_TEMP/vsmart-test/bin/python" -m pip check
+      - name: Verify candidate snapshot API dependency
         run: |
           "$RUNNER_TEMP/vsmart-test/bin/python" - <<'PY'
           import json
           from importlib.metadata import version
           from pathlib import Path
-          from vaillant_netatmo_api.thermostat import ThermostatClient
+          from vaillant_netatmo_api_ng.thermostat import ThermostatClient
 
           manifest = json.loads(Path("custom_components/vaillant_vsmart_ng/manifest.json").read_text())
           assert f"vaillant-netatmo-api-ng=={version('vaillant-netatmo-api-ng')}" in manifest["requirements"]

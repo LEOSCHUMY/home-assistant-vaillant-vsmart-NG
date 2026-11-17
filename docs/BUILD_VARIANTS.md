@@ -41,9 +41,11 @@ CI runs both packages on HA 2024.5.0 / Python 3.12 and HA 2026.11.1 / Python 3.1
 
 ## One NG library for both variants
 
-Both integration variants will use the **same new NG library release**. Its Python import package must be renamed away from upstream `vaillant_netatmo_api`; the work branch in the library is temporary preparation, not a second maintained library line.
+Both integration variants use the **same NG library development candidate** under the isolated import namespace `vaillant_netatmo_api_ng`. The library work branch is temporary preparation, not a second maintained library line. NG means **Next-Gen** in the public project name.
 
-This prerequisite is **not implemented in this packaging foundation**. The current manifest still requires published `vaillant-netatmo-api-ng==0.2.0`, which shares its Python import namespace with the original library. Therefore a distinct integration domain alone does not make side-by-side installation with upstream safe or supported. Do not publish or recommend these artifacts as a coexistence solution until the namespace work and isolated combined-installation tests pass.
+The manifest and test requirements now target **unpublished `vaillant-netatmo-api-ng==0.3.0.dev0`**. Development CI installs an exact candidate commit first, then resolves the HA environment. Do not install the generated archives on a working system: a normal HA dependency install cannot obtain this development candidate from PyPI. Replace the candidate source and development version with one published library release before production publication.
+
+The library candidate is checked alongside upstream 0.13.1 for disjoint installed files and separate classes in both import orders. The integration package runner also imports both libraries after HA initializes its HTTP aliases. These checks establish package isolation, not a full original/NG config-entry setup, registry migration, real-account login, controls or rollback. Those remain release gates.
 
 ## Final documentation and distribution
 
@@ -55,7 +57,7 @@ Keeping the old domain and current unique-ID logic is intended to preserve ident
 
 ## Remaining release gates
 
-1. Rename the NG library's Python import namespace, test it alongside upstream, and release it through the normal review process.
+1. Review the isolated NG library candidate and its coexistence checks, select a stable version, and publish it through the normal approval process.
 2. Point **both** integration variants at that one published library and run the isolated matrix again.
 3. Test installation/configuration coexistence, config-entry identities, websocket registrations and available controls on a secondary HA instance; source/import checks alone are insufficient.
 4. Create the manual distribution repository and its instructions; verify the compatible upgrade and restore path without rewriting private registry storage.

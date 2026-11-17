@@ -1,5 +1,5 @@
 """Constants for Vaillant vSMART."""
-from vaillant_netatmo_api import MeasurementType
+from vaillant_netatmo_api_ng import MeasurementType
 
 # Base component constants
 NAME = "Vaillant vSMART"

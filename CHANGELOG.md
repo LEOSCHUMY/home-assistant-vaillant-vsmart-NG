@@ -2,11 +2,16 @@
 
 ## [Unreleased]
 
+### Next-Gen namespace candidate
+
+- Explain NG as Next-Gen in the README and Marketplace title.
+- Adapt both integration-domain variants to the single isolated `vaillant_netatmo_api_ng` library namespace. Development requirements target unpublished `0.3.0.dev0`; CI installs an exact library commit before resolving the HA test environment. A published library version must replace this development setup before release.
+
 ### Two-domain packaging (unreleased HACS branch)
 
 - Build a HACS-domain package (`vaillant_vsmart_ng`) and a compatibility package (`vaillant_vsmart`) from one canonical integration source. Derive the runtime domain from the installed folder and change only manifest identity between archives.
 - Run the same regression suite against both extracted packages on minimum/current HA, plus packaging and identity checks. The manual preparation workflow creates review artifacts only; it does not publish releases or update installations.
-- Coexistence with the original integration remains blocked until the NG library has an isolated Python import namespace. This branch is not an installation or migration recommendation.
+- The isolated library namespace is implemented in a pinned development candidate; full original/NG integration coexistence and upgrade/rollback tests remain pending. This branch is not an installation or migration recommendation.
 
 ### Project support
 
