@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Marketplace branding
+
+- Bundle the existing Vaillant vSMART brand icons in the integration's `brand/` directory, including 256×256 and 512×512 PNG variants, as requested during HACS default-catalog review. A new published integration release is required before requesting review again.
+
 ### Development and security
 
 - Replace the 2021-era tooling baseline with a current HA 2026.11.1 / Python 3.14 regression environment and a separate, frozen HA 2024.5.0 / Python 3.12 compatibility job. Use a minimal real-HA fixture instead of the version-coupled blueprint test harness.
