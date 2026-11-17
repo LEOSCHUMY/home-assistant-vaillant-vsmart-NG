@@ -26,7 +26,7 @@ Version `0.1.2` uses published `vaillant-netatmo-api-ng==0.2.0` and bundles the 
 
 **Read [MIGRATION.md](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/blob/dev/MIGRATION.md) before installing NG.** Original and NG use the same domain and directory. Do not install them alongside each other, delete the existing Home Assistant config entry, or assume uninstalling the original preserves it.
 
-The reported Marketplace migrations used NG `0.1.0` and an experimental internal-storage workaround on Home Assistant 2026.11.1. They are not a supported general migration procedure; older standalone HACS and future Marketplace updates require separate validation.
+The reported Marketplace migrations used NG `0.1.0` and an experimental internal-storage workaround on Home Assistant 2026.11.1. They are not a supported general migration procedure. A separate NG-to-NG Marketplace update to 0.1.2 was observed on the primary installation after a temporary library field test; older standalone HACS, general update paths and rollback remain unvalidated. See MIGRATION.md for the exact scope.
 
 ## New installation
 
