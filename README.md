@@ -1,5 +1,8 @@
 # Vaillant vSMART NG for Home Assistant
 
+> [!WARNING]
+> **Unreleased work on the `hacs` branch.** The source now uses the proposed `vaillant_vsmart_ng` domain. Do not install this branch over an existing installation. The published `v0.1.2` release remains unchanged. See [the two-variant build design](docs/BUILD_VARIANTS.md) for scope and remaining blockers; the installation and migration sections below describe the existing published releases.
+
 [![GitHub Release](https://img.shields.io/github/v/release/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases)
 [![GitHub Activity](https://img.shields.io/github/commit-activity/y/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/commits/dev)
 [![License](https://img.shields.io/github/license/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](LICENSE)

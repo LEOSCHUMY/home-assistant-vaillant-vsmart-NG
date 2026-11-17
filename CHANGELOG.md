@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Two-domain packaging (unreleased HACS branch)
+
+- Build a HACS-domain package (`vaillant_vsmart_ng`) and a compatibility package (`vaillant_vsmart`) from one canonical integration source. Derive the runtime domain from the installed folder and change only manifest identity between archives.
+- Run the same regression suite against both extracted packages on minimum/current HA, plus packaging and identity checks. The manual preparation workflow creates review artifacts only; it does not publish releases or update installations.
+- Coexistence with the original integration remains blocked until the NG library has an isolated Python import namespace. This branch is not an installation or migration recommendation.
+
 ### Project support
 
 - Add an optional Ko-fi support link and badge to the README while keeping contributions, testing and bug reports welcome.

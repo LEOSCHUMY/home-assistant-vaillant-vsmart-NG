@@ -2,9 +2,9 @@ name: Dependency security
 
 on:
   push:
-    branches: [dev, master]
+    branches: [dev, master, hacs]
   pull_request:
-    branches: [dev, master]
+    branches: [dev, master, hacs]
   schedule:
     - cron: "0 8 * * 1"
   workflow_dispatch:

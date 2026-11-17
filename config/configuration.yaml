@@ -3,4 +3,4 @@ default_config:
 logger:
   default: info
   logs:
-    custom_components.vaillant_vsmart: debug
+    custom_components.vaillant_vsmart_ng: debug

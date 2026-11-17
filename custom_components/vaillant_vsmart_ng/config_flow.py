@@ -32,7 +32,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class VaillantFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for vaillant_vsmart."""
+    """Config flow for the installed Vaillant vSMART NG variant."""
 
     VERSION = 1
 

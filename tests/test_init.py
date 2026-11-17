@@ -3,13 +3,13 @@ from homeassistant.exceptions import ConfigEntryNotReady
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.vaillant_vsmart import (
+from custom_components.vaillant_vsmart_ng import (
     VaillantDataUpdateCoordinator,
     async_reload_entry,
     async_setup_entry,
     async_unload_entry,
 )
-from custom_components.vaillant_vsmart.const import DOMAIN
+from custom_components.vaillant_vsmart_ng.const import DOMAIN
 
 from .const import MOCK_CONFIG
 
