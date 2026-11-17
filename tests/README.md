@@ -11,7 +11,7 @@ python -m pip install --no-deps 'vaillant-netatmo-api-ng @ https://github.com/LE
 python -m pip install -r requirements.txt
 python -m pip install --no-deps vaillant-netatmo-api==0.13.1
 python -m pip check
-python -m pytest -q tests/test_build_variants.py
+python -m pytest -q tests/test_build_variants.py tests/test_secondary_installer.py
 python scripts/build_variants.py --output artifacts/variants
 python scripts/test_variant.py --variant hacs --artifacts artifacts/variants
 python scripts/test_variant.py --variant legacy --artifacts artifacts/variants
