@@ -6,9 +6,6 @@ on:
     branches: [dev, master, hacs]
 permissions:
   contents: read
-env:
-  # Temporary development source; replace with a published version before release.
-  VSMART_LIBRARY_CANDIDATE: "vaillant-netatmo-api-ng @ https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG/archive/eab91cbe180f86bc6b34355e4f30a08e26566fbf.zip"
 jobs:
   pytest:
     name: "Pytest (${{ matrix.environment }})"
@@ -36,11 +33,10 @@ jobs:
         run: |
           python -m venv "$RUNNER_TEMP/vsmart-test"
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --upgrade pip
-          "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --no-deps "$VSMART_LIBRARY_CANDIDATE"
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install -r "$REQUIREMENTS_FILE"
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --no-deps vaillant-netatmo-api==0.13.1
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip check
-      - name: Verify candidate snapshot API dependency
+      - name: Verify published snapshot API dependency
         run: |
           "$RUNNER_TEMP/vsmart-test/bin/python" - <<'PY'
           import json

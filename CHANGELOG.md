@@ -10,16 +10,16 @@
 - Export a manual repository snapshot from the same source, with preserved license, common changelog, funding link, provenance and generated-file verification. Exporting does not create a repository, push commits or publish releases.
 - Record initial original/NG coexistence on the secondary system: separate libraries, unchanged original files, and 19 entities/2 distinct devices for each. Prolonged polling and new transitions were skipped; compatible upgrade/rollback remain unverified.
 
-### Next-Gen namespace candidate
+### Published Next-Gen library
 
 - Explain NG as Next-Gen in the README and Marketplace title.
-- Adapt both integration-domain variants to the single isolated `vaillant_netatmo_api_ng` library namespace. Development requirements target unpublished `0.3.0.dev0`; CI installs an exact library commit before resolving the HA test environment. A published library version must replace this development setup before release.
+- Adapt both integration-domain variants to the single isolated `vaillant_netatmo_api_ng` library namespace. The manifest and both regression environments pin published `0.3.0` from PyPI; CI no longer bootstraps a source candidate. The dependency audit now includes the published NG library itself.
 
 ### Two-domain packaging (unreleased HACS branch)
 
 - Build a HACS-domain package (`vaillant_vsmart_ng`) and a compatibility package (`vaillant_vsmart`) from one canonical integration source. Derive the runtime domain from the installed folder and change only manifest identity between archives.
 - Run the same regression suite against both extracted packages on minimum/current HA, plus packaging and identity checks. The manual preparation workflow creates review artifacts only; it does not publish releases or update installations.
-- The isolated library namespace is implemented in a pinned development candidate; full original/NG integration coexistence and upgrade/rollback tests remain pending. This branch is not an installation or migration recommendation.
+- The isolated library namespace is supplied by published library 0.3.0. Initial original/NG setup coexistence was observed with its byte-identical development candidate; prolonged coexistence and compatible upgrade/rollback remain unverified. This branch is not an installation or migration recommendation.
 
 ### Project support
 

@@ -11,10 +11,6 @@ on:
 
 permissions:
   contents: read
-env:
-  # Same exact candidate as the test workflow; never a moving branch URL.
-  VSMART_LIBRARY_CANDIDATE: "vaillant-netatmo-api-ng @ https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG/archive/eab91cbe180f86bc6b34355e4f30a08e26566fbf.zip"
-
 jobs:
   current-environment-audit:
     name: Audit current HA and test dependencies
@@ -28,13 +24,12 @@ jobs:
         run: |
           python -m venv "$RUNNER_TEMP/vsmart-current"
           "$RUNNER_TEMP/vsmart-current/bin/python" -m pip install --upgrade pip
-          "$RUNNER_TEMP/vsmart-current/bin/python" -m pip install --no-deps "$VSMART_LIBRARY_CANDIDATE"
           "$RUNNER_TEMP/vsmart-current/bin/python" -m pip install -r requirements.txt
       - name: Install audit tooling separately
         run: |
           python -m venv "$RUNNER_TEMP/vsmart-audit"
           "$RUNNER_TEMP/vsmart-audit/bin/python" -m pip install -r requirements-audit.txt
-      - name: Snapshot every external installed distribution
+      - name: Snapshot every installed distribution
         run: |
           "$RUNNER_TEMP/vsmart-current/bin/python" - "$RUNNER_TEMP/vsmart-dependencies.txt" <<'PY'
           from importlib.metadata import distributions
@@ -44,10 +39,9 @@ jobs:
           requirements = sorted(
               f"{dist.metadata['Name']}=={dist.version}"
               for dist in distributions()
-              if dist.metadata["Name"].lower().replace("_", "-") != "vaillant-netatmo-api-ng"
           )
           Path(sys.argv[1]).write_text("\n".join(requirements) + "\n", encoding="utf-8")
           PY
-      - name: Audit external dependencies without vulnerability exclusions
+      - name: Audit dependencies without vulnerability exclusions
         run: |
           "$RUNNER_TEMP/vsmart-audit/bin/python" -m pip_audit --strict --no-deps --disable-pip -r "$RUNNER_TEMP/vsmart-dependencies.txt"

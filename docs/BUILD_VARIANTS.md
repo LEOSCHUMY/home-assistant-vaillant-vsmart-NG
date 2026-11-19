@@ -1,6 +1,6 @@
 # One integration source, two domain variants
 
-Status: **unreleased packaging foundation on branch `hacs`**. These artifacts are for review and isolated testing, not installation on a working Home Assistant system. Published integration `v0.1.2` and library `0.2.0` are unchanged.
+Status: **unreleased packaging foundation on branch `hacs`**. These artifacts are for review and isolated testing, not installation on a working Home Assistant system. Published integration `v0.1.2` is unchanged; this review branch now requires published library `0.3.0`.
 
 ## Build identities
 
@@ -41,15 +41,15 @@ CI runs both packages on HA 2024.5.0 / Python 3.12 and HA 2026.11.1 / Python 3.1
 
 ## One NG library for both variants
 
-Both integration variants use the **same NG library development candidate** under the isolated import namespace `vaillant_netatmo_api_ng`. The library work branch is temporary preparation, not a second maintained library line. NG means **Next-Gen** in the public project name.
+Both integration variants use the **same published NG library 0.3.0** under the isolated import namespace `vaillant_netatmo_api_ng`. There is one maintained NG library line for both domains. NG means **Next-Gen** in the public project name.
 
-The manifest and test requirements now target **unpublished `vaillant-netatmo-api-ng==0.3.0.dev0`**. Development CI installs an exact candidate commit first, then resolves the HA environment. Do not install the generated archives on a working system: a normal HA dependency install cannot obtain this development candidate from PyPI. Replace the candidate source and development version with one published library release before production publication.
+The manifest and test requirements target **published `vaillant-netatmo-api-ng==0.3.0`**. CI installs it normally from PyPI, without a candidate-source bootstrap, and the audit includes the library. Its stable wheel Python files match the development candidate used in the secondary test. Generated integration archives remain review artifacts until the integration release is approved and published.
 
-The library candidate is checked alongside upstream 0.13.1 for disjoint installed files and separate classes in both import orders. The integration package runner also imports both libraries after HA initializes its HTTP aliases. These checks establish package isolation, not a full original/NG config-entry setup, registry migration, real-account login, controls or rollback. Those remain release gates.
+The published library is checked alongside upstream 0.13.1 for disjoint installed files and separate classes in both import orders. The integration package runner also imports both libraries after HA initializes its HTTP aliases. These checks establish package isolation, not a full original/NG config-entry setup, registry migration, real-account login, controls or rollback. Those remain release gates.
 
 ## Existing NG library compatibility
 
-The successful side-by-side field test used the official original integration/library, which has a different distribution name. NG 0.1.2 and earlier instead depends on the same NG distribution name as the new candidate but imports the old namespace. Installing the new library without updating that old component would break its imports. Do not recommend new-domain installation alongside an unchanged older NG component. For continuity, update the old-domain component and library requirement together through the compatible variant, then keep both variants on the same new NG library version. That compatible upgrade remains unverified on the field.
+The successful side-by-side field test used the official original integration/library, which has a different distribution name. NG 0.1.2 and earlier instead depends on the same NG distribution name as the new library but imports the old namespace. Installing the new library without updating that old component would break its imports. Do not recommend new-domain installation alongside an unchanged older NG component. For continuity, update the old-domain component and library requirement together through the compatible variant, then keep both variants on the same new NG library version. That compatible upgrade remains unverified on the field.
 
 ## Final documentation and distribution
 
@@ -69,11 +69,11 @@ Keeping the old domain and current unique-ID logic is intended to preserve ident
 
 ## Remaining release gates
 
-1. Review the isolated NG library candidate and its coexistence checks, select a stable version, and publish it through the normal approval process.
-2. Point **both** integration variants at that one published library and run the isolated matrix again.
+1. Completed: library 0.3.0 was reviewed, merged and published on PyPI and GitHub.
+2. Both variants now require published library 0.3.0; rerun the isolated matrix on these requirements.
 3. Initial new-domain/original configuration coexistence was verified on the secondary instance; see [the report](COEXISTENCE_TEST.md). Prolonged polling and new transitions were skipped. Every-control and identity/rollback coverage must not be inferred from that observation.
 4. Maintain the manual distribution repository using the exporter/template and publish a compatible release only after review. Compatible upgrade/restore remain unverified; retain that limitation in the instructions.
-5. The HACS-first README now includes the icon/install button. Its compatibility link now points to the manual repository. Replace development dependency pins with a published library, validate packaging with HACS, and select a new release version.
+5. The HACS-first README now includes the icon/install button. Its compatibility link now points to the manual repository. The library pins now use the published version; validate packaging with HACS and select a new integration release version.
 6. Publish only after review and update the HACS submission with the released new-domain integration.
 
 No production upgrade, private-storage edit, source-branch merge or release publication is authorized by running the local builder.

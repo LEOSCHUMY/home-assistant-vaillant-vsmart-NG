@@ -2,12 +2,11 @@
 
 Use Python 3.14 for the current Home Assistant environment:
 
-This unreleased branch depends on a candidate that is not on PyPI. Install the exact reviewed candidate first; do not use these development requirements in a running HA installation.
+Both regression environments install published library `0.3.0` from PyPI. Do not use these development requirements in a running HA installation.
 
 ```bash
 python3.14 -m venv .venv
 . .venv/bin/activate
-python -m pip install --no-deps 'vaillant-netatmo-api-ng @ https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG/archive/eab91cbe180f86bc6b34355e4f30a08e26566fbf.zip'
 python -m pip install -r requirements.txt
 python -m pip install --no-deps vaillant-netatmo-api==0.13.1
 python -m pip check
