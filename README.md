@@ -3,7 +3,7 @@
 <img src="custom_components/vaillant_vsmart_ng/brand/icon.png" width="96" alt="Vaillant vSMART NG">
 
 > [!IMPORTANT]
-> **Unreleased work on branch `hacs`.** The new-domain version below is not published yet, and its library candidate is not available on PyPI. Published integration `v0.1.2` still uses the older `vaillant_vsmart` domain. Do not install that release or this development branch as if it were the new-domain catalog release. See [build status and release gates](docs/BUILD_VARIANTS.md).
+> **Breaking domain change in 0.2.0:** this repository now installs `vaillant_vsmart_ng`. It is a separate integration, not an in-place update of `vaillant_vsmart` from NG 0.1.x. Existing users who want to retain their configuration and entity IDs should read the [manual compatibility instructions](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual) before updating. Install only a published release; if `v0.2.0` is not listed yet, wait for publication. Default-catalog inclusion remains subject to HACS review.
 
 [![GitHub Release](https://img.shields.io/github/v/release/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases)
 [![License](https://img.shields.io/github/license/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](LICENSE)
@@ -20,7 +20,7 @@ The recommended version uses the distinct domain **`vaillant_vsmart_ng`**. Searc
 [![Open Vaillant vSMART NG in HACS or Marketplace](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=LEOSCHUMY&repository=home-assistant-vaillant-vsmart-NG&category=integration)
 
 1. Open HACS or, on Home Assistant 2026.11+, **Settings → Marketplace**, and search for **Vaillant vSMART NG**.
-2. Select a published release whose manifest domain is `vaillant_vsmart_ng`. The currently published `v0.1.2` predates this domain change; wait for the new-domain release before following this path.
+2. Select published **v0.2.0 or later**, whose manifest domain is `vaillant_vsmart_ng`. If that release is not available yet, wait for publication. Releases `v0.1.x` use the older shared domain.
 3. Install it and restart Home Assistant when requested.
 4. Open **Settings → Devices & services → Add integration**, select **Vaillant vSMART NG**, and complete setup.
 
@@ -74,7 +74,7 @@ Keep your account credentials and client secrets private. Do not post them in is
 
 ## Compatibility and verification
 
-The Home Assistant minimum remains **2024.5**, as declared in `hacs.json`. Both generated integration variants use the same isolated `vaillant_netatmo_api_ng` library. The manifest and both regression environments require published `vaillant-netatmo-api-ng==0.3.0` from PyPI. The integration itself remains an unreleased review branch until its new-domain release is published.
+The Home Assistant minimum remains **2024.5**, as declared in `hacs.json`. Both generated integration variants use the same isolated `vaillant_netatmo_api_ng` library. The manifest and both regression environments require published `vaillant-netatmo-api-ng==0.3.0` from PyPI. Version 0.2.0 prepares the new-domain release; install it only once its GitHub release is published.
 
 | Environment | Evidence |
 | --- | --- |

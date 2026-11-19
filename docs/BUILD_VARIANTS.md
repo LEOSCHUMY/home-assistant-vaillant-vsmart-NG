@@ -1,6 +1,6 @@
 # One integration source, two domain variants
 
-Status: **unreleased packaging foundation on branch `hacs`**. These artifacts are for review and isolated testing, not installation on a working Home Assistant system. Published integration `v0.1.2` is unchanged; this review branch now requires published library `0.3.0`.
+Status: **integration 0.2.0 release preparation**. Artifacts built from a branch remain for review until a release is approved and published. Integration `v0.1.x` uses the older shared domain; 0.2.0 introduces the distinct HACS domain and requires published library `0.3.0`. A version in a manifest does not mean that a release exists.
 
 ## Build identities
 
@@ -37,7 +37,7 @@ python scripts/test_variant.py --variant legacy --artifacts artifacts/variants
 
 The runner extracts each archive into a temporary installation, then runs the same maintained regression tests and a separate platform/config-flow import check. Tests are adapted only for the selected import/path name; expected registry identifiers use the component's domain, while existing unique-ID expectations are preserved. Packaging tests check identical code/assets, distinct manifests, icon dimensions and reproducibility.
 
-CI runs both packages on HA 2024.5.0 / Python 3.12 and HA 2026.11.1 / Python 3.14. The manual release-preparation workflow can upload review artifacts but still does not create a tag, GitHub release, or production installation. The artifacts currently retain the existing source version; a new version will be selected separately before publication.
+CI runs both packages on HA 2024.5.0 / Python 3.12 and HA 2026.11.1 / Python 3.14. The manual release-preparation workflow can upload review artifacts but still does not create a tag, GitHub release, or production installation. The artifacts now carry integration version **0.2.0** for both domains. The main repository release must contain only the new-domain integration; the compatible artifact belongs in its dedicated manual repository.
 
 ## One NG library for both variants
 
@@ -45,7 +45,7 @@ Both integration variants use the **same published NG library 0.3.0** under the 
 
 The manifest and test requirements target **published `vaillant-netatmo-api-ng==0.3.0`**. CI installs it normally from PyPI, without a candidate-source bootstrap, and the audit includes the library. Its stable wheel Python files match the development candidate used in the secondary test. Generated integration archives remain review artifacts until the integration release is approved and published.
 
-The published library is checked alongside upstream 0.13.1 for disjoint installed files and separate classes in both import orders. The integration package runner also imports both libraries after HA initializes its HTTP aliases. These checks establish package isolation, not a full original/NG config-entry setup, registry migration, real-account login, controls or rollback. Those remain release gates.
+The published library is checked alongside upstream 0.13.1 for disjoint installed files and separate classes in both import orders. The integration package runner also imports both libraries after HA initializes its HTTP aliases. These checks establish package isolation. The separate field report records initial original/NG configuration; it does not establish sustained polling, every control, registry migration or rollback. Keep those limitations explicit in release notes.
 
 ## Existing NG library compatibility
 
@@ -70,10 +70,10 @@ Keeping the old domain and current unique-ID logic is intended to preserve ident
 ## Remaining release gates
 
 1. Completed: library 0.3.0 was reviewed, merged and published on PyPI and GitHub.
-2. Both variants now require published library 0.3.0; rerun the isolated matrix on these requirements.
+2. Completed for the dependency adoption: both variants require published library 0.3.0 and passed the isolated minimum/current HA matrix. Rerun checks on the final version/documentation commit before merge.
 3. Initial new-domain/original configuration coexistence was verified on the secondary instance; see [the report](COEXISTENCE_TEST.md). Prolonged polling and new transitions were skipped. Every-control and identity/rollback coverage must not be inferred from that observation.
 4. Maintain the manual distribution repository using the exporter/template and publish a compatible release only after review. Compatible upgrade/restore remain unverified; retain that limitation in the instructions.
-5. The HACS-first README now includes the icon/install button. Its compatibility link now points to the manual repository. The library pins now use the published version; validate packaging with HACS and select a new integration release version.
+5. The HACS-first README now includes the icon/install button. Its compatibility link now points to the manual repository. The library pins now use the published version and integration version 0.2.0 is selected. HACS and Hassfest checks must remain green on the reviewed release commit.
 6. Publish only after review and update the HACS submission with the released new-domain integration.
 
 No production upgrade, private-storage edit, source-branch merge or release publication is authorized by running the local builder.

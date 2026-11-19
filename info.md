@@ -2,7 +2,7 @@
 
 **Independent, unofficial community integration — not affiliated with, sponsored or endorsed by Vaillant or Netatmo.**
 
-> This is the unreleased `hacs` work branch. The distinct-domain integration and its isolated library must be published before these installation instructions can be used. Existing published v0.1.2 uses the older shared domain.
+> **Breaking change in 0.2.0:** the domain is now `vaillant_vsmart_ng`. This is a separate setup, not an in-place update of NG 0.1.x. Existing shared-domain users should read the manual compatibility instructions below before updating. Install only published v0.2.0 or later; if it is not listed yet, wait for publication. Library 0.3.0 is already published. Default-catalog inclusion remains subject to HACS review.
 
 ## Recommended version
 
