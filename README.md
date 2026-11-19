@@ -1,63 +1,57 @@
-# Vaillant vSMART NG for Home Assistant
+# Vaillant vSMART NG (Next-Gen) for Home Assistant
 
-[![GitHub Release](https://img.shields.io/github/v/release/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases)
-[![GitHub Activity](https://img.shields.io/github/commit-activity/y/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/commits/dev)
-[![License](https://img.shields.io/github/license/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](LICENSE)
-[![HACS](https://img.shields.io/badge/HACS-custom-orange.svg?style=for-the-badge)](https://hacs.xyz)
-[![Support development on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20development-FF5E5B?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/LEOSCHUMY)
-
-**Vaillant vSMART NG** is a Home Assistant custom integration for monitoring and controlling compatible Vaillant vSMART heating systems through the Vaillant cloud service.
+<img src="custom_components/vaillant_vsmart_ng/brand/icon.png" width="96" alt="Vaillant vSMART NG">
 
 > [!IMPORTANT]
-> **Unofficial, independent community fork — NOT affiliated with, authorized, sponsored or endorsed by Vaillant or Netatmo.**
-> This project is also not an official Home Assistant integration. Neither company provides support for this fork.
+> **Breaking domain change in 0.2.0:** this repository now installs `vaillant_vsmart_ng`. It is a separate integration, not an in-place update of `vaillant_vsmart` from NG 0.1.x. Existing users who want to retain their configuration and entity IDs should read the [manual compatibility instructions](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual) before updating. Install only a published release; if `v0.2.0` is not listed yet, wait for publication. Default-catalog inclusion remains subject to HACS review.
 
-This project builds on the [original Vaillant vSMART integration](https://github.com/MislavMandaric/home-assistant-vaillant-vsmart) and retains its upstream acknowledgements.
+[![GitHub Release](https://img.shields.io/github/v/release/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases)
+[![License](https://img.shields.io/github/license/LEOSCHUMY/home-assistant-vaillant-vsmart-NG?style=for-the-badge)](LICENSE)
+[![Support development on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20development-FF5E5B?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/LEOSCHUMY)
+
+**Vaillant vSMART NG — Next-Gen** is a community-maintained Home Assistant integration for compatible Vaillant vSMART heating systems. It reads room temperatures and heating activity from the Vaillant cloud's `homestatus` endpoint when valid, with a legacy fallback.
+
+> **Unofficial and independent:** not affiliated with, authorized, sponsored or endorsed by Vaillant or Netatmo, and not an official Home Assistant integration. This project builds on [Mislav Mandarić's original integration](https://github.com/MislavMandaric/home-assistant-vaillant-vsmart), with its license and acknowledgements preserved.
+
+## Recommended: HACS / Marketplace
+
+The recommended version uses the distinct domain **`vaillant_vsmart_ng`**. Search for **Vaillant vSMART NG** in HACS or Marketplace and choose its published new-domain release.
+
+[![Open Vaillant vSMART NG in HACS or Marketplace](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=LEOSCHUMY&repository=home-assistant-vaillant-vsmart-NG&category=integration)
+
+1. Open HACS or, on Home Assistant 2026.11+, **Settings → Marketplace**, and search for **Vaillant vSMART NG**.
+2. Select published **v0.2.0 or later**, whose manifest domain is `vaillant_vsmart_ng`. If that release is not available yet, wait for publication. Releases `v0.1.x` use the older shared domain.
+3. Install it and restart Home Assistant when requested.
+4. Open **Settings → Devices & services → Add integration**, select **Vaillant vSMART NG**, and complete setup.
+
+If the repository is not yet shown in your catalog, the button can add it as a custom integration repository. You can also add `https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG` through **Marketplace → Add from link**, or HACS **Custom repositories → Integration**, then select the published new-domain release. A development commit is not a stable release.
+
+## Already using the original or an older NG installation?
+
+The new-domain version is a separate Home Assistant integration. Initial coexistence with original `0.11.2` was verified on a secondary HA 2026.11.1 system, but it does not automatically move existing entries, device/entity IDs or automation references. The [test report](docs/COEXISTENCE_TEST.md) records the exact scope and unverified parts.
+
+**Older NG releases need special care:** NG 0.1.2 and earlier import the older NG library namespace. Installing the new library alongside that unchanged component would break those imports because both versions use the same NG distribution name. Update the existing component and its requirement together through the compatible route before considering a new-domain NG installation beside it. The successful coexistence test used the official original integration, not an unchanged older NG component.
+
+If you want to retain an existing `vaillant_vsmart` entry, read the **[manual compatibility repository](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual)** instead. That dedicated repository contains the manual instructions and receives generated output from this same implementation, using the same NG library. It is intended for manual updates and is not a second catalog entry. Its current contents are a development review snapshot; install only a published compatible release once available.
+
+The compatible update to the new library namespace and its rollback have not been field-tested. Repository-manager ownership is a separate issue from replacing files; do not assume manual replacement transfers HACS/Marketplace tracking. Historical shared-domain experiments are documented in [MIGRATION.md](MIGRATION.md), not presented as a general migration procedure.
 
 ## Features
 
-The integration provides the following Home Assistant platforms:
-
 | Platform | Description |
 | --- | --- |
-| `climate` | Monitor and control the thermostat |
-| `number` | Configure the default setpoint duration |
-| `select` | View and select the active schedule |
-| `sensor` | Thermostat battery and boiler energy/duration measurements |
-| `switch` | Control schedules and hot water boost, where supported |
-| `water_heater` | Monitor and control domestic hot water |
+| `climate` | Thermostat temperature, heating activity and controls |
+| `number` | Default setpoint duration |
+| `select` | Active schedule selection |
+| `sensor` | Battery and boiler energy/duration measurements |
+| `switch` | Schedules and hot water boost, where supported |
+| `water_heater` | Domestic hot water monitoring and control |
 
-Available entities and controls depend on the equipment, account and data exposed by the Vaillant cloud service.
-
-From `0.1.1`, room temperatures and heating activity use the same `homestatus` response when valid readings are available, with a fallback to the legacy endpoint. The integration polls approximately every five minutes; it does not provide instant state changes or a guarantee on cloud update latency.
-
-## Installation and migration
-
-> [!WARNING]
-> **Already using the original Vaillant vSMART integration?** Do **not** install Vaillant vSMART NG alongside it, remove the existing integration from Home Assistant, or uninstall the original from HACS without following a validated migration procedure. Both use the `vaillant_vsmart` domain and installation directory.
->
-> See **[Migration from the original integration](MIGRATION.md)** before changing anything. **Two experimental Marketplace migrations succeeded on Home Assistant 2026.11.1**: the secondary system retained its 2 devices and 19 entities, and the primary TrueNAS system resumed normal operation after transfer, but requires an unsupported internal-storage workaround. It is **not a general or risk-free migration method**, and older standalone HACS remains untested. A later NG-to-NG Marketplace update to 0.1.2 succeeded on the primary installation after a temporary library field test; its limited evidence is recorded separately in MIGRATION.md.
-
-### Marketplace / HACS custom repository (new installations only)
-
-1. First check the [GitHub Releases](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases) page for a published release (starting with **v0.1.0**). Until the release exists, the Marketplace may offer a development-branch commit instead; **do not mistake a commit hash for the stable release**.
-2. In Home Assistant 2026.11 or newer, open **Settings → Marketplace → Add from link**, and enter `https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG`. On older Home Assistant installations with HACS, use **HACS → Custom repositories**, adding it as an **Integration**.
-3. Locate **Vaillant vSMART NG** and check the version/source before installing. This fork is not listed in the default catalog.
-4. Install the **released version** and restart Home Assistant.
-5. Go to **Settings → Devices & services → Add integration**, search for **Vaillant vSMART NG**, and complete setup.
-
-**Already configured the original Vaillant vSMART?** Stop here: this new-installation procedure is **not** a migration. Follow [MIGRATION.md](MIGRATION.md) instead.
-
-### Manual installation
-
-1. Download the specific [published release](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/releases) rather than a moving development branch.
-2. Copy the `custom_components/vaillant_vsmart` directory into the `custom_components` directory of your Home Assistant configuration.
-3. Restart Home Assistant.
-4. Go to **Settings → Devices & services**, select **Add integration**, and search for **Vaillant vSMART NG**.
+Polling remains approximately every five minutes; this is not instant status or a cloud-latency guarantee. Available entities and controls depend on the equipment, account and API responses.
 
 ## Configuration
 
-Configuration is performed through **Settings → Devices & services → Add integration → Vaillant vSMART NG** for a new installation. If you are migrating an existing configured integration, follow [MIGRATION.md](MIGRATION.md) instead of adding another entry.
+Configure the new-domain version through **Settings → Devices & services → Add integration → Vaillant vSMART NG**. An existing original/shared-domain entry remains separate; adding this integration does not migrate its entity IDs or automations. For an update of the compatible manual variant, retain the existing entry and follow the [manual distribution instructions](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual).
 
 The setup form still requires all six fields below. The integration uses them to request an access token; none of these fields is obsolete.
 
@@ -78,30 +72,21 @@ These public application identifiers and version strings are the examples docume
 
 Keep your account credentials and client secrets private. Do not post them in issues, discussions or logs.
 
-## Compatibility and troubleshooting
+## Compatibility and verification
 
-The minimum Home Assistant version declared in `hacs.json` is **2024.5** (2024.5.0). It is a minimum installation requirement, not the latest version tested.
+The Home Assistant minimum remains **2024.5**, as declared in `hacs.json`. Both generated integration variants use the same isolated `vaillant_netatmo_api_ng` library. The manifest and both regression environments require published `vaillant-netatmo-api-ng==0.3.0` from PyPI. Version 0.2.0 prepares the new-domain release; install it only once its GitHub release is published.
 
-Version `0.1.2` pins published `vaillant-netatmo-api-ng==0.2.0` in the integration manifest and both regression environments. The library requires Python 3.11+, which does not raise the Home Assistant 2024.5 minimum. Integration thermostat-control Python source is unchanged from `0.1.1`; the library's thermostat-control Python source is also unchanged from its own `0.1.1` release.
-
-| Home Assistant | Verification with library 0.2.0 |
+| Environment | Evidence |
 | --- | --- |
-| 2024.5.0 | 37 regression tests pass in the isolated Python 3.12 compatibility environment |
-| 2026.11.1 | 37 regression tests pass in the Python 3.14 environment; a library candidate built from the release source was also field-tested on Python 3.14.10 |
+| HA 2024.5.0 / Python 3.12 | Same 37 regressions per generated variant, plus packaging/staging checks and platform imports |
+| HA 2026.11.1 / Python 3.14 | Same automated matrix for both variants |
+| Secondary HA 2026.11.1 / Python 3.14.10 | Original 0.11.2 and new-domain NG candidate configured together; both climate entities available, 19 entities and 2 distinct devices each, separate libraries and original files unchanged |
 
-During the field test on 2026-11-17, physical boiler ON at 01:45 and OFF at 02:15 were reflected in selected homestatus readings at the first subsequent polls (01:47:47 and 02:17:53, Europe/Rome). Other installed dependency versions were unchanged. This observation covers one installation and boiler-status selection, not every control or a general cloud-latency guarantee. Earlier regression checks on HA 2024.6.4 and field observations with library 0.1.1 remain historical evidence.
+The user chose not to run prolonged polling or a new ON/OFF cycle for that coexistence test. The compatible-domain upgrade from published NG 0.1.2/library 0.2.0 to the new namespace, and rollback, remain unverified on the field. Earlier shared-domain temperature/heating observations are historical evidence, not a test of the new configuration. See [the full report](docs/COEXISTENCE_TEST.md).
 
-Version `0.1.2` also bundles the vSMART brand icons requested during default-catalog review. The repository remains a custom repository until that review is accepted.
+Automated tests mock cloud data. They do not establish real authentication on every device, every control or compatibility with every intermediate HA version. Historic HA compatibility is not a security recommendation; [SECURITY.md](SECURITY.md) explains audit scope.
 
-The current CI environment and the frozen minimum-version compatibility environment have different purposes. Historic HA compatibility is not a security recommendation. See [dependency maintenance and security](SECURITY.md) for audit scope and update procedures.
-
-Automated tests mock cloud responses and do not exercise a real boiler. These results do not establish that every intermediate Home Assistant release, every control, or every installation has been tested. Older standalone HACS migration remains unvalidated; see [MIGRATION.md](MIGRATION.md).
-
-`hacs.json` uses the standard integration layout and GitHub release source. No ZIP asset, custom filename, or persistent directory is required. No country restriction is declared: a working compatible Vaillant account and cloud service are required, and the single-installation field test does not establish availability in every country.
-
-- The integration communicates with the Vaillant service over the cloud; an internet connection and a working Vaillant account are required.
-- Availability of individual measurements and controls depends on the connected system and the cloud API.
-- If setup or communication fails, check the Home Assistant logs and open an [issue](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/issues) with relevant diagnostics. Remove usernames, passwords, tokens and other personal information before sharing logs.
+A working compatible Vaillant account and internet connection are required. If setup or updates fail, check HA logs and open an issue with sanitized diagnostics; never share credentials, tokens, serial numbers or complete account payloads.
 
 ## Maintenance
 

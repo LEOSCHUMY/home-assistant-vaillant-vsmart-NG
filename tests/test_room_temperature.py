@@ -5,7 +5,7 @@ from pathlib import Path
 import importlib.util
 
 # Load the pure helper without importing HA's custom component __init__.py.
-source = Path(__file__).resolve().parents[1] / "custom_components" / "vaillant_vsmart" / "room_temperature.py"
+source = Path(__file__).resolve().parents[1] / "custom_components" / "vaillant_vsmart_ng" / "room_temperature.py"
 spec = importlib.util.spec_from_file_location("vaillant_room_temperature", source)
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)

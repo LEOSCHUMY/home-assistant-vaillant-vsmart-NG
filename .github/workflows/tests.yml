@@ -1,9 +1,9 @@
 name: "Tests"
 on:
   push:
-    branches: [dev, master]
+    branches: [dev, master, hacs]
   pull_request:
-    branches: [dev, master]
+    branches: [dev, master, hacs]
 permissions:
   contents: read
 jobs:
@@ -34,31 +34,45 @@ jobs:
           python -m venv "$RUNNER_TEMP/vsmart-test"
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --upgrade pip
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install -r "$REQUIREMENTS_FILE"
+          "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --no-deps vaillant-netatmo-api==0.13.1
+          "$RUNNER_TEMP/vsmart-test/bin/python" -m pip check
       - name: Verify published snapshot API dependency
         run: |
           "$RUNNER_TEMP/vsmart-test/bin/python" - <<'PY'
           import json
           from importlib.metadata import version
           from pathlib import Path
-          from vaillant_netatmo_api.thermostat import ThermostatClient
+          from vaillant_netatmo_api_ng.thermostat import ThermostatClient
 
-          manifest = json.loads(Path("custom_components/vaillant_vsmart/manifest.json").read_text())
+          manifest = json.loads(Path("custom_components/vaillant_vsmart_ng/manifest.json").read_text())
           assert f"vaillant-netatmo-api-ng=={version('vaillant-netatmo-api-ng')}" in manifest["requirements"]
           assert hasattr(ThermostatClient, "async_get_home_status")
           assert hasattr(ThermostatClient, "async_get_home_status_snapshot")
           print("HA", version("homeassistant"), "API", version("vaillant-netatmo-api-ng"))
           PY
-      - name: Verify integration platform imports
-        run: |
-          "$RUNNER_TEMP/vsmart-test/bin/python" - <<'PYCODE'
-          import importlib
-          import homeassistant
-
-          for platform in ("config_flow", "climate", "water_heater", "number", "select", "sensor", "switch", "websockets"):
-              importlib.import_module(f"custom_components.vaillant_vsmart.{platform}")
-          print("All integration platform imports passed")
-          PYCODE
-      - name: Run regression tests
-        run: |
-          "$RUNNER_TEMP/vsmart-test/bin/python" -m pytest -q \
-            tests/test_regression_resilience.py tests/test_room_temperature.py tests/test_boiler_status.py
+      - name: Build both domain variants
+        run: python scripts/build_variants.py --output "$RUNNER_TEMP/vsmart-artifacts"
+      - name: Test packaging invariants
+        run: '"$RUNNER_TEMP/vsmart-test/bin/python" -m pytest -q tests/test_build_variants.py tests/test_secondary_installer.py tests/test_manual_export.py'
+      - name: Test HACS package
+        run: '"$RUNNER_TEMP/vsmart-test/bin/python" scripts/test_variant.py --variant hacs --artifacts "$RUNNER_TEMP/vsmart-artifacts"'
+      - name: Test legacy package
+        run: '"$RUNNER_TEMP/vsmart-test/bin/python" scripts/test_variant.py --variant legacy --artifacts "$RUNNER_TEMP/vsmart-artifacts"'
+      - name: Upload tested review packages
+        if: matrix.environment == 'current'
+        uses: actions/upload-artifact@v7
+        with:
+          name: tested-domain-variants
+          path: ${{ runner.temp }}/vsmart-artifacts/
+          if-no-files-found: error
+      - name: Export manual repository for review
+        if: matrix.environment == 'current'
+        run: python scripts/export_manual_repository.py --output "$RUNNER_TEMP/vsmart-manual-repository"
+      - name: Upload manual repository review snapshot
+        if: matrix.environment == 'current'
+        uses: actions/upload-artifact@v7
+        with:
+          name: manual-repository-review
+          path: ${{ runner.temp }}/vsmart-manual-repository/
+          include-hidden-files: true
+          if-no-files-found: error

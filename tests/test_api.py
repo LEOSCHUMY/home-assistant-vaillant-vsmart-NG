@@ -4,7 +4,7 @@ import asyncio
 import aiohttp
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from custom_components.vaillant_vsmart.api import VaillantApiClient
+from custom_components.vaillant_vsmart_ng.api import VaillantApiClient
 
 
 async def test_api(hass, aioclient_mock, caplog):

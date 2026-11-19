@@ -1,9 +1,10 @@
 """Constants for Vaillant vSMART."""
-from vaillant_netatmo_api import MeasurementType
+from vaillant_netatmo_api_ng import MeasurementType
 
 # Base component constants
 NAME = "Vaillant vSMART"
-DOMAIN = "vaillant_vsmart"
+# The installed folder selects the build variant; manifest.json must match.
+DOMAIN = __package__.rsplit(".", 1)[-1]
 
 # Platforms
 CLIMATE = "climate"

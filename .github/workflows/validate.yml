@@ -1,12 +1,15 @@
 name: "Validate"
 
 on:
+  push:
+    branches: [hacs]
   schedule:
     - cron:  "0 0 * * *"
   pull_request:
     branches:
       - "master"
       - "dev"
+      - "hacs"
 
 jobs:
   hassfest: # https://developers.home-assistant.io/blog/2020/04/16/hassfest

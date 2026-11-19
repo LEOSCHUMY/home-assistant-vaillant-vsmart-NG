@@ -5,8 +5,8 @@ from homeassistant.components.switch import SERVICE_TURN_OFF, SERVICE_TURN_ON
 from homeassistant.const import ATTR_ENTITY_ID
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.vaillant_vsmart import async_setup_entry
-from custom_components.vaillant_vsmart.const import DEFAULT_NAME, DOMAIN, SWITCH
+from custom_components.vaillant_vsmart_ng import async_setup_entry
+from custom_components.vaillant_vsmart_ng.const import DEFAULT_NAME, DOMAIN, SWITCH
 
 from .const import MOCK_CONFIG
 
@@ -21,7 +21,7 @@ async def test_switch_services(hass):
     # Functions/objects can be patched directly in test code as well and can be used to test
     # additional things, like whether a function was called or what arguments it was called with
     with patch(
-        "custom_components.vaillant_vsmart.VaillantApiClient.async_set_title"
+        "custom_components.vaillant_vsmart_ng.VaillantApiClient.async_set_title"
     ) as title_func:
         await hass.services.async_call(
             SWITCH,

@@ -17,3 +17,8 @@ config/*
 !config/configuration.yaml
 
 .DS_Store
+
+# Isolated development environments and generated packages
+.venv*/
+artifacts/
+pytest-of-*/

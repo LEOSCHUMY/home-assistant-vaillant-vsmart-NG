@@ -1,10 +1,13 @@
 name: "Lint"
 
 on:
+  push:
+    branches: [hacs]
   pull_request:
     branches:
       - "master"
       - "dev"
+      - "hacs"
 
 permissions:
   contents: read

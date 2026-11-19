@@ -2,14 +2,32 @@
 
 ## [Unreleased]
 
-### Project support
+No changes yet.
 
-- Add an optional Ko-fi support link and badge to the README while keeping contributions, testing and bug reports welcome.
+## 0.2.0 — Next-Gen domain and isolated library
 
-### Migration documentation
+### Breaking changes and existing installations
 
-- Record the observed NG-to-NG Marketplace update to 0.1.2 on HA 2026.11.1, explicitly identifying the temporary library field-test starting state and the post-restart checks. Keep this separate from the experimental original-to-NG transfer and earlier ON/OFF observations.
-- Document the Marketplace ownership/uninstall constraints reviewed in HA 2026.11.1 and add a proposed isolated migration/preflight/rollback validation plan. No automatic transfer or private-storage editing tool is introduced.
+- The recommended HACS/Marketplace integration now uses domain and directory `vaillant_vsmart_ng`. NG means **Next-Gen**. This is a separate integration setup, not an automatic migration of an original or NG 0.1.x `vaillant_vsmart` entry. Existing devices, entity IDs and automation references are not transferred automatically.
+- Existing NG users who want to retain the shared domain should read the [manual compatibility repository](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG-manual) before updating. It receives generated output using `vaillant_vsmart`; use only a published compatible release, not a review snapshot. Manual file replacement does not transfer HACS/Marketplace ownership.
+- Adopt published `vaillant-netatmo-api-ng==0.3.0`, with isolated imports under `vaillant_netatmo_api_ng`. Older NG components must update their code and dependency together: a library-only upgrade breaks their old imports, including when caused by installing the new-domain integration beside an unchanged old NG component.
+
+### One implementation, two distributions
+
+- Generate HACS-domain and manual-compatible packages from the same canonical source. Python, translations and brand assets are identical; only the manifest domain differs. Derive runtime identity from the installed directory.
+- Recommend the HACS/Marketplace version in the README with the icon and installation button; provide a separate manual guide and generated repository with provenance, file hashes, license, changelog and verification workflow. Catalog inclusion remains subject to HACS review.
+- Keep existing temperature/heating-state selection, five-minute polling, commands and fallback behavior. The stable library's Python files match the development candidate used in the secondary coexistence test.
+
+### Validation and limitations
+
+- Run the same 37 coordinator/entity regressions per generated variant on HA 2024.5.0/Python 3.12 and HA 2026.11.1/Python 3.14, plus 14 packaging/staging/export checks and platform/config-flow imports. Both use the published PyPI dependency without a source bootstrap; the strict audit includes the NG library.
+- Initial coexistence was observed on secondary HA 2026.11.1/Python 3.14.10 with original 0.11.2/library 0.13.1 and the new-domain development candidate: both climates available, 19 entities and 2 distinct devices each, separate libraries, original files unchanged and no shared device registry IDs.
+- Prolonged polling and new ON/OFF transitions were deliberately skipped. Every-control behavior, compatible-domain upgrade and rollback remain unverified. This initial setup observation does not establish complete coexistence or a general migration procedure.
+
+### Documentation and support
+
+- Preserve historical shared-domain migration/update reports and distinguish their experimental internal-storage workaround from the new-domain setup. No automatic migration or private-storage editing tool is introduced.
+- Add optional Ko-fi support links while keeping contributions, testing and bug reports welcome.
 
 ## 0.1.2 — Dependency maintenance and bundled brand icons (2026-11-17)
 

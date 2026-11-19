@@ -25,7 +25,7 @@ applicable.
 ## Development setup
 
 The integration code lives in
-`custom_components/vaillant_vsmart`. The repository also includes a development
+`custom_components/vaillant_vsmart_ng`. The repository also includes a development
 configuration and helper scripts.
 
 A typical local setup is:

@@ -17,7 +17,7 @@ from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from vaillant_netatmo_api import (
+from vaillant_netatmo_api_ng import (
     ApiException,
     RequestUnauthorizedException,
     SystemMode,

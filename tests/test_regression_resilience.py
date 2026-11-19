@@ -4,20 +4,21 @@ from unittest.mock import AsyncMock, MagicMock
 
 from homeassistant.exceptions import HomeAssistantError
 import pytest
-from vaillant_netatmo_api import ApiException, MeasurementType
+from vaillant_netatmo_api_ng import ApiException, MeasurementType
 
-from custom_components.vaillant_vsmart.entity import (
+from custom_components.vaillant_vsmart_ng.const import DOMAIN
+from custom_components.vaillant_vsmart_ng.entity import (
     VaillantCoordinator,
     VaillantDeviceEntity,
     VaillantModuleEntity,
     VaillantProgramEntity,
     VaillantMeasurementEntity,
 )
-from custom_components.vaillant_vsmart.sensor import (
+from custom_components.vaillant_vsmart_ng.sensor import (
     VaillantDurationSensor,
     VaillantEnergySensor,
 )
-from custom_components.vaillant_vsmart.switch import (
+from custom_components.vaillant_vsmart_ng.switch import (
     VaillantHwbSwitch,
     VaillantScheduleSwitch,
 )
@@ -134,18 +135,18 @@ def test_device_info_firmware_version_is_string_or_none(
 
     if entity_class is VaillantDeviceEntity:
         entity = entity_class(coordinator, "device")
-        expected_identifiers = {("vaillant_vsmart", "device")}
+        expected_identifiers = {(DOMAIN, "device")}
     elif entity_class is VaillantModuleEntity:
         entity = entity_class(coordinator, "device", "module")
-        expected_identifiers = {("vaillant_vsmart", "module")}
+        expected_identifiers = {(DOMAIN, "module")}
     elif entity_class is VaillantProgramEntity:
         entity = entity_class(coordinator, "device", "module", "program")
-        expected_identifiers = {("vaillant_vsmart", "module")}
+        expected_identifiers = {(DOMAIN, "module")}
     else:
         entity = entity_class(
             coordinator, "device", "module", MeasurementType.SUM_BOILER_ON
         )
-        expected_identifiers = {("vaillant_vsmart", "module")}
+        expected_identifiers = {(DOMAIN, "module")}
 
     info = entity.device_info
     assert info["sw_version"] == expected

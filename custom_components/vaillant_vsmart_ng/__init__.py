@@ -11,7 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.typing import ConfigType
-from vaillant_netatmo_api import ThermostatClient, Token, TokenStore
+from vaillant_netatmo_api_ng import ThermostatClient, Token, TokenStore
 
 from .const import (
     DOMAIN,

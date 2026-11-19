@@ -5,11 +5,11 @@ from unittest.mock import AsyncMock, MagicMock
 
 from homeassistant.components.climate.const import HVACAction
 import pytest
-from vaillant_netatmo_api import ApiException, HomeStatus, RoomStatus, SystemMode
+from vaillant_netatmo_api_ng import ApiException, HomeStatus, RoomStatus, SystemMode
 
-from custom_components.vaillant_vsmart.boiler_status import resolve_boiler_statuses
-from custom_components.vaillant_vsmart.climate import VaillantClimate
-from custom_components.vaillant_vsmart.entity import VaillantCoordinator
+from custom_components.vaillant_vsmart_ng.boiler_status import resolve_boiler_statuses
+from custom_components.vaillant_vsmart_ng.climate import VaillantClimate
+from custom_components.vaillant_vsmart_ng.entity import VaillantCoordinator
 
 
 def topology(legacy=True):
@@ -119,7 +119,7 @@ async def test_coordinator_single_request_and_fresh_fallback_after_failure(hass)
 def test_debug_log_contains_only_indices_and_readings(caplog):
     """Neither account IDs nor module IDs are exposed by source diagnostics."""
     homes, devices, statuses = topology()
-    with caplog.at_level("DEBUG", logger="custom_components.vaillant_vsmart.boiler_status"):
+    with caplog.at_level("DEBUG", logger="custom_components.vaillant_vsmart_ng.boiler_status"):
         resolve_boiler_statuses(homes, devices, statuses, {"home": {"thermostat": False}})
     assert "source=homestatus" in caplog.text
     assert "selected=False" in caplog.text

@@ -8,7 +8,7 @@ on:
       version:
         description: "Expected integration version in manifest.json"
         required: true
-        default: "0.1.2"
+        default: "0.2.0"
         type: string
 
 permissions:
@@ -33,10 +33,27 @@ jobs:
           from pathlib import Path
 
           manifest = json.loads(
-              Path("custom_components/vaillant_vsmart/manifest.json").read_text()
+              Path("custom_components/vaillant_vsmart_ng/manifest.json").read_text()
           )
           actual = manifest["version"]
           expected = os.environ["EXPECTED_VERSION"]
           assert actual == expected, f"Expected version {expected}, got {actual}"
           print(f"Integration manifest version verified: {actual}")
           PY
+      - name: Build both variants without publishing
+        run: python3 scripts/build_variants.py --output "$RUNNER_TEMP/vsmart-artifacts"
+      - name: Upload review artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: vsmart-domain-variants
+          path: ${{ runner.temp }}/vsmart-artifacts/
+          if-no-files-found: error
+      - name: Export manual repository without publishing
+        run: python3 scripts/export_manual_repository.py --output "$RUNNER_TEMP/vsmart-manual-repository"
+      - name: Upload manual repository review snapshot
+        uses: actions/upload-artifact@v7
+        with:
+          name: manual-repository-review
+          path: ${{ runner.temp }}/vsmart-manual-repository/
+          include-hidden-files: true
+          if-no-files-found: error

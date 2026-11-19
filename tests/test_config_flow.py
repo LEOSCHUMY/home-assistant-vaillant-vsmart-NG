@@ -5,7 +5,7 @@ from homeassistant import config_entries, data_entry_flow
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.vaillant_vsmart.const import (
+from custom_components.vaillant_vsmart_ng.const import (
     BINARY_SENSOR,
     DOMAIN,
     PLATFORMS,
@@ -23,10 +23,10 @@ from .const import MOCK_CONFIG
 def bypass_setup_fixture():
     """Prevent setup."""
     with patch(
-        "custom_components.vaillant_vsmart.async_setup",
+        "custom_components.vaillant_vsmart_ng.async_setup",
         return_value=True,
     ), patch(
-        "custom_components.vaillant_vsmart.async_setup_entry",
+        "custom_components.vaillant_vsmart_ng.async_setup_entry",
         return_value=True,
     ):
         yield
