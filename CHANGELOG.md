@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-No changes yet.
+### Fixes
+
+- Link each thermostat to its gateway with `via_device_id` instead of the deprecated `via_device`, which Home Assistant 2026.11 reports for every platform and stops accepting in 2027.8. Gateways are now registered during setup, before the platforms, so the link no longer depends on which platform loads first. Home Assistant releases without `via_device_id`, back to the 2024.5 minimum, keep using `via_device`. Device hierarchy and entity IDs are unchanged.
 
 ## 0.2.0 — Next-Gen domain and isolated library
 
