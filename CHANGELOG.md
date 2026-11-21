@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-No changes yet.
+### Fixes
+
+- Send thermostat and boiler commands to the home and room that hold the thermostat, matched by stable module IDs from homesdata (`rooms[].module_ids`), instead of the first home and first room. Accounts with several homes no longer write to the wrong home, which the cloud rejects with HTTP 406 "Nothing to update". A single home, or a single home with a single room, is still used when homesdata lists no module IDs. When the placement stays ambiguous, the command fails with a clear error instead of writing to an arbitrary home. No configuration change is needed.
 
 ## 0.2.0 — Next-Gen domain and isolated library
 
