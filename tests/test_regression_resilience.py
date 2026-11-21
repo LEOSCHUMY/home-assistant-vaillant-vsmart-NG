@@ -86,7 +86,12 @@ async def test_hot_water_boost_api_error_is_reported_and_not_refreshed():
     coordinator = MagicMock()
     coordinator.data = SimpleNamespace(
         client=client,
-        homes={"home": SimpleNamespace(id="home")},
+        homes={"home": SimpleNamespace(
+            id="home", rooms=[SimpleNamespace(id="room", module_ids=["module"])]
+        )},
+        devices={"device": SimpleNamespace(
+            id="device", modules=[SimpleNamespace(id="module")]
+        )},
     )
     coordinator.async_request_refresh = AsyncMock()
     switch = VaillantHwbSwitch(coordinator, "device")
