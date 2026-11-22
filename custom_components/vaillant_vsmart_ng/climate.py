@@ -30,6 +30,12 @@ from .const import (
     DOMAIN,
 )
 from .entity import VaillantCoordinator, VaillantModuleEntity
+from .room_setpoint import (
+    KNOWN_SETPOINT_MODES,
+    SETPOINT_MODE_MANUAL,
+    SETPOINT_MODE_SCHEDULE,
+    RoomSetpoint,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -87,8 +93,26 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
         )
 
     @property
+    def _room_setpoint(self) -> RoomSetpoint | None:
+        """Return the homestatus setpoint of this thermostat's room, if known.
+
+        homestatus shows a command at once; getthermostatsdata can still
+        report the previous mode and target right after a write.
+        """
+
+        room_setpoints = getattr(self.coordinator.data, "room_setpoints", None) or {}
+        setpoint = room_setpoints.get(self._module_id)
+        if setpoint is None or setpoint.mode not in KNOWN_SETPOINT_MODES:
+            return None
+        return setpoint
+
+    @property
     def native_target_temperature(self) -> float:
         """Return the targeted room temperature."""
+
+        setpoint = self._room_setpoint
+        if setpoint is not None and setpoint.temperature is not None:
+            return setpoint.temperature
 
         return (
             self._module.measured.est_setpoint_temp
@@ -121,6 +145,13 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
     @property
     def hvac_mode(self) -> HVACMode:
         """Return currently selected HVAC operation mode."""
+
+        setpoint = self._room_setpoint
+        if setpoint is not None:
+            if setpoint.mode == SETPOINT_MODE_MANUAL:
+                return HVACMode.HEAT
+            if setpoint.mode == SETPOINT_MODE_SCHEDULE:
+                return HVACMode.AUTO
 
         if self._module.setpoint_manual.setpoint_activate:
             return HVACMode.HEAT

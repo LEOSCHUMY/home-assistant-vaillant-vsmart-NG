@@ -2,7 +2,14 @@
 
 ## [Unreleased]
 
-No changes yet.
+### Fixed
+
+- Climate mode and target temperature no longer lag one step behind a command. After `set_temperature` or `set_hvac_mode`, the immediate refresh used to show the state from before the command until the next five-minute poll or the next command. The cause, measured on one installation on 2026-11-22: the refresh runs about 0.4 s after the write, when legacy `getthermostatsdata` still reports the previous mode and target (it caught up within 12 s), while `homestatus` already reports the room's new `therm_setpoint_mode` and `therm_setpoint_temperature`.
+- The climate now reads `hvac_mode` and the target temperature from the `homestatus` room holding the thermostat, matched by `rooms[].module_ids`, whenever that room reports the schedule (`home`) or `manual` mode. It falls back to `getthermostatsdata` when homestatus is unavailable, unreachable, ambiguous or reports another mode. The away preset still comes from `getthermostatsdata`; its homestatus behavior was not measured.
+
+### Dependencies
+
+- Takes effect with a `vaillant-netatmo-api-ng` release that exposes `RoomStatus.setpoint_mode`. With 0.3.0 the integration behaves as before.
 
 ## 0.2.0 — Next-Gen domain and isolated library
 

@@ -26,6 +26,7 @@ from vaillant_netatmo_api_ng import (
 
 from .const import DOMAIN, SUPPORTED_ENERGY_MEASUREMENT_TYPES, SUPPORTED_DURATION_MEASUREMENT_TYPES
 from .room_temperature import resolve_room_temperatures
+from .room_setpoint import RoomSetpoint, resolve_room_setpoints
 from .boiler_status import resolve_boiler_statuses
 
 UPDATE_INTERVAL = timedelta(minutes=5)
@@ -45,7 +46,8 @@ class VaillantData:
     def __init__(self, client: ThermostatClient, homes: list[Home], devices: list[Device],
                  measurements: dict[(str, str, MeasurementType), MeasurementItem],
                  room_temperatures: dict[str, float] | None = None,
-                 boiler_statuses: dict[str, bool] | None = None) -> None:
+                 boiler_statuses: dict[str, bool] | None = None,
+                 room_setpoints: dict[str, RoomSetpoint] | None = None) -> None:
         """Initialize."""
 
         self.client = client
@@ -67,6 +69,7 @@ class VaillantData:
         # Keyed by thermostat module ID; no dependency on rooms[0] ordering.
         self.room_temperatures = room_temperatures if room_temperatures is not None else {}
         self.boiler_statuses = boiler_statuses if boiler_statuses is not None else {}
+        self.room_setpoints = room_setpoints if room_setpoints is not None else {}
 
 
 class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
@@ -119,6 +122,7 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
             boiler_statuses = resolve_boiler_statuses(
                 homes, devices, statuses_by_home, boiler_statuses_by_home
             )
+            room_setpoints = resolve_room_setpoints(homes, devices, statuses_by_home)
 
             # Diagnostic only: the climate entity uses precisely this lookup.
             # Log numeric temperatures and positional indices, never IDs,
@@ -153,6 +157,19 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                             legacy_temperature,
                             chosen_temperature,
                         )
+                        room_setpoint = room_setpoints.get(module.id)
+                        _LOGGER.debug(
+                            "Vaillant setpoint source: thermostat_index=%d "
+                            "source=%s homestatus_mode=%s homestatus_setpoint=%s "
+                            "legacy_manual=%s",
+                            thermostat_index,
+                            "homestatus" if room_setpoint is not None
+                            else "getthermostatsdata_fallback",
+                            getattr(room_setpoint, "mode", None),
+                            getattr(room_setpoint, "temperature", None),
+                            getattr(getattr(module, "setpoint_manual", None),
+                                    "setpoint_activate", None),
+                        )
                         thermostat_index += 1
 
             date_begin = datetime.now() - timedelta(days=1)
@@ -186,7 +203,7 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
 
             return VaillantData(
                 self._client, homes, devices, measurements, room_temperatures,
-                boiler_statuses
+                boiler_statuses, room_setpoints
             )
         except RequestUnauthorizedException as ex:
             raise ConfigEntryAuthFailed from ex
