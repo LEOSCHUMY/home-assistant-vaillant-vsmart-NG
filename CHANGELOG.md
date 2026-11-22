@@ -2,8 +2,10 @@
 
 ## [Unreleased]
 
-### Fixed
+### Fixes
 
+- Link each thermostat to its gateway with `via_device_id` instead of the deprecated `via_device`, which Home Assistant 2026.11 reports for every platform and stops accepting in 2027.8. Gateways are now registered during setup, before the platforms, so the link no longer depends on which platform loads first. Home Assistant releases without `via_device_id`, back to the 2024.5 minimum, keep using `via_device`. Device hierarchy and entity IDs are unchanged.
+- Send thermostat and boiler commands to the home and room that hold the thermostat, matched by stable module IDs from homesdata (`rooms[].module_ids`), instead of the first home and first room. Accounts with several homes no longer write to the wrong home, which the cloud rejects with HTTP 406 "Nothing to update". A single home, or a single home with a single room, is still used only when homesdata lists no module IDs at all. When homesdata lists module IDs but not this thermostat, or lists it in more than one room, or the placement otherwise stays ambiguous, the command fails with a clear error instead of writing to an arbitrary home. No configuration change is needed.
 - Climate mode and target temperature no longer lag one step behind a command. After `set_temperature` or `set_hvac_mode`, the immediate refresh used to show the state from before the command until the next five-minute poll or the next command. The cause, measured on one installation on 2026-11-22: the refresh runs about 0.4 s after the write, when legacy `getthermostatsdata` still reports the previous mode and target (it caught up within 12 s), while `homestatus` already reports the room's new `therm_setpoint_mode` and `therm_setpoint_temperature`.
 - The climate now reads `hvac_mode` and the target temperature from the `homestatus` room holding the thermostat, matched by `rooms[].module_ids`, whenever that room reports the schedule (`home`) or `manual` mode. It falls back to `getthermostatsdata` when homestatus is unavailable, unreachable, ambiguous or reports another mode. The away preset still comes from `getthermostatsdata`; its homestatus behavior was not measured.
 

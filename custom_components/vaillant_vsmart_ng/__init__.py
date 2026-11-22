@@ -17,6 +17,7 @@ from .const import (
     DOMAIN,
     PLATFORMS,
 )
+from .devices import async_register_gateways
 from .entity import VaillantCoordinator
 
 from .websockets import async_register_websockets
@@ -57,6 +58,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await coordinator.async_config_entry_first_refresh()
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
+
+    async_register_gateways(hass, entry, coordinator.data.devices.values())
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
