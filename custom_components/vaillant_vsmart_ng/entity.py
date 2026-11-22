@@ -27,7 +27,11 @@ from vaillant_netatmo_api_ng import (
 from .const import DOMAIN, SUPPORTED_ENERGY_MEASUREMENT_TYPES, SUPPORTED_DURATION_MEASUREMENT_TYPES
 from .devices import gateway_device_info, module_device_info
 from .room_temperature import resolve_room_temperatures
-from .room_setpoint import RoomSetpoint, resolve_room_setpoints
+from .room_setpoint import (
+    RoomSetpoint,
+    resolve_room_setpoints,
+    select_climate_setpoint,
+)
 from .boiler_status import resolve_boiler_statuses
 from .home_targeting import target_home, target_room
 
@@ -156,17 +160,19 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
                             chosen_temperature,
                         )
                         room_setpoint = room_setpoints.get(module.id)
+                        selected = select_climate_setpoint(room_setpoint, module)
                         _LOGGER.debug(
                             "Vaillant setpoint source: thermostat_index=%d "
-                            "source=%s homestatus_mode=%s homestatus_setpoint=%s "
-                            "legacy_manual=%s",
+                            "mode_source=%s selected_mode=%s "
+                            "target_source=%s selected_target=%s "
+                            "homestatus_mode=%s homestatus_target=%s",
                             thermostat_index,
-                            "homestatus" if room_setpoint is not None
-                            else "getthermostatsdata_fallback",
+                            selected.mode_source,
+                            selected.mode,
+                            selected.temperature_source,
+                            selected.temperature,
                             getattr(room_setpoint, "mode", None),
                             getattr(room_setpoint, "temperature", None),
-                            getattr(getattr(module, "setpoint_manual", None),
-                                    "setpoint_activate", None),
                         )
                         thermostat_index += 1
 

@@ -1,23 +1,29 @@
 """A command shows in the refresh right after it, not one step later.
 
-Measured on 2026-11-22: 0.4 s after a setstate write, homestatus already
-reported the new room mode and target while getthermostatsdata still returned
-the previous ones (it caught up within 12 s). The climate entity reads mode
-and target from homestatus and falls back to getthermostatsdata.
+Right after a setstate write, getthermostatsdata can still return the previous
+mode and target while homestatus already reports the new ones. The climate
+entity reads mode and target from homestatus where usable and falls back to
+getthermostatsdata field by field; the debug log reports the same selection.
 """
 
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
 from homeassistant.components.climate.const import HVACMode
+import logging
+
 import pytest
 from vaillant_netatmo_api_ng import ApiException, HomeStatus, RoomStatus, SystemMode
 
 from custom_components.vaillant_vsmart_ng.climate import VaillantClimate
 from custom_components.vaillant_vsmart_ng.entity import VaillantCoordinator
 from custom_components.vaillant_vsmart_ng.room_setpoint import (
+    SOURCE_HOMESTATUS,
+    SOURCE_LEGACY,
     RoomSetpoint,
+    SelectedSetpoint,
     resolve_room_setpoints,
+    select_climate_setpoint,
 )
 
 
@@ -134,6 +140,41 @@ def test_non_thermostat_modules_are_ignored():
     ) == {}
 
 
+# Selection -------------------------------------------------------------------
+
+
+def test_selection_uses_homestatus_for_known_mode_and_target():
+    """manual/16.5 from homestatus wins over a stale legacy auto/16."""
+    assert select_climate_setpoint(
+        RoomSetpoint("manual", 16.5), legacy(manual=False, target=16.0)
+    ) == SelectedSetpoint("manual", SOURCE_HOMESTATUS, 16.5, SOURCE_HOMESTATUS)
+
+
+@pytest.mark.parametrize("room_setpoint", [
+    None, RoomSetpoint("away", 12.0), RoomSetpoint("hg", 7.0),
+], ids=["no-homestatus", "away", "frost-guard"])
+def test_selection_unsupported_mode_takes_mode_and_target_from_legacy(room_setpoint):
+    """An unsupported room mode is ignored entirely, target included."""
+    assert select_climate_setpoint(
+        room_setpoint, legacy(manual=True, target=17.0)
+    ) == SelectedSetpoint("manual", SOURCE_LEGACY, 17.0, SOURCE_LEGACY)
+
+
+def test_selection_missing_target_mixes_sources():
+    """A known mode without a target: mode from homestatus, target from legacy."""
+    assert select_climate_setpoint(
+        RoomSetpoint("manual", None), legacy(manual=False, target=16.0)
+    ) == SelectedSetpoint("manual", SOURCE_HOMESTATUS, 16.0, SOURCE_LEGACY)
+
+
+def test_selection_legacy_target_prefers_estimated_setpoint():
+    """The legacy target is est_setpoint_temp, else setpoint_temp."""
+    reading = legacy(manual=False, target=16.0)
+    reading.measured.est_setpoint_temp = None
+    reading.measured.setpoint_temp = 15.0
+    assert select_climate_setpoint(None, reading).temperature == 15.0
+
+
 # Climate entity --------------------------------------------------------------
 
 
@@ -208,3 +249,61 @@ async def test_coordinator_resolves_fresh_room_setpoints_every_refresh(hass):
 
     second = await coordinator._update_method()
     assert second.room_setpoints == {}
+
+
+def setpoint_log_lines(caplog):
+    """Return the coordinator's setpoint source log messages."""
+    return [
+        record.getMessage() for record in caplog.records
+        if record.getMessage().startswith("Vaillant setpoint source:")
+    ]
+
+
+@pytest.mark.parametrize("room_status, legacy_reading, expected, entity_state", [
+    (
+        status("away", 12.0), legacy(manual=True, target=17.0),
+        "mode_source=getthermostatsdata_fallback selected_mode=manual "
+        "target_source=getthermostatsdata_fallback selected_target=17.0 "
+        "homestatus_mode=away homestatus_target=12.0",
+        (HVACMode.HEAT, 17.0),
+    ),
+    (
+        status("manual", None), legacy(manual=False, target=16.0),
+        "mode_source=homestatus selected_mode=manual "
+        "target_source=getthermostatsdata_fallback selected_target=16.0 "
+        "homestatus_mode=manual homestatus_target=None",
+        (HVACMode.HEAT, 16.0),
+    ),
+    (
+        status("manual", 16.5), legacy(manual=False, target=16.0),
+        "mode_source=homestatus selected_mode=manual "
+        "target_source=homestatus selected_target=16.5 "
+        "homestatus_mode=manual homestatus_target=16.5",
+        (HVACMode.HEAT, 16.5),
+    ),
+], ids=["unsupported-mode", "missing-target", "homestatus"])
+async def test_coordinator_log_reports_the_climate_selection(
+    hass, caplog, room_status, legacy_reading, expected, entity_state
+):
+    """The debug log names the source the climate entity actually used."""
+    homes, _ = topology()
+    devices = [SimpleNamespace(
+        id="device", system_mode=SystemMode.WINTER, modules=[legacy_reading],
+    )]
+    client = MagicMock()
+    client.async_get_homes_data = AsyncMock(return_value=homes)
+    client.async_get_thermostats_data = AsyncMock(return_value=devices)
+    client.async_get_measure = AsyncMock(return_value=[])
+    client.async_get_home_status_snapshot = AsyncMock(
+        return_value=HomeStatus({"room": room_status}, {})
+    )
+    coordinator = VaillantCoordinator(hass, client)
+
+    with caplog.at_level(logging.DEBUG):
+        data = await coordinator._update_method()
+
+    assert setpoint_log_lines(caplog) == [
+        "Vaillant setpoint source: thermostat_index=0 " + expected
+    ]
+    entity = climate(legacy_reading, data.room_setpoints)
+    assert (entity.hvac_mode, entity.native_target_temperature) == entity_state

@@ -1,7 +1,8 @@
 """Map Vaillant homestatus room setpoints to thermostat modules by stable IDs.
 
-homestatus reports a setstate write at once, while getthermostatsdata can still
-return the previous mode and target for several seconds. The mappings come
+Right after a setstate write, getthermostatsdata can still return the previous
+mode and target, while homestatus may already report the new ones. How quickly
+either endpoint catches up is up to the cloud and is not guaranteed. The mappings come
 from homesdata rooms[].module_ids; never rely on room order.
 """
 
@@ -64,3 +65,58 @@ def resolve_room_setpoints(homes, devices, statuses_by_home) -> dict[str, RoomSe
                     setpoints[module_id] = setpoint
 
     return setpoints
+
+
+SOURCE_HOMESTATUS = "homestatus"
+SOURCE_LEGACY = "getthermostatsdata_fallback"
+
+
+@dataclass(frozen=True)
+class SelectedSetpoint:
+    """Mode and target the climate entity shows, each with where it came from.
+
+    mode is SETPOINT_MODE_MANUAL or SETPOINT_MODE_SCHEDULE.
+    """
+
+    mode: str
+    mode_source: str
+    temperature: float | None
+    temperature_source: str
+
+
+def select_climate_setpoint(room_setpoint: RoomSetpoint | None, module) -> SelectedSetpoint:
+    """Choose the climate mode and target, field by field.
+
+    The homestatus room is used only for a known mode; its target only when it
+    reports one. Everything else comes from the getthermostatsdata module. The
+    climate entity and the coordinator's debug log both call this, so the log
+    cannot disagree with what the entity shows.
+    """
+    usable = (
+        room_setpoint
+        if room_setpoint is not None and room_setpoint.mode in KNOWN_SETPOINT_MODES
+        else None
+    )
+
+    if usable is not None:
+        mode, mode_source = usable.mode, SOURCE_HOMESTATUS
+    else:
+        mode = (
+            SETPOINT_MODE_MANUAL
+            if module.setpoint_manual.setpoint_activate
+            else SETPOINT_MODE_SCHEDULE
+        )
+        mode_source = SOURCE_LEGACY
+
+    if usable is not None and usable.temperature is not None:
+        temperature, temperature_source = usable.temperature, SOURCE_HOMESTATUS
+    else:
+        measured = module.measured
+        temperature = (
+            measured.est_setpoint_temp
+            if measured.est_setpoint_temp is not None
+            else measured.setpoint_temp
+        )
+        temperature_source = SOURCE_LEGACY
+
+    return SelectedSetpoint(mode, mode_source, temperature, temperature_source)
