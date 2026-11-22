@@ -1,3 +1,5 @@
+> **Candidate-branch scope:** CI temporarily installs the exact unpublished library source pinned in the workflows. Only the root package vaillant-netatmo-api-ng==0.4.0.dev0 is excluded from the advisory snapshot because it is not on PyPI; all other installed distributions remain audited with no ignored vulnerability IDs. The stable branch retains its complete published-package audit. The candidate source is covered by regression review/tests, not by a claim of source vulnerability scanning.
+
 # Dependency maintenance and security
 
 ## Runtime versus development

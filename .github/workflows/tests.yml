@@ -6,6 +6,9 @@ on:
     branches: [dev, master, hacs]
 permissions:
   contents: read
+env:
+  # Unpublished secondary-only candidate; immutable reviewed source.
+  VSMART_LIBRARY_CANDIDATE: "vaillant-netatmo-api-ng @ https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG/archive/ee8052845d8e838abe09c2a0d9fa5baaf046a0eb.zip"
 jobs:
   pytest:
     name: "Pytest (${{ matrix.environment }})"
@@ -33,6 +36,7 @@ jobs:
         run: |
           python -m venv "$RUNNER_TEMP/vsmart-test"
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --upgrade pip
+          "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --no-deps "$VSMART_LIBRARY_CANDIDATE"
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install -r "$REQUIREMENTS_FILE"
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip install --no-deps vaillant-netatmo-api==0.13.1
           "$RUNNER_TEMP/vsmart-test/bin/python" -m pip check

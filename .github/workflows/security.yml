@@ -11,6 +11,9 @@ on:
 
 permissions:
   contents: read
+env:
+  # Unpublished secondary-only candidate; immutable reviewed source.
+  VSMART_LIBRARY_CANDIDATE: "vaillant-netatmo-api-ng @ https://github.com/LEOSCHUMY/vaillant-netatmo-api-NG/archive/ee8052845d8e838abe09c2a0d9fa5baaf046a0eb.zip"
 jobs:
   current-environment-audit:
     name: Audit current HA and test dependencies
@@ -24,12 +27,13 @@ jobs:
         run: |
           python -m venv "$RUNNER_TEMP/vsmart-current"
           "$RUNNER_TEMP/vsmart-current/bin/python" -m pip install --upgrade pip
+          "$RUNNER_TEMP/vsmart-current/bin/python" -m pip install --no-deps "$VSMART_LIBRARY_CANDIDATE"
           "$RUNNER_TEMP/vsmart-current/bin/python" -m pip install -r requirements.txt
       - name: Install audit tooling separately
         run: |
           python -m venv "$RUNNER_TEMP/vsmart-audit"
           "$RUNNER_TEMP/vsmart-audit/bin/python" -m pip install -r requirements-audit.txt
-      - name: Snapshot every installed distribution
+      - name: Snapshot dependencies except the exact unpublished candidate
         run: |
           "$RUNNER_TEMP/vsmart-current/bin/python" - "$RUNNER_TEMP/vsmart-dependencies.txt" <<'PY'
           from importlib.metadata import distributions
@@ -39,6 +43,11 @@ jobs:
           requirements = sorted(
               f"{dist.metadata['Name']}=={dist.version}"
               for dist in distributions()
+              # Only the unpublished local project has no PyPI advisory entry.
+              if not (
+                  dist.metadata["Name"].lower().replace("_", "-") == "vaillant-netatmo-api-ng"
+                  and dist.version == "0.4.0.dev0"
+              )
           )
           Path(sys.argv[1]).write_text("\n".join(requirements) + "\n", encoding="utf-8")
           PY

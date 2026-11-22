@@ -1,3 +1,6 @@
+> [!WARNING]
+> **Secondary-only field-test candidate 0.2.1.dev0, not a published release.** This temporary branch uses unpublished library 0.4.0.dev0 from an immutable commit. Do not install it on the primary system or through the stable update channel. See [the field-test plan](docs/FIELD_TEST_NEXT.md). Stable installation instructions below refer to v0.2.0.
+
 # Vaillant vSMART NG (Next-Gen) for Home Assistant
 
 <img src="custom_components/vaillant_vsmart_ng/brand/icon.png" width="96" alt="Vaillant vSMART NG">
