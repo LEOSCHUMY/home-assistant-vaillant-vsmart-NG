@@ -30,6 +30,11 @@ from .const import (
     DOMAIN,
 )
 from .entity import VaillantCoordinator, VaillantModuleEntity
+from .room_setpoint import (
+    SETPOINT_MODE_MANUAL,
+    SelectedSetpoint,
+    select_climate_setpoint,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -87,14 +92,23 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
         )
 
     @property
+    def _setpoint(self) -> SelectedSetpoint:
+        """Return the mode and target to show, from homestatus where usable.
+
+        getthermostatsdata can still report the previous mode and target right
+        after a write; homestatus may already report the new ones.
+        """
+
+        room_setpoints = getattr(self.coordinator.data, "room_setpoints", None) or {}
+        return select_climate_setpoint(
+            room_setpoints.get(self._module_id), self._module
+        )
+
+    @property
     def native_target_temperature(self) -> float:
         """Return the targeted room temperature."""
 
-        return (
-            self._module.measured.est_setpoint_temp
-            if self._module.measured.est_setpoint_temp is not None
-            else self._module.measured.setpoint_temp
-        )
+        return self._setpoint.temperature
 
     @property
     def hvac_action(self) -> HVACAction:
@@ -122,7 +136,7 @@ class VaillantClimate(VaillantModuleEntity, ClimateEntity):
     def hvac_mode(self) -> HVACMode:
         """Return currently selected HVAC operation mode."""
 
-        if self._module.setpoint_manual.setpoint_activate:
+        if self._setpoint.mode == SETPOINT_MODE_MANUAL:
             return HVACMode.HEAT
 
         return HVACMode.AUTO

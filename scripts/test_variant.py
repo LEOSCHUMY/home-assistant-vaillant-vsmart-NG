@@ -18,6 +18,7 @@ TESTS = (
     "test_room_temperature.py",
     "test_boiler_status.py",
     "test_home_targeting.py",
+    "test_room_setpoint.py",
 )
 
 
