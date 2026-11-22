@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Link each thermostat to its gateway with `via_device_id` instead of the deprecated `via_device`, which Home Assistant 2026.11 reports for every platform and stops accepting in 2027.8. Gateways are now registered during setup, before the platforms, so the link no longer depends on which platform loads first. Home Assistant releases without `via_device_id`, back to the 2024.5 minimum, keep using `via_device`. Device hierarchy and entity IDs are unchanged.
 - Send thermostat and boiler commands to the home and room that hold the thermostat, matched by stable module IDs from homesdata (`rooms[].module_ids`), instead of the first home and first room. Accounts with several homes no longer write to the wrong home, which the cloud rejects with HTTP 406 "Nothing to update". A single home, or a single home with a single room, is still used only when homesdata lists no module IDs at all. When homesdata lists module IDs but not this thermostat, or lists it in more than one room, or the placement otherwise stays ambiguous, the command fails with a clear error instead of writing to an arbitrary home. No configuration change is needed.
 
 ## 0.2.0 — Next-Gen domain and isolated library

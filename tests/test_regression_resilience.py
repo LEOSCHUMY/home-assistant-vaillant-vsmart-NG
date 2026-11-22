@@ -23,6 +23,8 @@ from custom_components.vaillant_vsmart_ng.switch import (
     VaillantScheduleSwitch,
 )
 
+from .conftest import CONFIG_ENTRY_ID
+
 
 def api_error(message):
     """Build an API exception with the constructor required by the client library."""
@@ -121,8 +123,8 @@ async def test_schedule_switch_cannot_be_turned_off():
     ("firmware", "expected"),
     [(123, "123"), ("12.34", "12.34"), (None, None)],
 )
-def test_device_info_firmware_version_is_string_or_none(
-    entity_class, firmware, expected
+async def test_device_info_firmware_version_is_string_or_none(
+    hass, device_registry, entity_class, firmware, expected
 ):
     """Home Assistant device registry requires sw_version to be str or None."""
     device = SimpleNamespace(
@@ -137,6 +139,7 @@ def test_device_info_firmware_version_is_string_or_none(
         modules={"module": module},
         programs={"program": SimpleNamespace(id="program")},
     )
+    coordinator.config_entry = SimpleNamespace(entry_id=CONFIG_ENTRY_ID)
 
     if entity_class is VaillantDeviceEntity:
         entity = entity_class(coordinator, "device")
@@ -153,6 +156,7 @@ def test_device_info_firmware_version_is_string_or_none(
         )
         expected_identifiers = {(DOMAIN, "module")}
 
+    entity.hass = hass
     info = entity.device_info
     assert info["sw_version"] == expected
     assert info["sw_version"] is None or isinstance(info["sw_version"], str)

@@ -51,6 +51,7 @@ and makes the repository's `custom_components/` directory available.
 Run the maintained regression suite locally with:
 
 ```bash
+python3 -m pytest -q tests/test_devices.py tests/test_regression_resilience.py tests/test_room_temperature.py tests/test_boiler_status.py
 python3 -m pytest -q tests/test_regression_resilience.py tests/test_room_temperature.py tests/test_boiler_status.py tests/test_home_targeting.py
 ```
 

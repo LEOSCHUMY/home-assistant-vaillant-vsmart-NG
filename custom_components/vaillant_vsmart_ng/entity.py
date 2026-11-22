@@ -25,6 +25,7 @@ from vaillant_netatmo_api_ng import (
 )
 
 from .const import DOMAIN, SUPPORTED_ENERGY_MEASUREMENT_TYPES, SUPPORTED_DURATION_MEASUREMENT_TYPES
+from .devices import gateway_device_info, module_device_info
 from .room_temperature import resolve_room_temperatures
 from .boiler_status import resolve_boiler_statuses
 from .home_targeting import target_home, target_room
@@ -37,12 +38,6 @@ UNKNOWN_PLACEMENT_ERROR = (
 )
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
-
-
-def _firmware_version(value: Any) -> str | None:
-    """Return firmware metadata as a string, preserving unknown values."""
-
-    return str(value) if value is not None else None
 
 
 class VaillantData:
@@ -252,12 +247,7 @@ class VaillantDeviceEntity(CoordinatorEntity[VaillantData]):
     def device_info(self) -> dict[str, Any]:
         """Return all device info available for this entity."""
 
-        return {
-            "identifiers": {(DOMAIN, self._device.id)},
-            "name": self._device.station_name,
-            "sw_version": _firmware_version(self._device.firmware),
-            "manufacturer": self._device.type,
-        }
+        return gateway_device_info(self._device)
 
 
 class VaillantModuleEntity(CoordinatorEntity[VaillantData]):
@@ -328,13 +318,9 @@ class VaillantModuleEntity(CoordinatorEntity[VaillantData]):
     def device_info(self) -> dict[str, Any]:
         """Return all device info available for this entity."""
 
-        return {
-            "identifiers": {(DOMAIN, self._module.id)},
-            "name": self._module.module_name,
-            "sw_version": _firmware_version(self._module.firmware),
-            "manufacturer": self._device.type,
-            "via_device": (DOMAIN, self._device.id),
-        }
+        return module_device_info(
+            self.hass, self.coordinator.config_entry.entry_id, self._device, self._module
+        )
 
 
 class VaillantProgramEntity(CoordinatorEntity[VaillantData]):
@@ -395,13 +381,9 @@ class VaillantProgramEntity(CoordinatorEntity[VaillantData]):
     def device_info(self) -> dict[str, Any]:
         """Return all device info available for this entity."""
 
-        return {
-            "identifiers": {(DOMAIN, self._module.id)},
-            "name": self._module.module_name,
-            "sw_version": _firmware_version(self._module.firmware),
-            "manufacturer": self._device.type,
-            "via_device": (DOMAIN, self._device.id),
-        }
+        return module_device_info(
+            self.hass, self.coordinator.config_entry.entry_id, self._device, self._module
+        )
 
 
 class VaillantMeasurementEntity(CoordinatorEntity[VaillantData]):
@@ -468,10 +450,6 @@ class VaillantMeasurementEntity(CoordinatorEntity[VaillantData]):
     def device_info(self) -> dict[str, Any]:
         """Return all device info available for this entity."""
 
-        return {
-            "identifiers": {(DOMAIN, self._module.id)},
-            "name": self._module.module_name,
-            "sw_version": _firmware_version(self._module.firmware),
-            "manufacturer": self._device.type,
-            "via_device": (DOMAIN, self._device.id),
-        }
+        return module_device_info(
+            self.hass, self.coordinator.config_entry.entry_id, self._device, self._module
+        )

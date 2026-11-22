@@ -13,6 +13,7 @@ from build_variants import VARIANTS
 
 ROOT = Path(__file__).resolve().parents[1]
 TESTS = (
+    "test_devices.py",
     "test_regression_resilience.py",
     "test_room_temperature.py",
     "test_boiler_status.py",
