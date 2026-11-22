@@ -4,6 +4,7 @@ import ast
 import hashlib
 import io
 import json
+import sys
 from email.parser import BytesParser
 from importlib.metadata import distribution, version
 from pathlib import Path
@@ -279,13 +280,17 @@ if __name__ == "__main__":
         if not args.wheel_sha256 or args.fresh:
             parser.error("--stage requires --wheel-sha256 and does not accept --fresh")
         result = stage(config, args.wheel_sha256)
-        print("NG staged: 0.2.1.dev0; 25 files verified against pinned source.")
-        print("Manifest points to the persistent 0.4.0.dev0 wheel.")
-        print("Original component/library unchanged; registry identities recorded as hashes.")
-        print("No library installed, no credentials/config entries read, no API calls made.")
+        sys.stdout.write(
+            "NG staged: 0.2.1.dev0; 25 files verified against pinned source.\n"
+            "Manifest points to the persistent 0.4.0.dev0 wheel.\n"
+            "Original component/library unchanged; registry identities recorded as hashes.\n"
+            "No library installed, no credentials/config entries read, no API calls made.\n"
+        )
     else:
         result = verify(config, fresh=args.fresh)
-        print("Installed candidate code verified; original component/library/registry unchanged.")
-        print("NG:", result["entity_count"], "entities,", result["device_count"], "devices.")
-        print("Gateway links verified; dependency versions unchanged.")
+        sys.stdout.write(
+            "Installed candidate code verified; original component/library/registry unchanged.\n"
+            f"NG: {result['entity_count']} entities, {result['device_count']} devices.\n"
+            "Gateway links verified; dependency versions unchanged.\n"
+        )
 

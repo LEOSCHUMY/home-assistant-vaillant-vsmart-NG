@@ -19,6 +19,7 @@ SPEC.loader.exec_module(installer)
 
 @pytest.fixture
 def secondary(tmp_path, monkeypatch):
+    """Build an isolated secondary installation with synthetic registry data."""
     config = tmp_path / "config"
     components = config / "custom_components"
     old, ng = components / "vaillant_vsmart", components / installer.DOMAIN
@@ -95,6 +96,7 @@ def secondary(tmp_path, monkeypatch):
 
 
 def test_stage_preserves_original_and_registries_without_installing(secondary):
+    """Replace NG while preserving original files and registry contents."""
     s = secondary
     before = installer.fingerprint(s.old)
     registry = (s.config / ".storage/core.entity_registry").read_bytes()
@@ -111,6 +113,7 @@ def test_stage_preserves_original_and_registries_without_installing(secondary):
 
 
 def test_wrong_wheel_leaves_existing_ng_untouched(secondary):
+    """Reject an unexpected wheel before changing the installation."""
     before = installer.fingerprint(secondary.ng)
     with pytest.raises(ValueError, match="SHA256 mismatch"):
         installer.stage(secondary.config, "0" * 64)
@@ -119,6 +122,7 @@ def test_wrong_wheel_leaves_existing_ng_untouched(secondary):
 
 
 def test_unexpected_secondary_version_is_rejected(secondary):
+    """Reject a secondary that differs from the observed baseline."""
     secondary.versions["vaillant-netatmo-api-ng"] = "0.3.0"
     before = installer.fingerprint(secondary.ng)
     with pytest.raises(ValueError, match="previous secondary"):
@@ -127,6 +131,7 @@ def test_unexpected_secondary_version_is_rejected(secondary):
 
 
 def test_changed_source_is_rejected_before_staging(secondary, monkeypatch):
+    """Reject component bytes that differ from the pinned source."""
     monkeypatch.setitem(installer.EXPECTED, "__init__.py", "0" * 40)
     before = installer.fingerprint(secondary.ng)
     with pytest.raises(ValueError, match="differs from pinned"):
@@ -135,6 +140,7 @@ def test_changed_source_is_rejected_before_staging(secondary, monkeypatch):
 
 
 def test_repeat_stage_never_overwrites_baseline(secondary):
+    """Preserve the first baseline when staging is repeated."""
     installer.stage(secondary.config, secondary.sha)
     before = installer.fingerprint(secondary.ng)
     with pytest.raises(ValueError, match="Expected the previous secondary NG component"):
@@ -143,6 +149,7 @@ def test_repeat_stage_never_overwrites_baseline(secondary):
 
 
 def test_failed_replacement_restores_previous_ng(secondary, monkeypatch):
+    """Restore the previous component when replacement raises an error."""
     before = installer.fingerprint(secondary.ng)
     real_rename = Path.rename
 
@@ -159,6 +166,7 @@ def test_failed_replacement_restores_previous_ng(secondary, monkeypatch):
 
 
 def test_verify_accepts_unchanged_upgrade_identity(secondary):
+    """Accept an upgraded installation with preserved registry identity."""
     installer.stage(secondary.config, secondary.sha)
     secondary.versions["vaillant-netatmo-api-ng"] = "0.4.0.dev0"
     result = installer.verify(secondary.config)
@@ -167,6 +175,7 @@ def test_verify_accepts_unchanged_upgrade_identity(secondary):
 
 
 def test_verify_detects_entity_identity_change_but_fresh_setup_allows_it(secondary):
+    """Require preserved upgrade identity while allowing deliberate fresh setup."""
     installer.stage(secondary.config, secondary.sha)
     secondary.versions["vaillant-netatmo-api-ng"] = "0.4.0.dev0"
     path = secondary.config / ".storage/core.entity_registry"
@@ -179,6 +188,7 @@ def test_verify_detects_entity_identity_change_but_fresh_setup_allows_it(seconda
 
 
 def test_verify_detects_original_code_change(secondary):
+    """Detect changes to original integration code after staging."""
     installer.stage(secondary.config, secondary.sha)
     secondary.versions["vaillant-netatmo-api-ng"] = "0.4.0.dev0"
     (secondary.old / "__init__.py").write_text("# unexpectedly modified\n")
@@ -187,6 +197,7 @@ def test_verify_detects_original_code_change(secondary):
 
 
 def test_verify_detects_dependency_changes(secondary):
+    """Detect dependency changes after staging."""
     installer.stage(secondary.config, secondary.sha)
     secondary.versions["vaillant-netatmo-api-ng"] = "0.4.0.dev0"
     secondary.versions["idna"] = "3.21"
