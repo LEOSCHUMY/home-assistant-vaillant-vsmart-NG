@@ -17,6 +17,7 @@ TESTS = (
     "test_regression_resilience.py",
     "test_room_temperature.py",
     "test_boiler_status.py",
+    "test_home_targeting.py",
 )
 
 

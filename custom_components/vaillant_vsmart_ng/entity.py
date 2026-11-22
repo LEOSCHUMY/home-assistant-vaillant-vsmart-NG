@@ -4,7 +4,7 @@ import logging
 from typing import Any
 
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
@@ -28,8 +28,14 @@ from .const import DOMAIN, SUPPORTED_ENERGY_MEASUREMENT_TYPES, SUPPORTED_DURATIO
 from .devices import gateway_device_info, module_device_info
 from .room_temperature import resolve_room_temperatures
 from .boiler_status import resolve_boiler_statuses
+from .home_targeting import target_home, target_room
 
 UPDATE_INTERVAL = timedelta(minutes=5)
+
+UNKNOWN_PLACEMENT_ERROR = (
+    "Cannot tell which Vaillant home and room to send this command to: "
+    "the account's homes data must list the thermostat in exactly one room"
+)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -38,16 +44,13 @@ class VaillantData:
     """Class holding data which coordinator provides to the entity."""
 
     def __init__(self, client: ThermostatClient, homes: list[Home], devices: list[Device],
-                 measurements: dict[(str, str, MeasurementType), MeasurementItem],
+                 measurements: dict[tuple[str, str, MeasurementType], MeasurementItem],
                  room_temperatures: dict[str, float] | None = None,
                  boiler_statuses: dict[str, bool] | None = None) -> None:
         """Initialize."""
 
         self.client = client
         self.homes = {home.id: home for home in homes}
-        self.rooms = {
-            room.id: room for home in homes for room in home.rooms
-        }
         self.devices = {device.id: device for device in devices}
         self.modules = {
             module.id: module for device in devices for module in device.modules
@@ -80,7 +83,7 @@ class VaillantCoordinator(DataUpdateCoordinator[VaillantData]):
 
         self._client = client
 
-    async def _update_method(self):
+    async def _update_method(self) -> VaillantData:
         """Fetch data from API endpoint.
 
         This is the place to pre-process the data to lookup tables
@@ -197,7 +200,7 @@ class VaillantDeviceEntity(CoordinatorEntity[VaillantData]):
         self,
         coordinator: DataUpdateCoordinator[VaillantData],
         device_id: str,
-    ):
+    ) -> None:
         """Initialize."""
 
         super().__init__(coordinator)
@@ -206,29 +209,21 @@ class VaillantDeviceEntity(CoordinatorEntity[VaillantData]):
 
     @property
     def _client(self) -> ThermostatClient:
-        """Retrun the instance of the client which enables HTTP communication with the API."""
+        """Return the instance of the client which enables HTTP communication with the API."""
 
         return self.coordinator.data.client
 
     @property
     def _home(self) -> Home:
-        """Return the device which this entity represents."""
+        """Return the home that receives this device's commands."""
 
-        # TODO: Remove this hack
-        # We assume there is only one home and one room
-        # This assumption will be removed when we switch entirely to using new APIs
-        for id in self.coordinator.data.homes:
-            return self.coordinator.data.homes[id]
-
-    @property
-    def _room(self) -> Room:
-        """Return the device which this entity represents."""
-
-        # TODO: Remove this hack
-        # We assume there is only one home and one room
-        # This assumption will be removed when we switch entirely to using new APIs
-        for id in self.coordinator.data.rooms:
-            return self.coordinator.data.rooms[id]
+        home = target_home(
+            self.coordinator.data.homes.values(),
+            [module.id for module in self._device.modules],
+        )
+        if home is None:
+            raise HomeAssistantError(UNKNOWN_PLACEMENT_ERROR)
+        return home
 
     @property
     def _device(self) -> Device:
@@ -263,7 +258,7 @@ class VaillantModuleEntity(CoordinatorEntity[VaillantData]):
         coordinator: DataUpdateCoordinator[VaillantData],
         device_id: str,
         module_id: str,
-    ):
+    ) -> None:
         """Initialize."""
 
         super().__init__(coordinator)
@@ -273,29 +268,27 @@ class VaillantModuleEntity(CoordinatorEntity[VaillantData]):
 
     @property
     def _client(self) -> ThermostatClient:
-        """Retrun the instance of the client which enables HTTP communication with the API."""
+        """Return the instance of the client which enables HTTP communication with the API."""
 
         return self.coordinator.data.client
 
     @property
     def _home(self) -> Home:
-        """Return the device which this entity represents."""
+        """Return the home that receives this module's commands."""
 
-        # TODO: Remove this hack
-        # We assume there is only one home and one room
-        # This assumption will be removed when we switch entirely to using new APIs
-        for id in self.coordinator.data.homes:
-            return self.coordinator.data.homes[id]
+        home = target_home(self.coordinator.data.homes.values(), [self._module_id])
+        if home is None:
+            raise HomeAssistantError(UNKNOWN_PLACEMENT_ERROR)
+        return home
 
     @property
     def _room(self) -> Room:
-        """Return the device which this entity represents."""
+        """Return the room that receives this module's commands."""
 
-        # TODO: Remove this hack
-        # We assume there is only one home and one room
-        # This assumption will be removed when we switch entirely to using new APIs
-        for id in self.coordinator.data.rooms:
-            return self.coordinator.data.rooms[id]
+        room = target_room(self.coordinator.data.homes.values(), self._module_id)
+        if room is None:
+            raise HomeAssistantError(UNKNOWN_PLACEMENT_ERROR)
+        return room
 
     @property
     def _device(self) -> Device:
@@ -339,7 +332,7 @@ class VaillantProgramEntity(CoordinatorEntity[VaillantData]):
         device_id: str,
         module_id: str,
         program_id: str,
-    ):
+    ) -> None:
         """Initialize."""
 
         super().__init__(coordinator)
@@ -350,7 +343,7 @@ class VaillantProgramEntity(CoordinatorEntity[VaillantData]):
 
     @property
     def _client(self) -> ThermostatClient:
-        """Retrun the instance of the client which enables HTTP communication with the API."""
+        """Return the instance of the client which enables HTTP communication with the API."""
 
         return self.coordinator.data.client
 
@@ -402,7 +395,7 @@ class VaillantMeasurementEntity(CoordinatorEntity[VaillantData]):
         device_id: str,
         module_id: str,
         measurement_type: MeasurementType,
-    ):
+    ) -> None:
         """Initialize."""
 
         super().__init__(coordinator)
@@ -413,7 +406,7 @@ class VaillantMeasurementEntity(CoordinatorEntity[VaillantData]):
 
     @property
     def _client(self) -> ThermostatClient:
-        """Retrun the instance of the client which enables HTTP communication with the API."""
+        """Return the instance of the client which enables HTTP communication with the API."""
 
         return self.coordinator.data.client
 
