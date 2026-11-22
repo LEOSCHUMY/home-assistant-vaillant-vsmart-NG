@@ -21,3 +21,11 @@ Review-only versions: integration 0.2.1.dev0 and library 0.4.0.dev0. No stable r
 7. Record results and limitations before selecting and publishing stable versions. Publish the library first, then adopt its stable pin in manifest and both test requirements, restore full audit scope, verify checks and release the integration separately.
 
 The first user command is read-only inventory. This document is not itself an instruction to install or restart HA. Candidate artifacts need a secondary-specific staging/check procedure after that inventory.
+
+## Secondary-specific staging helper
+
+`scripts/install_next_secondary.py --stage --wheel-sha256 <verified-hash>` accepts only the observed secondary baseline: HA 2026.11.1, original component 0.11.2/library 0.13.1, and previous new-domain component 0.1.2/library 0.3.0.dev0. It verifies the persistent wheel and all 25 immutable component Git blobs before replacement. It records original code hashes and registry identity digests in /config/vsmart-next-field-test/verification.json, without reading core.config_entries or copying backups. It installs no Python packages and makes no cloud API requests.
+
+The staged manifest points to the persistent local wheel. After restart, `--verify` checks the installed candidate, unchanged original files and registry identity, unchanged NG entity/device identity, gateway links and unchanged dependency versions. After a deliberate fresh NG configuration test, `--verify --fresh` allows changed NG identity but still requires original integrity and the expected entity/device counts.
+
+The helper must be downloaded from an immutable reviewed script commit and hash-checked before execution. Do not run the older install_secondary_candidate.py again: that helper targets the prior fresh coexistence setup and correctly refuses an existing NG installation.

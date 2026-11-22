@@ -57,7 +57,7 @@ jobs:
       - name: Build both domain variants
         run: python scripts/build_variants.py --output "$RUNNER_TEMP/vsmart-artifacts"
       - name: Test packaging invariants
-        run: '"$RUNNER_TEMP/vsmart-test/bin/python" -m pytest -q tests/test_build_variants.py tests/test_secondary_installer.py tests/test_manual_export.py'
+        run: '"$RUNNER_TEMP/vsmart-test/bin/python" -m pytest -q tests/test_build_variants.py tests/test_secondary_installer.py tests/test_manual_export.py tests/test_next_secondary.py'
       - name: Test HACS package
         run: '"$RUNNER_TEMP/vsmart-test/bin/python" scripts/test_variant.py --variant hacs --artifacts "$RUNNER_TEMP/vsmart-artifacts"'
       - name: Test legacy package
