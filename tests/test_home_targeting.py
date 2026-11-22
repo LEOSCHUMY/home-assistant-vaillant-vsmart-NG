@@ -64,6 +64,20 @@ def test_single_home_with_several_unassigned_rooms_has_no_target_room():
     assert target_room(homes, "thermostat") is None
 
 
+def test_topology_that_lists_another_module_has_no_target():
+    """Present topology without this module is a mismatch, not missing data."""
+    homes = [home("home", ("room", ["another-thermostat"]))]
+    assert target_home(homes, ["missing-thermostat"]) is None
+    assert target_room(homes, "missing-thermostat") is None
+
+
+def test_module_in_two_rooms_of_one_home_has_no_target_room():
+    """The home is clear, but a room-targeted command must not guess."""
+    homes = [home("home", ("living", ["thermostat"]), ("study", ["thermostat"]))]
+    assert target_home(homes, ["thermostat"]).id == "home"
+    assert target_room(homes, "thermostat") is None
+
+
 @pytest.mark.parametrize(
     "homes",
     [
@@ -146,4 +160,37 @@ async def test_ambiguous_target_is_reported_before_any_write():
 
     coordinator.data.client.async_set_state_for_room.assert_not_awaited()
     coordinator.data.client.async_set_state_for_module.assert_not_awaited()
+    coordinator.async_request_refresh.assert_not_awaited()
+
+
+async def test_topology_that_lists_another_module_is_rejected_before_any_write():
+    """A single home and room is no fallback when it lists another thermostat."""
+    coordinator = coordinator_for([home("home", ("room", ["another-thermostat"]))])
+    climate = VaillantClimate(coordinator, "device", "thermostat")
+
+    with pytest.raises(HomeAssistantError, match="exactly one room"):
+        await climate.async_set_temperature(temperature=20.5)
+    with pytest.raises(HomeAssistantError, match="exactly one room"):
+        await climate.async_set_preset_mode(PRESET_AWAY)
+    with pytest.raises(HomeAssistantError, match="exactly one room"):
+        await VaillantHwbSwitch(coordinator, "device").async_turn_on()
+
+    coordinator.data.client.async_set_state_for_room.assert_not_awaited()
+    coordinator.data.client.async_set_home_data.assert_not_awaited()
+    coordinator.data.client.async_set_state_for_module.assert_not_awaited()
+    coordinator.async_request_refresh.assert_not_awaited()
+
+
+async def test_module_in_two_rooms_rejects_room_commands_before_any_write():
+    """A thermostat listed in two rooms of one home gets no room setpoint."""
+    coordinator = coordinator_for(
+        [home("home", ("living", ["thermostat"]), ("study", ["thermostat"]))]
+    )
+
+    with pytest.raises(HomeAssistantError, match="exactly one room"):
+        await VaillantClimate(coordinator, "device", "thermostat").async_set_temperature(
+            temperature=20.5
+        )
+
+    coordinator.data.client.async_set_state_for_room.assert_not_awaited()
     coordinator.async_request_refresh.assert_not_awaited()
