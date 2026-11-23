@@ -1,6 +1,6 @@
 # Changelog — Home Assistant Vaillant vSMART NG
 
-## [Unreleased]
+## 0.2.1 — Climate state, commands and device linkage
 
 ### Fixes
 
@@ -11,7 +11,7 @@
 
 ### Dependencies
 
-- Takes effect with a `vaillant-netatmo-api-ng` release that exposes `RoomStatus.setpoint_mode`. With 0.3.0 the integration behaves as before.
+- Pin `vaillant-netatmo-api-ng==0.4.0` for both distributions. It exposes `RoomStatus.setpoint_mode` and fixes the home-level heating mode request used for Away and return to schedule.
 
 ## 0.2.0 — Next-Gen domain and isolated library
 

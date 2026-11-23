@@ -1,7 +1,7 @@
 # Vaillant vSMART NG (Next-Gen) — manual compatibility distribution
 
 > [!IMPORTANT]
-> **Development review snapshot, not a published installation release.** This export uses published library `vaillant-netatmo-api-ng==0.3.0`, but the integration snapshot itself is not a released package. Do not install the default branch on a working Home Assistant system. Use only a reviewed, published manual release once one exists.
+> **Development review snapshot, not a published installation release.** This export uses published library `vaillant-netatmo-api-ng==0.4.0`, but the integration snapshot itself is not a released package. Do not install the default branch on a working Home Assistant system. Use only a reviewed, published manual release once one exists.
 
 For new installations, use the **recommended [HACS/Marketplace version](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG)** with domain `vaillant_vsmart_ng`.
 
@@ -22,7 +22,7 @@ This repository is **not a second HACS catalog entry** and does not transfer exi
 - Confirm the existing domain is `vaillant_vsmart` and record its integration/library versions and entity IDs.
 - Keep the existing Home Assistant integration entry; do not delete it or add a replacement entry merely to update files.
 - For a working system, retain a restorable HA backup and a copy of the existing component outside `custom_components`.
-- Read the release notes and verify the manual release's published library requirement before proceeding. The current review snapshot requires published library `0.3.0`; that does not make this integration snapshot a published release.
+- Read the release notes and verify the manual release's published library requirement before proceeding. The current review snapshot requires published library `0.4.0`; that does not make this integration snapshot a published release.
 
 **If Marketplace/HACS currently manages this directory:** file replacement alone does not transfer update ownership. Do not use a delete-and-uninstall action that removes the existing configuration. Do not use the old repository's install/update/uninstall controls to manage the manually replaced copy. A supported management-transfer procedure has not been validated; the historical [migration report](https://github.com/LEOSCHUMY/home-assistant-vaillant-vsmart-NG/blob/hacs/MIGRATION.md) describes an experimental workaround, not a general recommendation. Do not assume this repository makes that transfer automatic.
 

@@ -74,7 +74,7 @@ Keep your account credentials and client secrets private. Do not post them in is
 
 ## Compatibility and verification
 
-The Home Assistant minimum remains **2024.5**, as declared in `hacs.json`. Both generated integration variants use the same isolated `vaillant_netatmo_api_ng` library. The manifest and both regression environments require published `vaillant-netatmo-api-ng==0.3.0` from PyPI. Version 0.2.0 prepares the new-domain release; install it only once its GitHub release is published.
+The Home Assistant minimum remains **2024.5**, as declared in `hacs.json`. Both generated integration variants use the same isolated `vaillant_netatmo_api_ng` library. The manifest and both regression environments require published `vaillant-netatmo-api-ng==0.4.0` from PyPI. Version 0.2.1 retains the `vaillant_vsmart_ng` domain introduced in 0.2.0.
 
 | Environment | Evidence |
 | --- | --- |

@@ -2,7 +2,7 @@
 
 Use Python 3.14 for the current Home Assistant environment:
 
-Both regression environments install published library `0.3.0` from PyPI. Do not use these development requirements in a running HA installation.
+Both regression environments install published library `0.4.0` from PyPI. Do not use these development requirements in a running HA installation.
 
 ```bash
 python3.14 -m venv .venv
